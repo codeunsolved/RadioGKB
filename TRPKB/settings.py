@@ -33,6 +33,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'KB.apps.KbConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -80,7 +81,7 @@ WSGI_APPLICATION = 'TRPKB.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'trpkb',
+        'NAME': config.postgresql['database'],
         'USER': config.postgresql['user'],
         'PASSWORD': config.postgresql['password'],
         'HOST': config.postgresql['host'],

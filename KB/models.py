@@ -4,11 +4,11 @@ from django.contrib.postgres.fields import ArrayField, IntegerRangeField, FloatR
 
 class Disease(models.Model):
     disease = models.CharField(max_length=50, unique=True)
-    mesh_term = models.CharField(max_length=50, unique=True)
-    mesh_id = models.IntegerField(unique=True)
+    mesh_term = models.CharField(max_length=50, unique=True, null=True, blank=True)
+    mesh_id = models.IntegerField(unique=True, null=True, blank=True)
 
     def __str__(self):
-        return "{s}".format(self.mesh_term)
+        return "{}".format(self.disease)
 
 
 class Gene(models.Model):
@@ -16,29 +16,29 @@ class Gene(models.Model):
     gene_alternative_symbols = ArrayField(models.CharField(max_length=50), blank=True)
 
     def __str__(self):
-        return "{s}".format(self.gene)
+        return "{}".format(self.gene_official_symbol)
 
 
 class Variant(models.Model):
-    gene = models.ForeignKey('TRPKB.Gene')
+    gene = models.ForeignKey('KB.Gene')
     variant_dbsnp = models.CharField(max_length=200)
 
     def __str__(self):
-        return "[{!s}]{s}".format(self.gene, self.variant_dbsnp)
+        return "[{!s}]{}".format(self.gene, self.variant_dbsnp)
 
 
 class Treatment(models.Model):
     treatment_type = models.CharField(max_length=50, unique=True)
 
     def __str__(self):
-        return "{s}".format(self.treatment_type)
+        return "{}".format(self.treatment_type)
 
 
 class EvidenceBasedMedicineLevel(models.Model):
     ebml = models.CharField(max_length=50, unique=True)
 
     def __str__(self):
-        return "{s}".format(self.ebml)
+        return "{}".format(self.ebml)
 
 
 class Research(models.Model):
@@ -47,7 +47,7 @@ class Research(models.Model):
     pub_year = models.IntegerField(null=True, blank=True)
     pub_type = models.CharField(max_length=50, null=True, blank=True)
     pubmed_id = models.IntegerField(null=True, blank=True)
-    ebml = models.ForeignKey('TRPKB.ebml', null=True, blank=True)
+    ebml = models.ForeignKey('KB.EvidenceBasedMedicineLevel', null=True, blank=True)
     ethnicity = models.CharField(max_length=50, null=True, blank=True)
     patient_number = models.IntegerField(null=True, blank=True)
     male = models.IntegerField(null=True, blank=True)
@@ -56,18 +56,17 @@ class Research(models.Model):
     mean_age = models.FloatField(null=True, blank=True)
     age_range = IntegerRangeField(blank=True)
     treatment_desc = models.TextField(null=True, blank=True)
-    treatment_type = models.ForeignKey('TRPKB.Treatment', null=True, blank=True)
-
+    treatment_type = models.ForeignKey('KB.Treatment', null=True, blank=True)
 
     def __str__(self):
-        return "{s}".format(self.title)
+        return "{}".format(self.title)
 
 
 class Prognosis(models.Model):
-    research = models.ForeignKey('TRPKB.Reseach')
-    disease = models.ForeignKey('TRPKB.Disease')
+    research = models.ForeignKey('KB.Research')
+    disease = models.ForeignKey('KB.Disease')
     prognosis = models.CharField(max_length=200)
-    type_ = models.CharField(max_length=50, null=True, blank=True)
+    prognosis_type = models.CharField(max_length=50, null=True, blank=True)
     endpoint = models.CharField(max_length=50, null=True, blank=True)
     original = models.CharField(max_length=10)
     statistical_method = models.CharField(max_length=50, null=True, blank=True)
@@ -78,24 +77,23 @@ class Prognosis(models.Model):
     annotation = models.TextField(null=True, blank=True)
 
     def __str__(self):
-        return "{s}".format(self.prognosis)
+        return "{}".format(self.prognosis)
 
 
-class Subgourp(models.Model):
-    prognosis = models.ForeignKey('TRPKB.Prognosis')
+class Subgroup(models.Model):
+    prognosis = models.ForeignKey('KB.Prognosis')
     subgourp = models.CharField(max_length=50)
 
     def __str__(self):
-        return "[{!s}]{s}".format(self.prognosis, self.subgourp)
+        return "[{!s}]{}".format(self.prognosis, self.subgourp)
 
 
 class Association(models.Model):
-    research = models.ForeignKey('TRPKB.Research')
-    disease = models.ForeignKey('TRPKB.Disease')
-    prognosis = models.ForeignKey('TRPKB.Prognosis')
-    subgourp = models.ForeignKey('TRPKB.Subgroup')
-    gene = models.ForeignKey('TRPKB.Gene')
-    variant = models.ForeignKey('TRPKB.Variant')
+    research = models.ForeignKey('KB.Research')
+    disease = models.ForeignKey('KB.Disease')
+    prognosis = models.ForeignKey('KB.Prognosis')
+    subgourp = models.ForeignKey('KB.Subgroup', null=True, blank=True)
+    variant = models.ForeignKey('KB.Variant')
     genotype = models.CharField(max_length=50)
     case_number = models.IntegerField(null=True, blank=True)
     control_number = models.IntegerField(null=True, blank=True)
@@ -112,4 +110,5 @@ class Association(models.Model):
     p_m = models.FloatField(null=True, blank=True)
 
     def __str__(self):
-        return "[{!s}][{!s}][{!s}]{s}".format(self.disease, self.gene, self.variant, self.genotype)
+        return "[{!s}][{}][{}]{}".format(self.disease, self.variant.gene.gene_official_symbol,
+                                         self.variant.variant_dbsnp, self.genotype)
