@@ -2,8 +2,8 @@ from django.db import models
 from django.contrib.postgres.fields import ArrayField, IntegerRangeField, FloatRangeField
 
 
-class Disease(models.Model):
-    disease = models.CharField(max_length=50, unique=True)
+class Tumor(models.Model):
+    name = models.CharField(max_length=50, unique=True)
     mesh_term = models.CharField(max_length=50, unique=True, null=True, blank=True)
     mesh_id = models.IntegerField(unique=True, null=True, blank=True)
 
@@ -13,7 +13,10 @@ class Disease(models.Model):
 
 class Gene(models.Model):
     gene_official_symbol = models.CharField(max_length=50, unique=True)
+    entrez_gene_id = models.IntegerField(unique=True, null=True, blank=True)
     gene_alternative_symbols = ArrayField(models.CharField(max_length=50), blank=True)
+    gene_official_full_name = models.CharField(max_length=100, null=True, blank=True)
+    gene_official_full_name = models.CharField(max_length=500, null=True, blank=True)
 
     def __str__(self):
         return "{}".format(self.gene_official_symbol)
@@ -22,6 +25,8 @@ class Gene(models.Model):
 class Variant(models.Model):
     gene = models.ForeignKey('KB.Gene')
     variant_dbsnp = models.CharField(max_length=200)
+    hgvs_g = models.CharField(max_length=50)
+    hgvs_p = models.CharField(max_length=50)
 
     def __str__(self):
         return "[{!s}]{}".format(self.gene, self.variant_dbsnp)
@@ -45,8 +50,9 @@ class Research(models.Model):
     title = models.CharField(max_length=500, unique=True)
     language = models.CharField(max_length=50, null=True, blank=True)
     pub_year = models.IntegerField(null=True, blank=True)
-    pub_type = models.CharField(max_length=50, null=True, blank=True)
     pubmed_id = models.IntegerField(null=True, blank=True)
+    url = models.UrlField(null=True, blank=True)
+    pub_type = models.CharField(max_length=50, null=True, blank=True)
     ebml = models.ForeignKey('KB.EvidenceBasedMedicineLevel', null=True, blank=True)
     ethnicity = models.CharField(max_length=50, null=True, blank=True)
     patient_number = models.IntegerField(null=True, blank=True)
@@ -56,21 +62,17 @@ class Research(models.Model):
     mean_age = models.FloatField(null=True, blank=True)
     age_range = IntegerRangeField(blank=True)
     treatment_desc = models.TextField(null=True, blank=True)
-    treatment_type = models.ForeignKey('KB.Treatment', null=True, blank=True)
+    treatment_type = models.CharField(max_length=50, unique=True)
 
     def __str__(self):
         return "{}".format(self.title)
 
 
 class Prognosis(models.Model):
-    research = models.ForeignKey('KB.Research')
-    disease = models.ForeignKey('KB.Disease')
     prognosis = models.CharField(max_length=200)
     prognosis_type = models.CharField(max_length=50, null=True, blank=True)
     endpoint = models.CharField(max_length=50, null=True, blank=True)
     original = models.CharField(max_length=10)
-    statistical_method = models.CharField(max_length=50, null=True, blank=True)
-    software = models.CharField(max_length=50, null=True, blank=True)
     case_meaning = models.CharField(max_length=50, null=True, blank=True)
     control_meaning = models.CharField(max_length=50, null=True, blank=True)
     total_meanning = models.CharField(max_length=50, null=True, blank=True)
@@ -90,10 +92,10 @@ class Subgroup(models.Model):
 
 class Association(models.Model):
     research = models.ForeignKey('KB.Research')
-    disease = models.ForeignKey('KB.Disease')
+    tumor = models.ForeignKey('KB.Tumor')
+    variant = models.ForeignKey('KB.Variant')
     prognosis = models.ForeignKey('KB.Prognosis')
     subgourp = models.ForeignKey('KB.Subgroup', null=True, blank=True)
-    variant = models.ForeignKey('KB.Variant')
     genotype = models.CharField(max_length=50)
     case_number = models.IntegerField(null=True, blank=True)
     control_number = models.IntegerField(null=True, blank=True)
@@ -110,5 +112,5 @@ class Association(models.Model):
     p_m = models.FloatField(null=True, blank=True)
 
     def __str__(self):
-        return "[{!s}][{}][{}]{}".format(self.disease, self.variant.gene.gene_official_symbol,
+        return "[{!s}][{}][{}]{}".format(self.tumor, self.variant.gene.gene_official_symbol,
                                          self.variant.variant_dbsnp, self.genotype)
