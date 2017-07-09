@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+    {% block head_title %}Access the Knowledge{% endblock head_title %}
+
+    {% block nav %}
+    <ul class="nav nav-pills nav-justified" style="border-top: 1px solid black;border-bottom: 1px solid black;">
+      <li role="presentation"><a href="{% url 'about_the_knowledgebase' %}">About the Knowledgebase</a></li>
+      <li role="presentation"><a href="{% url 'about_the_knowledge' %}">About the Knowledge</a></li>
+      <li role="presentation" class="active"><a href="{% url 'access_the_knowledge' %}">Access the Knowledge</a></li>
+      <li role="presentation"><a href="{% url 'submit_the_knowledge' %}">Submit the Knowledge</a></li>
+      <li role="presentation"><a href="{% url 'news' %}">News</a></li>
+    </ul>
+    {% endblock nav %}
+
+      {% block container %}
+      <div class="row">
+        <div class="col-md-3 col-sm-3 col-xs-3">
+        </div>
+        <div class="col-md-6 col-sm-6 col-xs-6">
+          <br><br><br><br>
+          <form class="form-horizontal" role="form" method="POST" action="{% url 'search_snp' %}">
+            {% csrf_token %}
+            <div class="form-group">
+              <label>Gene:</label>
+              <input name="gene" class="form-control" type="text">
+            </div>
+            <div class="form-group">
+              <label>Variant:</label>
+              <input name="variant" class="form-control" type="text">
+            </div>
+            <div class="form-group">
+              <label>Tumor:</label>
+              <input name="tumor" class="form-control" type="text">
+            </div>
+            <br>
+            <button class="btn btn-primary btn-block" type="submit">Search :: <span class="glyphicon glyphicon-search" aria-hidden="true"></span></button>
+          </form>
+        </div>
+        <div class="col-md-3 col-sm-3 col-xs-3">
+        </div>
+      </div>
+      {% endblock container %}

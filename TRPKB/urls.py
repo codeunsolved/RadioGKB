@@ -20,6 +20,13 @@ from . import views
 
 urlpatterns = [
     url(r'^$', views.index, name='index'),
-    url(r'^search/', views.search, name='search'),
+    url(r'^about_the_knowledgebase/', views.about_the_knowledgebase, name='about_the_knowledgebase'),
+    url(r'^about_the_knowledge/', views.about_the_knowledge, name='about_the_knowledge'),
+    url(r'^access_the_knowledge/', views.access_the_knowledge, name='access_the_knowledge'),
+    url(r'^submit_the_knowledge/', views.submit_the_knowledge, name='submit_the_knowledge'),
+    url(r'^news/', views.news, name='news'),
+    url(r'^search_snp/', views.search_snp, name='search_snp'),
+    url(r'^details_snp/(?P<research_id>\d+)/(?P<tumor_id>\d+)/(?P<variant_id>\d+)', views.details_snp, name='details_snp'),
+    url(r'^import_data/', views.import_data, name='import_data'),
     url(r'^admin/', admin.site.urls),
 ]

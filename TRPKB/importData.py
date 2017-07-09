@@ -10,31 +10,25 @@ import re
 
 import xlrd
 
-from lib.sqlConnector import PostgresqlConnector
-import config
-
 
 def read_xls(path_xls):
     def read_table(tab_name):
         tab_data = []
 
-        tab = wb.sheet_by_name(tab_name)
+        sheet = wb.sheet_by_name(tab_name)
         nrows = sheet.nrows
 
         for i in range(nrows):
             if i == 0:
                 continue
-            tab_data.append(tab.row_values(i))
+            tab_data.append(sheet.row_values(i))
         return tab_data
 
     data = {}
     wb = xlrd.open_workbook(path_xls)
-    for key in :
+    for key in tab_list:
         data[key] = read_table(key)
 
-
-def import_data(data):
-    
-
+    return data
 
 tab_list = ['research', 'tumor', 'gene', 'variant', 'prognosis', 'subgroup', 'association']

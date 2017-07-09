@@ -23,6 +23,7 @@
 
   {% block body_lable %}<body style="padding-top: 50px;padding-bottom: 20px;">{% endblock body_lable %}
   {% block body %}
+    {% block top %}
     <nav class="navbar navbar-inverse navbar-fixed-top">
       <div class="container">
         <div class="navbar-header">
@@ -43,55 +44,39 @@
               <input type="password" placeholder="Password" class="form-control">
             </div>
             <button type="submit" class="btn btn-success">Sign in</button>
+            <button type="submit" class="btn btn-warning">Sign up</button>
           </form>
         </div>
       </div>
     </nav>
+    {% endblock top %}
 
-    {% block container %}
-    <div class="container">
-      <div class="row">
-        <div class="col-md-12 col-sm-12 col-xs-12">
-          <div class="jumbotron" style="margin-bottom: 0px;">
-            <div class="container">
-              <p>A database of Tumor Radiotherapy Prognosis Knowledgebase</p>
-              <p><span style="color: green;">{{ stats.research_num }}</span> Papers, <span style="color: green;">{{ stats.gene_num }}</span> Genes, <span style="color: green;">{{ stats.variant_num }}</span> Variants, <span style="color: green;">{{ stats.case_num }}</span> Cases, </p>
-            </div>
+    {% block banner %}
+    <div class="row">
+      <div class="col-md-12 col-sm-12 col-xs-12">
+        <div class="jumbotron" style="margin-bottom: 0px;">
+          <div class="container">
+            <p>A database of Tumor Radiotherapy Prognosis Knowledgebase</p>
+            <p><span style="color: green;">{{ stats.research_num }}</span> Papers, <span style="color: green;">{{ stats.gene_num }}</span> Genes, <span style="color: green;">{{ stats.variant_num }}</span> Variants, <span style="color: green;">{{ stats.case_num }}</span> Cases.</p>
           </div>
         </div>
       </div>
-      <ul class="nav nav-pills nav-justified" style="border-top: 2px solid black;border-bottom: 2px solid black;">
-        <li role="presentation"><a href="#">About the Knowledgebase</a></li>
-        <li role="presentation"><a href="#">About the Knowledge</a></li>
-        <li role="presentation"><a href="#">Access the Knowledge</a></li>
-        <li role="presentation"><a href="#">Submit the Knowledge</a></li>
-        <li role="presentation"><a href="#">News</a></li>
+    </div>
+    {% endblock banner %}
+
+    <div class="container">
+      {% block nav %}
+      <ul class="nav nav-pills nav-justified" style="border-top: 1px solid black;border-bottom: 1px solid black;">
+        <li role="presentation"><a href="{% url 'about_the_knowledgebase' %}">About the Knowledgebase</a></li>
+        <li role="presentation"><a href="{% url 'about_the_knowledge' %}">About the Knowledge</a></li>
+        <li role="presentation"><a href="{% url 'access_the_knowledge' %}">Access the Knowledge</a></li>
+        <li role="presentation"><a href="{% url 'submit_the_knowledge' %}">Submit the Knowledge</a></li>
+        <li role="presentation"><a href="{% url 'news' %}">News</a></li>
       </ul>
-      <div class="row">
-        <div class="col-md-3 col-sm-3 col-xs-3">
-        </div>
-        <div class="col-md-6 col-sm-6 col-xs-6">
-          <br><br><br><br>
-          <form class="form-horizontal" role="form">
-            <div class="form-group">
-              <label>Gene:</label>
-              <input name="gene" class="form-control" type="text">
-            </div>
-            <div class="form-group">
-              <label>Variant:</label>
-              <input name="variant" class="form-control" type="text">
-            </div>
-            <div class="form-group">
-              <label>Tumor:</label>
-              <input name="tumor" class="form-control" type="text">
-            </div>
-            <br>
-            <button id="search_go" type="submit" class="btn btn-primary btn-block">Search :: <span class="glyphicon glyphicon-search" aria-hidden="true"></span></button>
-          </form>
-        </div>
-        <div class="col-md-3 col-sm-3 col-xs-3">
-        </div>
-      </div>
+      {% endblock nav %}
+
+      {% block container %}
+      {% endblock container %}
 
       <hr>
 
@@ -101,24 +86,12 @@
       </footer>
       {% endblock footer %}
     </div>
-    {% endblock container %}
 
     <!-- jQuery -->
     <script src="/static/vendors/jQuery-2.2.4/jquery.min.js"></script>
     <!-- Bootstrap -->
     <script src="/static/vendors/bootstrap-3.3.7-dist/js/bootstrap.min.js"></script>
     {% block script %}
-    <script type="text/javascript">
-      $('#search_go').click(query);
-
-      function query() {
-        var param = "?";
-        param += "gene="+$("input[name='gene']").val();
-        param += "&variant="+$("input[name='variant']").val();
-        param += "&tumor="+$("input[name='tumor']").val();
-        window.open("search/"+ param);
-      }
-    </script>
     {% endblock script %}
   {% endblock body %}
   </body>
