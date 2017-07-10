@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% load i18n %}
+
+    {% block head_title %}{% trans "Sign Out" %}{% endblock %}
+
+    {% block head_link %}
+    <!-- Flat UI -->
+    <link href="/static/vendors/flat-ui/2.2.2/css/flat-ui.mod.css" rel="stylesheet">
+    {% endblock head_link %}
+
+  {% block body_lable %}<body class="login">{% endblock body_lable %}
+    {% block container %}
+    <div class="login-wrapper">
+      <div class="col-md-5 col-sm-12 col-xs-12">
+        <h1>{% trans "Sign Out" %}</h1>
+
+        <p>{% trans 'Are you sure you want to sign out?' %}</p>
+
+        <form method="post" action="{% url 'account_logout' %}">
+          {% csrf_token %}
+          <button class="btn btn-block btn-lg btn-info" type="submit">{% trans 'Sign Out' %}</button>
+        </form>
+      </div>
+    </div>
+    {% endblock container %}

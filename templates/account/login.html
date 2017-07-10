@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+
+{% load i18n %}
+{% load account socialaccount %}
+
+    {% block head_title %}{% trans "Sign In" %}{% endblock %}
+
+    {% block head_link %}
+    <!-- Flat UI -->
+    <link href="/static/vendors/flat-ui/2.2.2/css/flat-ui.mod.css" rel="stylesheet">
+    {% endblock head_link %}
+
+  {% block body_lable %}<body class="login">{% endblock body_lable %}
+    {% block container %}
+    <div class="login-wrapper">
+      <div class="col-md-5 col-sm-12 col-xs-12">
+        <div class="login-icon">
+          <img src="/static/images/logo.png" alt="...">
+          <h4>Welcome to <small>Topgen Dashboard</small></h4>
+        </div>
+      </div>
+      <div class="col-md-7 col-sm-12 col-xs-12">
+        <div class="form login-form">
+          <form method="POST" action="{% url 'account_login' %}">
+            {% csrf_token %}
+            <div class="form-group">
+              {{ form.login }}
+              <label class="login-field-icon fui-user" for="login-name"></label>
+            </div>
+            <div class="form-group">
+              {{ form.password }}
+              <label class="login-field-icon fui-lock" for="login-pass"></label>
+            </div>
+            {% if form.errors %}
+              {% for field in form %}
+                {% for error in field.errors %}
+                  <div class="alert alert-error alert-dismissible fade in">
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
+                    <strong>{{ error|escape }}</strong>
+                  </div>
+                {% endfor %}
+              {% endfor %}
+              {% for error in form.non_field_errors %}
+                <div class="alert alert-error alert-dismissible fade in">
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
+                    <strong>{{ error|escape }}</strong>
+                  </div>
+              {% endfor %}
+            {% endif %}
+
+            <button class="btn btn-primary btn-lg btn-block" type="submit">Log in</button>
+            <a class="login-link pull-right" href="{% url 'account_reset_password' %}"> Lost your password? </a>
+            <a class="signup-link pull-left" href="{% url 'account_signup' %}"> Create Account </a>
+          </form>
+        </div>
+      </div>
+    </div>
+    {% endblock container %}
+
+    {% block script %}
+    <!-- Flat UI -->
+    <script src="/static/vendors/flat-ui/2.2.2/js/flat-ui.min.js"></script>
+    {% endblock script %}

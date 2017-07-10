@@ -1,0 +1,67 @@
+<!-- 
+ * PAGE    : signup
+ * AUTHOR  : codeunsolved@gmail.com
+ * CREATED : June 27 2017
+ * VERSION : v0.0.1
+-->
+
+{% extends "base.html" %}
+
+{% load i18n %}
+{% load account socialaccount %}
+
+    {% block head_title %}{% trans "Signup" %}{% endblock %}
+
+    {% block head_link %}
+    <!-- Flat UI -->
+    <link href="/static/vendors/flat-ui/2.2.2/css/flat-ui.mod.css" rel="stylesheet">
+    {% endblock head_link %}
+
+  {% block body_lable %}<body class="login">{% endblock body_lable %}
+    {% block container %}
+    <div class="login-wrapper">
+      <div class="col-md-12 col-sm-12 col-xs-12">
+        <div class="form login-form">
+          <form method="POST" action="{% url 'account_signup' %}">
+            {% csrf_token %}
+            {% for field in form %}
+              <div class="form-group">
+                {{ field }}
+              </div>
+            {% endfor %}
+            {% if form.errors %}
+              {% for field in form %}
+                {% for error in field.errors %}
+                  <div class="alert alert-error alert-dismissible fade in">
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
+                    <strong>{{ error|escape }}</strong>
+                  </div>
+                {% endfor %}
+              {% endfor %}
+              {% for error in form.non_field_errors %}
+                <div class="alert alert-error alert-dismissible fade in">
+                  <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
+                  <strong>{{ error|escape }}</strong>
+                </div>
+              {% endfor %}
+            {% endif %}
+            <button class="btn btn-primary btn-lg btn-block" type="submit"">Submit</button>
+            <a class="login-link" href="{% url 'account_login' %}">Already a member? Log in</a>
+          </form>
+        </div>
+      </div>
+    </div>
+    {% endblock container %}
+
+    {% block script %}
+    <!-- Flat UI -->
+    <script src="/static/vendors/flat-ui/2.2.2/js/flat-ui.min.js"></script>
+
+    <script type="text/javascript">
+      $("input").attr("class", "form-control login-field")
+      $("#id_department option:first").text("选择部门")
+      $("#id_location option:first").text("选择驻地")
+      $("select").attr("class", "select select-primary select2-offscreen")
+      $("select").select2({dropdownCssClass: 'dropdown-inverse'});
+    </script>
+    {% endblock script %}
