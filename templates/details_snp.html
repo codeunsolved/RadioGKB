@@ -5,152 +5,162 @@
       {% block container %}
       <div class="row">
         <div class="col-md-12 col-sm-12 col-xs-12">
-          <h4>{{ research.title }}</h4>
-          <table>
-            <tbody>
-              <tr>
-                <td>Publish year</td>
-                <td>&nbsp;:&nbsp;</td>
-                <td>{{ research.pub_year }}</td>
-              </tr>
-              <tr>
-                <td>Pubmed id</td>
-                <td>&nbsp;:&nbsp;</td>
-                <td>{{ research.pubmed_id }}</td>
-              </tr>
-              <tr>
-                <td>Treatment type</td>
-                <td>&nbsp;:&nbsp;</td>
-                <td>{{ research.treatment_type }}</td>
-              </tr>
-              <tr>
-                <td>Patient number</td>
-                <td>&nbsp;:&nbsp;</td>
-                <td>{{ research.patient_number }}</td>
-              </tr>
-              <tr>
-                <td>Ethnicity</td>
-                <td>&nbsp;:&nbsp;</td>
-                <td>{{ research.ethnicity }}</td>
-              </tr>
-              <tr>
-                <td>Evidence Based Medicine Level</td>
-                <td>&nbsp;:&nbsp;</td>
-                <td>{{ research.ebml }}</td>
-              </tr>
-            </tbody>
-          </table>
+          <div class="panel panel-success">
+            <div class="panel-heading">
+              <h4>{{ research.title }}</h4>
+            </div>
+            <div class="panel-body">
+              <table>
+                <tbody>
+                  <tr>
+                    <td><strong>Publish year</strong></td>
+                    <td>&nbsp;:&nbsp;</td>
+                    <td>{{ research.pub_year }}</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Pubmed id</strong></td>
+                    <td>&nbsp;:&nbsp;</td>
+                    <td>{{ research.pubmed_id }}</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Treatment type</strong></td>
+                    <td>&nbsp;:&nbsp;</td>
+                    <td>{{ research.treatment_type }}</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Patient number</strong></td>
+                    <td>&nbsp;:&nbsp;</td>
+                    <td>{{ research.patient_number }}</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Ethnicity</strong></td>
+                    <td>&nbsp;:&nbsp;</td>
+                    <td>{{ research.ethnicity }}</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Evidence Based Medicine Level</strong></td>
+                    <td>&nbsp;:&nbsp;</td>
+                    <td>{{ research.ebml }}</td>
+                  </tr>
+                </tbody>
+              </table>
 
-          <hr>
+              <hr>
 
-          <table>
-            <tbody>
-              <tr>
-                <td>Tumor</td>
-                <td>&nbsp;:&nbsp;</td>
-                <td>{{ tumor.name }}</td>
-              </tr>
-            </tbody>
-          </table>
+              <table>
+                <tbody>
+                  <tr>
+                    <td><strong>Tumor</strong></td>
+                    <td>&nbsp;:&nbsp;</td>
+                    <td>{{ tumor.name }}</td>
+                  </tr>
+                </tbody>
+              </table>
 
-          <hr>
+              <hr>
 
-          <table>
-            <tbody>
-              <tr>
-                <td>Gene</td>
-                <td>&nbsp;:&nbsp;</td>
-                <td>{{ gene.name }}</td>
-              </tr>
-              <tr>
-                <td>Gene full name</td>
-                <td>&nbsp;:&nbsp;</td>
-                <td>{{ gene.fulll_name }}</td>
-              </tr>
-              <tr>
-                <td>Alias</td>
-                <td>&nbsp;:&nbsp;</td>
-                <td>{{ gene.alias }}</td>
-              </tr>
-              <tr>
-                <td>Type</td>
-                <td>&nbsp;:&nbsp;</td>
-                <td>{{ gene.type }}</td>
-              </tr>
-              <tr>
-                <td>Summary</td>
-                <td>&nbsp;:&nbsp;</td>
-                <td>{{ gene.summary }}</td>
-              </tr>
-            </tbody>
-          </table>
+              <table>
+                <tbody>
+                  <tr>
+                    <td><strong>Gene</strong></td>
+                    <td>&nbsp;:&nbsp;</td>
+                    <td>{{ gene.name }}</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Gene full name</strong></td>
+                    <td>&nbsp;:&nbsp;</td>
+                    <td>{{ gene.fulll_name }}</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Alias</strong></td>
+                    <td>&nbsp;:&nbsp;</td>
+                    <td>{{ gene.alias }}</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Type</strong></td>
+                    <td>&nbsp;:&nbsp;</td>
+                    <td>{{ gene.type }}</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Summary</strong></td>
+                    <td>&nbsp;:&nbsp;</td>
+                    <td>{{ gene.summary }}</td>
+                  </tr>
+                </tbody>
+              </table>
 
-          <hr>
+              <hr>
 
-          <table>
-            <tbody>
-              <tr>
-                <td>Variant</td>
-                <td>&nbsp;:&nbsp;</td>
-                <td>{{ variant.dbsnp }}</td>
-              </tr>
-            </tbody>
-          </table>
+              <table>
+                <tbody>
+                  <tr>
+                    <td><strong>Variant</strong></td>
+                    <td>&nbsp;:&nbsp;</td>
+                    <td>{{ variant.dbsnp }}</td>
+                  </tr>
+                </tbody>
+              </table>
 
-          <hr>
+              <hr>
 
-          <ul class="nav nav-tabs">
-            {% for tab in tabs.tab %}
-              {% if forloop.first %}
-                <li role="presentation" class="active"><a href="#p_{{ tab.p_id }}">{{ tab.name }}</a></li>
-              {% else %}
-                <li role="presentation"><a href="#p_{{ tab.p_id }}">{{ tab.name }}</a></li>
-              {% endif %}
-            {% endfor %}
-          </ul>
+              <ul class="nav nav-tabs">
+                {% for tab in tabs.tab %}
+                  {% if forloop.first %}
+                    <li role="presentation" class="active"><a href="#p_{{ tab.p_id }}" data-toggle="tab">{{ tab.name }}</a></li>
+                  {% else %}
+                    <li role="presentation"><a href="#p_{{ tab.p_id }}" data-toggle="tab">{{ tab.name }}</a></li>
+                  {% endif %}
+                {% endfor %}
+              </ul>
 
-          <div class="tab-content">
-          {% for p_id, subgroups in tabs.content.items %}
-            {% if forloop.first %}
-              <div id="p_{{ p_id }}" class="tab-pane fade in active">
-            {% else %}
-              <div id="p_{{ p_id }}" class="tab-pane fade">
-            {% endif %}
-              {% for subgroup_name, subgroup in subgroups.items %}
-                <p><strong>Subgroup</strong>:{{ subgroup_name }}</p>
-                <table class="table">
-                  <thead>
-                    <tr>
-                      <th>Genotype</th>
-                      <th>Events</th>
-                      <th>Total</th>
-                      <th>HR (Univariate)</th>
-                      <th>95% CI</th>
-                      <th>P</th>
-                      <th>HR (Multivariate)</th>
-                      <th>95% CI</th>
-                      <th>P</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {% for row in subgroup %}
-                    <tr>
-                      <td>{{ row.genotype }}</td>
-                      <td>{{ row.case_number }}</td>
-                      <td>{{ row.total_number }}</td>
-                      <td>{{ row.hr_u }}</td>
-                      <td>{{ row.ci_u_95 }}</td>
-                      <td>{{ row.p_u }}</td>
-                      <td>{{ row.hr_m }}</td>
-                      <td>{{ row.ci_m_95 }}</td>
-                      <td>{{ row.p_m }}</td>
-                    </tr>
-                    {% endfor %}
-                  </tbody>
-                </table>
+              <div class="tab-content">
+              {% for p_id, subgroups in tabs.content.items %}
+                {% if forloop.first %}
+                  <div id="p_{{ p_id }}" class="tab-pane fade in active">
+                {% else %}
+                  <div id="p_{{ p_id }}" class="tab-pane fade">
+                {% endif %}
+                    <div class="panel panel-default" style="border-top: none;">
+                      <div class="panel-body">
+                      {% for subgroup_name, subgroup in subgroups.items %}
+                        <p><strong>Subgroup</strong>:{{ subgroup_name }}</p>
+                        <table class="table">
+                          <thead>
+                            <tr>
+                              <th>Genotype</th>
+                              <th>Events</th>
+                              <th>Total</th>
+                              <th>HR (Univariate)</th>
+                              <th>95% CI</th>
+                              <th>P</th>
+                              <th>HR (Multivariate)</th>
+                              <th>95% CI</th>
+                              <th>P</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {% for row in subgroup %}
+                            <tr>
+                              <td>{{ row.genotype }}</td>
+                              <td>{{ row.case_number }}</td>
+                              <td>{{ row.total_number }}</td>
+                              <td>{{ row.hr_u }}</td>
+                              <td>{{ row.ci_u_95 }}</td>
+                              <td>{{ row.p_u }}</td>
+                              <td>{{ row.hr_m }}</td>
+                              <td>{{ row.ci_m_95 }}</td>
+                              <td>{{ row.p_m }}</td>
+                            </tr>
+                            {% endfor %}
+                          </tbody>
+                        </table>
+                      {% endfor %}
+                      </div>
+                    </div>
+                  </div>
               {% endfor %}
               </div>
-          {% endfor %}
+            </div>
           </div>
         </div>
       </div>

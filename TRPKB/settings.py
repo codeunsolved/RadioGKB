@@ -40,6 +40,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sites',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
 ]
 
 MIDDLEWARE = [
@@ -50,6 +54,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django.middleware.locale.LocaleMiddleware',
 ]
 
 ROOT_URLCONF = 'TRPKB.urls'
@@ -85,7 +90,7 @@ DATABASES = {
         'USER': config.postgresql['user'],
         'PASSWORD': config.postgresql['password'],
         'HOST': config.postgresql['host'],
-        'PORT': '',
+        'PORT': config.postgresql['port'],
     }
 }
 
@@ -107,6 +112,50 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
+
+
+# Login
+
+LOGIN_REDIRECT_URL = "/"
+
+
+# Auth & django-allauth
+# http://django-allauth.readthedocs.io/en/latest/installation.html
+
+AUTHENTICATION_BACKENDS = [
+    # Needed to login by username in Django admin, regardless of `allauth`
+    'django.contrib.auth.backends.ModelBackend',
+]
+
+ACCOUNT_AUTHENTICATION_METHOD = "username"
+
+ACCOUNT_EMAIL_REQUIRED = True
+
+ACCOUNT_EMAIL_VERIFICATION = "mandatory"
+
+
+# Sites
+# https://docs.djangoproject.com/en/1.11/ref/contrib/sites/#module-django.contrib.sites
+
+SITE_ID = 1
+
+
+# E-mail
+# https://docs.djangoproject.com/en/1.11/topics/email/
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+
+EMAIL_USE_SSL = config.EMAIL_USE_SSL
+
+EMAIL_HOST = config.EMAIL_HOST
+
+EMAIL_PORT = config.EMAIL_PORT
+
+EMAIL_HOST_USER = config.EMAIL_HOST_USER
+
+EMAIL_HOST_PASSWORD = config.EMAIL_HOST_PASSWORD
+
+DEFAULT_FROM_EMAIL = config.DEFAULT_FROM_EMAIL
 
 
 # Internationalization

@@ -2,12 +2,13 @@
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 9.5.7
--- Dumped by pg_dump version 9.5.7
+-- Dumped from database version 9.6.3
+-- Dumped by pg_dump version 9.6.3
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
-SET client_encoding = 'SQL_ASCII';
+SET idle_in_transaction_session_timeout = 0;
+SET client_encoding = 'UTF8';
 SET standard_conforming_strings = on;
 SET check_function_bodies = false;
 SET client_min_messages = warning;
@@ -349,6 +350,78 @@ ALTER SEQUENCE "KB_SNP_variant_id_seq" OWNED BY "KB_SNP_variant".id;
 
 
 --
+-- Name: account_emailaddress; Type: TABLE; Schema: public; Owner: trpkb
+--
+
+CREATE TABLE account_emailaddress (
+    id integer NOT NULL,
+    email character varying(254) NOT NULL,
+    verified boolean NOT NULL,
+    "primary" boolean NOT NULL,
+    user_id integer NOT NULL
+);
+
+
+ALTER TABLE account_emailaddress OWNER TO trpkb;
+
+--
+-- Name: account_emailaddress_id_seq; Type: SEQUENCE; Schema: public; Owner: trpkb
+--
+
+CREATE SEQUENCE account_emailaddress_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE account_emailaddress_id_seq OWNER TO trpkb;
+
+--
+-- Name: account_emailaddress_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: trpkb
+--
+
+ALTER SEQUENCE account_emailaddress_id_seq OWNED BY account_emailaddress.id;
+
+
+--
+-- Name: account_emailconfirmation; Type: TABLE; Schema: public; Owner: trpkb
+--
+
+CREATE TABLE account_emailconfirmation (
+    id integer NOT NULL,
+    created timestamp with time zone NOT NULL,
+    sent timestamp with time zone,
+    key character varying(64) NOT NULL,
+    email_address_id integer NOT NULL
+);
+
+
+ALTER TABLE account_emailconfirmation OWNER TO trpkb;
+
+--
+-- Name: account_emailconfirmation_id_seq; Type: SEQUENCE; Schema: public; Owner: trpkb
+--
+
+CREATE SEQUENCE account_emailconfirmation_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE account_emailconfirmation_id_seq OWNER TO trpkb;
+
+--
+-- Name: account_emailconfirmation_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: trpkb
+--
+
+ALTER SEQUENCE account_emailconfirmation_id_seq OWNED BY account_emailconfirmation.id;
+
+
+--
 -- Name: auth_group; Type: TABLE; Schema: public; Owner: trpkb
 --
 
@@ -683,122 +756,351 @@ CREATE TABLE django_session (
 ALTER TABLE django_session OWNER TO trpkb;
 
 --
--- Name: id; Type: DEFAULT; Schema: public; Owner: trpkb
+-- Name: django_site; Type: TABLE; Schema: public; Owner: trpkb
+--
+
+CREATE TABLE django_site (
+    id integer NOT NULL,
+    domain character varying(100) NOT NULL,
+    name character varying(50) NOT NULL
+);
+
+
+ALTER TABLE django_site OWNER TO trpkb;
+
+--
+-- Name: django_site_id_seq; Type: SEQUENCE; Schema: public; Owner: trpkb
+--
+
+CREATE SEQUENCE django_site_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE django_site_id_seq OWNER TO trpkb;
+
+--
+-- Name: django_site_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: trpkb
+--
+
+ALTER SEQUENCE django_site_id_seq OWNED BY django_site.id;
+
+
+--
+-- Name: socialaccount_socialaccount; Type: TABLE; Schema: public; Owner: trpkb
+--
+
+CREATE TABLE socialaccount_socialaccount (
+    id integer NOT NULL,
+    provider character varying(30) NOT NULL,
+    uid character varying(191) NOT NULL,
+    last_login timestamp with time zone NOT NULL,
+    date_joined timestamp with time zone NOT NULL,
+    extra_data text NOT NULL,
+    user_id integer NOT NULL
+);
+
+
+ALTER TABLE socialaccount_socialaccount OWNER TO trpkb;
+
+--
+-- Name: socialaccount_socialaccount_id_seq; Type: SEQUENCE; Schema: public; Owner: trpkb
+--
+
+CREATE SEQUENCE socialaccount_socialaccount_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE socialaccount_socialaccount_id_seq OWNER TO trpkb;
+
+--
+-- Name: socialaccount_socialaccount_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: trpkb
+--
+
+ALTER SEQUENCE socialaccount_socialaccount_id_seq OWNED BY socialaccount_socialaccount.id;
+
+
+--
+-- Name: socialaccount_socialapp; Type: TABLE; Schema: public; Owner: trpkb
+--
+
+CREATE TABLE socialaccount_socialapp (
+    id integer NOT NULL,
+    provider character varying(30) NOT NULL,
+    name character varying(40) NOT NULL,
+    client_id character varying(191) NOT NULL,
+    secret character varying(191) NOT NULL,
+    key character varying(191) NOT NULL
+);
+
+
+ALTER TABLE socialaccount_socialapp OWNER TO trpkb;
+
+--
+-- Name: socialaccount_socialapp_id_seq; Type: SEQUENCE; Schema: public; Owner: trpkb
+--
+
+CREATE SEQUENCE socialaccount_socialapp_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE socialaccount_socialapp_id_seq OWNER TO trpkb;
+
+--
+-- Name: socialaccount_socialapp_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: trpkb
+--
+
+ALTER SEQUENCE socialaccount_socialapp_id_seq OWNED BY socialaccount_socialapp.id;
+
+
+--
+-- Name: socialaccount_socialapp_sites; Type: TABLE; Schema: public; Owner: trpkb
+--
+
+CREATE TABLE socialaccount_socialapp_sites (
+    id integer NOT NULL,
+    socialapp_id integer NOT NULL,
+    site_id integer NOT NULL
+);
+
+
+ALTER TABLE socialaccount_socialapp_sites OWNER TO trpkb;
+
+--
+-- Name: socialaccount_socialapp_sites_id_seq; Type: SEQUENCE; Schema: public; Owner: trpkb
+--
+
+CREATE SEQUENCE socialaccount_socialapp_sites_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE socialaccount_socialapp_sites_id_seq OWNER TO trpkb;
+
+--
+-- Name: socialaccount_socialapp_sites_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: trpkb
+--
+
+ALTER SEQUENCE socialaccount_socialapp_sites_id_seq OWNED BY socialaccount_socialapp_sites.id;
+
+
+--
+-- Name: socialaccount_socialtoken; Type: TABLE; Schema: public; Owner: trpkb
+--
+
+CREATE TABLE socialaccount_socialtoken (
+    id integer NOT NULL,
+    token text NOT NULL,
+    token_secret text NOT NULL,
+    expires_at timestamp with time zone,
+    account_id integer NOT NULL,
+    app_id integer NOT NULL
+);
+
+
+ALTER TABLE socialaccount_socialtoken OWNER TO trpkb;
+
+--
+-- Name: socialaccount_socialtoken_id_seq; Type: SEQUENCE; Schema: public; Owner: trpkb
+--
+
+CREATE SEQUENCE socialaccount_socialtoken_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE socialaccount_socialtoken_id_seq OWNER TO trpkb;
+
+--
+-- Name: socialaccount_socialtoken_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: trpkb
+--
+
+ALTER SEQUENCE socialaccount_socialtoken_id_seq OWNED BY socialaccount_socialtoken.id;
+
+
+--
+-- Name: KB_SNP_association id; Type: DEFAULT; Schema: public; Owner: trpkb
 --
 
 ALTER TABLE ONLY "KB_SNP_association" ALTER COLUMN id SET DEFAULT nextval('"KB_SNP_association_id_seq"'::regclass);
 
 
 --
--- Name: id; Type: DEFAULT; Schema: public; Owner: trpkb
+-- Name: KB_SNP_evidencebasedmedicinelevel id; Type: DEFAULT; Schema: public; Owner: trpkb
 --
 
 ALTER TABLE ONLY "KB_SNP_evidencebasedmedicinelevel" ALTER COLUMN id SET DEFAULT nextval('"KB_SNP_evidencebasedmedicinelevel_id_seq"'::regclass);
 
 
 --
--- Name: id; Type: DEFAULT; Schema: public; Owner: trpkb
+-- Name: KB_SNP_gene id; Type: DEFAULT; Schema: public; Owner: trpkb
 --
 
 ALTER TABLE ONLY "KB_SNP_gene" ALTER COLUMN id SET DEFAULT nextval('"KB_SNP_gene_id_seq"'::regclass);
 
 
 --
--- Name: id; Type: DEFAULT; Schema: public; Owner: trpkb
+-- Name: KB_SNP_prognosis id; Type: DEFAULT; Schema: public; Owner: trpkb
 --
 
 ALTER TABLE ONLY "KB_SNP_prognosis" ALTER COLUMN id SET DEFAULT nextval('"KB_SNP_prognosis_id_seq"'::regclass);
 
 
 --
--- Name: id; Type: DEFAULT; Schema: public; Owner: trpkb
+-- Name: KB_SNP_research id; Type: DEFAULT; Schema: public; Owner: trpkb
 --
 
 ALTER TABLE ONLY "KB_SNP_research" ALTER COLUMN id SET DEFAULT nextval('"KB_SNP_research_id_seq"'::regclass);
 
 
 --
--- Name: id; Type: DEFAULT; Schema: public; Owner: trpkb
+-- Name: KB_SNP_subgroup id; Type: DEFAULT; Schema: public; Owner: trpkb
 --
 
 ALTER TABLE ONLY "KB_SNP_subgroup" ALTER COLUMN id SET DEFAULT nextval('"KB_SNP_subgroup_id_seq"'::regclass);
 
 
 --
--- Name: id; Type: DEFAULT; Schema: public; Owner: trpkb
+-- Name: KB_SNP_tumor id; Type: DEFAULT; Schema: public; Owner: trpkb
 --
 
 ALTER TABLE ONLY "KB_SNP_tumor" ALTER COLUMN id SET DEFAULT nextval('"KB_SNP_tumor_id_seq"'::regclass);
 
 
 --
--- Name: id; Type: DEFAULT; Schema: public; Owner: trpkb
+-- Name: KB_SNP_variant id; Type: DEFAULT; Schema: public; Owner: trpkb
 --
 
 ALTER TABLE ONLY "KB_SNP_variant" ALTER COLUMN id SET DEFAULT nextval('"KB_SNP_variant_id_seq"'::regclass);
 
 
 --
--- Name: id; Type: DEFAULT; Schema: public; Owner: trpkb
+-- Name: account_emailaddress id; Type: DEFAULT; Schema: public; Owner: trpkb
+--
+
+ALTER TABLE ONLY account_emailaddress ALTER COLUMN id SET DEFAULT nextval('account_emailaddress_id_seq'::regclass);
+
+
+--
+-- Name: account_emailconfirmation id; Type: DEFAULT; Schema: public; Owner: trpkb
+--
+
+ALTER TABLE ONLY account_emailconfirmation ALTER COLUMN id SET DEFAULT nextval('account_emailconfirmation_id_seq'::regclass);
+
+
+--
+-- Name: auth_group id; Type: DEFAULT; Schema: public; Owner: trpkb
 --
 
 ALTER TABLE ONLY auth_group ALTER COLUMN id SET DEFAULT nextval('auth_group_id_seq'::regclass);
 
 
 --
--- Name: id; Type: DEFAULT; Schema: public; Owner: trpkb
+-- Name: auth_group_permissions id; Type: DEFAULT; Schema: public; Owner: trpkb
 --
 
 ALTER TABLE ONLY auth_group_permissions ALTER COLUMN id SET DEFAULT nextval('auth_group_permissions_id_seq'::regclass);
 
 
 --
--- Name: id; Type: DEFAULT; Schema: public; Owner: trpkb
+-- Name: auth_permission id; Type: DEFAULT; Schema: public; Owner: trpkb
 --
 
 ALTER TABLE ONLY auth_permission ALTER COLUMN id SET DEFAULT nextval('auth_permission_id_seq'::regclass);
 
 
 --
--- Name: id; Type: DEFAULT; Schema: public; Owner: trpkb
+-- Name: auth_user id; Type: DEFAULT; Schema: public; Owner: trpkb
 --
 
 ALTER TABLE ONLY auth_user ALTER COLUMN id SET DEFAULT nextval('auth_user_id_seq'::regclass);
 
 
 --
--- Name: id; Type: DEFAULT; Schema: public; Owner: trpkb
+-- Name: auth_user_groups id; Type: DEFAULT; Schema: public; Owner: trpkb
 --
 
 ALTER TABLE ONLY auth_user_groups ALTER COLUMN id SET DEFAULT nextval('auth_user_groups_id_seq'::regclass);
 
 
 --
--- Name: id; Type: DEFAULT; Schema: public; Owner: trpkb
+-- Name: auth_user_user_permissions id; Type: DEFAULT; Schema: public; Owner: trpkb
 --
 
 ALTER TABLE ONLY auth_user_user_permissions ALTER COLUMN id SET DEFAULT nextval('auth_user_user_permissions_id_seq'::regclass);
 
 
 --
--- Name: id; Type: DEFAULT; Schema: public; Owner: trpkb
+-- Name: django_admin_log id; Type: DEFAULT; Schema: public; Owner: trpkb
 --
 
 ALTER TABLE ONLY django_admin_log ALTER COLUMN id SET DEFAULT nextval('django_admin_log_id_seq'::regclass);
 
 
 --
--- Name: id; Type: DEFAULT; Schema: public; Owner: trpkb
+-- Name: django_content_type id; Type: DEFAULT; Schema: public; Owner: trpkb
 --
 
 ALTER TABLE ONLY django_content_type ALTER COLUMN id SET DEFAULT nextval('django_content_type_id_seq'::regclass);
 
 
 --
--- Name: id; Type: DEFAULT; Schema: public; Owner: trpkb
+-- Name: django_migrations id; Type: DEFAULT; Schema: public; Owner: trpkb
 --
 
 ALTER TABLE ONLY django_migrations ALTER COLUMN id SET DEFAULT nextval('django_migrations_id_seq'::regclass);
+
+
+--
+-- Name: django_site id; Type: DEFAULT; Schema: public; Owner: trpkb
+--
+
+ALTER TABLE ONLY django_site ALTER COLUMN id SET DEFAULT nextval('django_site_id_seq'::regclass);
+
+
+--
+-- Name: socialaccount_socialaccount id; Type: DEFAULT; Schema: public; Owner: trpkb
+--
+
+ALTER TABLE ONLY socialaccount_socialaccount ALTER COLUMN id SET DEFAULT nextval('socialaccount_socialaccount_id_seq'::regclass);
+
+
+--
+-- Name: socialaccount_socialapp id; Type: DEFAULT; Schema: public; Owner: trpkb
+--
+
+ALTER TABLE ONLY socialaccount_socialapp ALTER COLUMN id SET DEFAULT nextval('socialaccount_socialapp_id_seq'::regclass);
+
+
+--
+-- Name: socialaccount_socialapp_sites id; Type: DEFAULT; Schema: public; Owner: trpkb
+--
+
+ALTER TABLE ONLY socialaccount_socialapp_sites ALTER COLUMN id SET DEFAULT nextval('socialaccount_socialapp_sites_id_seq'::regclass);
+
+
+--
+-- Name: socialaccount_socialtoken id; Type: DEFAULT; Schema: public; Owner: trpkb
+--
+
+ALTER TABLE ONLY socialaccount_socialtoken ALTER COLUMN id SET DEFAULT nextval('socialaccount_socialtoken_id_seq'::regclass);
 
 
 --
@@ -6154,6 +6456,36 @@ SELECT pg_catalog.setval('"KB_SNP_variant_id_seq"', 389, true);
 
 
 --
+-- Data for Name: account_emailaddress; Type: TABLE DATA; Schema: public; Owner: trpkb
+--
+
+COPY account_emailaddress (id, email, verified, "primary", user_id) FROM stdin;
+\.
+
+
+--
+-- Name: account_emailaddress_id_seq; Type: SEQUENCE SET; Schema: public; Owner: trpkb
+--
+
+SELECT pg_catalog.setval('account_emailaddress_id_seq', 1, true);
+
+
+--
+-- Data for Name: account_emailconfirmation; Type: TABLE DATA; Schema: public; Owner: trpkb
+--
+
+COPY account_emailconfirmation (id, created, sent, key, email_address_id) FROM stdin;
+\.
+
+
+--
+-- Name: account_emailconfirmation_id_seq; Type: SEQUENCE SET; Schema: public; Owner: trpkb
+--
+
+SELECT pg_catalog.setval('account_emailconfirmation_id_seq', 1, false);
+
+
+--
 -- Data for Name: auth_group; Type: TABLE DATA; Schema: public; Owner: trpkb
 --
 
@@ -6230,6 +6562,24 @@ COPY auth_permission (id, name, content_type_id, codename) FROM stdin;
 40	Can add session	14	add_session
 41	Can change session	14	change_session
 42	Can delete session	14	delete_session
+43	Can add site	15	add_site
+44	Can change site	15	change_site
+45	Can delete site	15	delete_site
+46	Can add email address	16	add_emailaddress
+47	Can change email address	16	change_emailaddress
+48	Can delete email address	16	delete_emailaddress
+49	Can add email confirmation	17	add_emailconfirmation
+50	Can change email confirmation	17	change_emailconfirmation
+51	Can delete email confirmation	17	delete_emailconfirmation
+52	Can add social account	18	add_socialaccount
+53	Can change social account	18	change_socialaccount
+54	Can delete social account	18	delete_socialaccount
+55	Can add social application	19	add_socialapp
+56	Can change social application	19	change_socialapp
+57	Can delete social application	19	delete_socialapp
+58	Can add social application token	20	add_socialtoken
+59	Can change social application token	20	change_socialtoken
+60	Can delete social application token	20	delete_socialtoken
 \.
 
 
@@ -6245,7 +6595,8 @@ SELECT pg_catalog.setval('auth_permission_id_seq', 42, true);
 --
 
 COPY auth_user (id, password, last_login, is_superuser, username, first_name, last_name, email, is_staff, is_active, date_joined) FROM stdin;
-1	pbkdf2_sha256$36000$kKZDr2bPvs4l$H/vWFYseGGfh4zlghNCl0dvqtw+4FTiKS+hUsXNydx4=	2017-07-08 11:44:39.112318+00	t	trpkb				t	t	2017-07-08 11:43:09.240183+00
+3	pbkdf2_sha256$36000$fwxVjfwx2AFZ$TA7W3iWy7SaDqY0JIV9gdWRyIQvGTvwqdqfbxrwlXog=	2017-07-12 15:58:01.697804+08	t	admin			trpkb2017@163.com	t	t	2017-07-12 15:57:42.722903+08
+1	pbkdf2_sha256$36000$kKZDr2bPvs4l$H/vWFYseGGfh4zlghNCl0dvqtw+4FTiKS+hUsXNydx4=	2017-07-08 19:44:39.112318+08	t	trpkb				t	t	2017-07-08 19:43:09.240183+08
 \.
 
 
@@ -6291,6 +6642,7 @@ SELECT pg_catalog.setval('auth_user_user_permissions_id_seq', 1, false);
 --
 
 COPY django_admin_log (id, action_time, object_id, object_repr, action_flag, change_message, content_type_id, user_id) FROM stdin;
+3	2017-07-12 15:58:50.708328+08	1	trpkb.com	2	[{"changed": {"fields": ["domain", "name"]}}]	15	3
 \.
 
 
@@ -6320,6 +6672,12 @@ COPY django_content_type (id, app_label, model) FROM stdin;
 12	auth	group
 13	contenttypes	contenttype
 14	sessions	session
+15	sites	site
+16	account	emailaddress
+17	account	emailconfirmation
+18	socialaccount	socialaccount
+19	socialaccount	socialapp
+20	socialaccount	socialtoken
 \.
 
 
@@ -6335,23 +6693,30 @@ SELECT pg_catalog.setval('django_content_type_id_seq', 14, true);
 --
 
 COPY django_migrations (id, app, name, applied) FROM stdin;
-1	KB_SNP	0001_initial	2017-07-08 11:15:51.107523+00
-2	contenttypes	0001_initial	2017-07-08 11:15:51.291296+00
-3	auth	0001_initial	2017-07-08 11:15:52.833764+00
-4	admin	0001_initial	2017-07-08 11:15:53.134435+00
-5	admin	0002_logentry_remove_auto_add	2017-07-08 11:15:53.192042+00
-6	contenttypes	0002_remove_content_type_name	2017-07-08 11:15:53.260954+00
-7	auth	0002_alter_permission_name_max_length	2017-07-08 11:15:53.309207+00
-8	auth	0003_alter_user_email_max_length	2017-07-08 11:15:53.359196+00
-9	auth	0004_alter_user_username_opts	2017-07-08 11:15:53.383773+00
-10	auth	0005_alter_user_last_login_null	2017-07-08 11:15:53.433141+00
-11	auth	0006_require_contenttypes_0002	2017-07-08 11:15:53.459095+00
-12	auth	0007_alter_validators_add_error_messages	2017-07-08 11:15:53.480941+00
-13	auth	0008_alter_user_username_max_length	2017-07-08 11:15:53.534115+00
-14	sessions	0001_initial	2017-07-08 11:15:53.800335+00
-15	KB_SNP	0002_auto_20170708_1704	2017-07-08 17:04:41.924502+00
-16	KB_SNP	0003_auto_20170708_1708	2017-07-08 17:09:04.754931+00
-17	KB_SNP	0004_auto_20170709_1037	2017-07-09 10:37:32.493644+00
+1	KB_SNP	0001_initial	2017-07-08 19:15:51.107523+08
+2	contenttypes	0001_initial	2017-07-08 19:15:51.291296+08
+3	auth	0001_initial	2017-07-08 19:15:52.833764+08
+4	admin	0001_initial	2017-07-08 19:15:53.134435+08
+5	admin	0002_logentry_remove_auto_add	2017-07-08 19:15:53.192042+08
+6	contenttypes	0002_remove_content_type_name	2017-07-08 19:15:53.260954+08
+7	auth	0002_alter_permission_name_max_length	2017-07-08 19:15:53.309207+08
+8	auth	0003_alter_user_email_max_length	2017-07-08 19:15:53.359196+08
+9	auth	0004_alter_user_username_opts	2017-07-08 19:15:53.383773+08
+10	auth	0005_alter_user_last_login_null	2017-07-08 19:15:53.433141+08
+11	auth	0006_require_contenttypes_0002	2017-07-08 19:15:53.459095+08
+12	auth	0007_alter_validators_add_error_messages	2017-07-08 19:15:53.480941+08
+13	auth	0008_alter_user_username_max_length	2017-07-08 19:15:53.534115+08
+14	sessions	0001_initial	2017-07-08 19:15:53.800335+08
+15	KB_SNP	0002_auto_20170708_1704	2017-07-09 01:04:41.924502+08
+16	KB_SNP	0003_auto_20170708_1708	2017-07-09 01:09:04.754931+08
+17	KB_SNP	0004_auto_20170709_1037	2017-07-09 18:37:32.493644+08
+18	account	0001_initial	2017-07-12 13:47:53.237599+08
+19	account	0002_email_max_length	2017-07-12 13:47:53.257702+08
+20	sites	0001_initial	2017-07-12 13:47:53.297874+08
+21	sites	0002_alter_domain_unique	2017-07-12 13:47:53.306673+08
+22	socialaccount	0001_initial	2017-07-12 13:47:53.394564+08
+23	socialaccount	0002_token_max_lengths	2017-07-12 13:47:53.432711+08
+24	socialaccount	0003_extra_data_default_dict	2017-07-12 13:47:53.446931+08
 \.
 
 
@@ -6367,12 +6732,89 @@ SELECT pg_catalog.setval('django_migrations_id_seq', 17, true);
 --
 
 COPY django_session (session_key, session_data, expire_date) FROM stdin;
-mf5zek4339fv2dakize19l74vpj8u2il	ZGNiNmMwY2JkZDE2M2NlNTY4YzY4MDc2YTg0MDcyMzNiNjQ4ZjVlZDp7Il9hdXRoX3VzZXJfYmFja2VuZCI6ImRqYW5nby5jb250cmliLmF1dGguYmFja2VuZHMuTW9kZWxCYWNrZW5kIiwiX2F1dGhfdXNlcl9oYXNoIjoiMDgyZTBkZDYyZjBmNWFjMmE0ZDAxNzg2MmMwZjUxODFlMzdmZGMzYSIsIl9hdXRoX3VzZXJfaWQiOiIxIn0=	2017-07-22 11:44:39.126877+00
+mf5zek4339fv2dakize19l74vpj8u2il	ZGNiNmMwY2JkZDE2M2NlNTY4YzY4MDc2YTg0MDcyMzNiNjQ4ZjVlZDp7Il9hdXRoX3VzZXJfYmFja2VuZCI6ImRqYW5nby5jb250cmliLmF1dGguYmFja2VuZHMuTW9kZWxCYWNrZW5kIiwiX2F1dGhfdXNlcl9oYXNoIjoiMDgyZTBkZDYyZjBmNWFjMmE0ZDAxNzg2MmMwZjUxODFlMzdmZGMzYSIsIl9hdXRoX3VzZXJfaWQiOiIxIn0=	2017-07-22 19:44:39.126877+08
+d61s0lwubkqspof0u2fob00j6s2rk224	NjdjZTY0Yzc0NDRjMGRmOGE5MWQ1MmM0Njg5ZGRlYTJiNjdmZTIxNjp7Il9hdXRoX3VzZXJfaWQiOiIzIiwiX2F1dGhfdXNlcl9oYXNoIjoiM2JlZGEwMDYyZGM4YzEzZGE1ODIwZWQwNGNmZTYwMDZlZjQ0ZWJjYiIsIl9hdXRoX3VzZXJfYmFja2VuZCI6ImRqYW5nby5jb250cmliLmF1dGguYmFja2VuZHMuTW9kZWxCYWNrZW5kIn0=	2017-07-26 15:58:01.701009+08
 \.
 
 
 --
--- Name: KB_SNP_association_pkey; Type: CONSTRAINT; Schema: public; Owner: trpkb
+-- Data for Name: django_site; Type: TABLE DATA; Schema: public; Owner: trpkb
+--
+
+COPY django_site (id, domain, name) FROM stdin;
+1	trpkb.com	TRPKB
+\.
+
+
+--
+-- Name: django_site_id_seq; Type: SEQUENCE SET; Schema: public; Owner: trpkb
+--
+
+SELECT pg_catalog.setval('django_site_id_seq', 1, true);
+
+
+--
+-- Data for Name: socialaccount_socialaccount; Type: TABLE DATA; Schema: public; Owner: trpkb
+--
+
+COPY socialaccount_socialaccount (id, provider, uid, last_login, date_joined, extra_data, user_id) FROM stdin;
+\.
+
+
+--
+-- Name: socialaccount_socialaccount_id_seq; Type: SEQUENCE SET; Schema: public; Owner: trpkb
+--
+
+SELECT pg_catalog.setval('socialaccount_socialaccount_id_seq', 1, false);
+
+
+--
+-- Data for Name: socialaccount_socialapp; Type: TABLE DATA; Schema: public; Owner: trpkb
+--
+
+COPY socialaccount_socialapp (id, provider, name, client_id, secret, key) FROM stdin;
+\.
+
+
+--
+-- Name: socialaccount_socialapp_id_seq; Type: SEQUENCE SET; Schema: public; Owner: trpkb
+--
+
+SELECT pg_catalog.setval('socialaccount_socialapp_id_seq', 1, false);
+
+
+--
+-- Data for Name: socialaccount_socialapp_sites; Type: TABLE DATA; Schema: public; Owner: trpkb
+--
+
+COPY socialaccount_socialapp_sites (id, socialapp_id, site_id) FROM stdin;
+\.
+
+
+--
+-- Name: socialaccount_socialapp_sites_id_seq; Type: SEQUENCE SET; Schema: public; Owner: trpkb
+--
+
+SELECT pg_catalog.setval('socialaccount_socialapp_sites_id_seq', 1, false);
+
+
+--
+-- Data for Name: socialaccount_socialtoken; Type: TABLE DATA; Schema: public; Owner: trpkb
+--
+
+COPY socialaccount_socialtoken (id, token, token_secret, expires_at, account_id, app_id) FROM stdin;
+\.
+
+
+--
+-- Name: socialaccount_socialtoken_id_seq; Type: SEQUENCE SET; Schema: public; Owner: trpkb
+--
+
+SELECT pg_catalog.setval('socialaccount_socialtoken_id_seq', 1, false);
+
+
+--
+-- Name: KB_SNP_association KB_SNP_association_pkey; Type: CONSTRAINT; Schema: public; Owner: trpkb
 --
 
 ALTER TABLE ONLY "KB_SNP_association"
@@ -6380,7 +6822,7 @@ ALTER TABLE ONLY "KB_SNP_association"
 
 
 --
--- Name: KB_SNP_evidencebasedmedicinelevel_ebml_key; Type: CONSTRAINT; Schema: public; Owner: trpkb
+-- Name: KB_SNP_evidencebasedmedicinelevel KB_SNP_evidencebasedmedicinelevel_ebml_key; Type: CONSTRAINT; Schema: public; Owner: trpkb
 --
 
 ALTER TABLE ONLY "KB_SNP_evidencebasedmedicinelevel"
@@ -6388,7 +6830,7 @@ ALTER TABLE ONLY "KB_SNP_evidencebasedmedicinelevel"
 
 
 --
--- Name: KB_SNP_evidencebasedmedicinelevel_pkey; Type: CONSTRAINT; Schema: public; Owner: trpkb
+-- Name: KB_SNP_evidencebasedmedicinelevel KB_SNP_evidencebasedmedicinelevel_pkey; Type: CONSTRAINT; Schema: public; Owner: trpkb
 --
 
 ALTER TABLE ONLY "KB_SNP_evidencebasedmedicinelevel"
@@ -6396,7 +6838,7 @@ ALTER TABLE ONLY "KB_SNP_evidencebasedmedicinelevel"
 
 
 --
--- Name: KB_SNP_gene_entrez_gene_id_key; Type: CONSTRAINT; Schema: public; Owner: trpkb
+-- Name: KB_SNP_gene KB_SNP_gene_entrez_gene_id_key; Type: CONSTRAINT; Schema: public; Owner: trpkb
 --
 
 ALTER TABLE ONLY "KB_SNP_gene"
@@ -6404,7 +6846,7 @@ ALTER TABLE ONLY "KB_SNP_gene"
 
 
 --
--- Name: KB_SNP_gene_gene_official_symbol_key; Type: CONSTRAINT; Schema: public; Owner: trpkb
+-- Name: KB_SNP_gene KB_SNP_gene_gene_official_symbol_key; Type: CONSTRAINT; Schema: public; Owner: trpkb
 --
 
 ALTER TABLE ONLY "KB_SNP_gene"
@@ -6412,7 +6854,7 @@ ALTER TABLE ONLY "KB_SNP_gene"
 
 
 --
--- Name: KB_SNP_gene_pkey; Type: CONSTRAINT; Schema: public; Owner: trpkb
+-- Name: KB_SNP_gene KB_SNP_gene_pkey; Type: CONSTRAINT; Schema: public; Owner: trpkb
 --
 
 ALTER TABLE ONLY "KB_SNP_gene"
@@ -6420,7 +6862,7 @@ ALTER TABLE ONLY "KB_SNP_gene"
 
 
 --
--- Name: KB_SNP_prognosis_pkey; Type: CONSTRAINT; Schema: public; Owner: trpkb
+-- Name: KB_SNP_prognosis KB_SNP_prognosis_pkey; Type: CONSTRAINT; Schema: public; Owner: trpkb
 --
 
 ALTER TABLE ONLY "KB_SNP_prognosis"
@@ -6428,7 +6870,7 @@ ALTER TABLE ONLY "KB_SNP_prognosis"
 
 
 --
--- Name: KB_SNP_research_pkey; Type: CONSTRAINT; Schema: public; Owner: trpkb
+-- Name: KB_SNP_research KB_SNP_research_pkey; Type: CONSTRAINT; Schema: public; Owner: trpkb
 --
 
 ALTER TABLE ONLY "KB_SNP_research"
@@ -6436,7 +6878,7 @@ ALTER TABLE ONLY "KB_SNP_research"
 
 
 --
--- Name: KB_SNP_research_title_key; Type: CONSTRAINT; Schema: public; Owner: trpkb
+-- Name: KB_SNP_research KB_SNP_research_title_key; Type: CONSTRAINT; Schema: public; Owner: trpkb
 --
 
 ALTER TABLE ONLY "KB_SNP_research"
@@ -6444,7 +6886,7 @@ ALTER TABLE ONLY "KB_SNP_research"
 
 
 --
--- Name: KB_SNP_subgroup_pkey; Type: CONSTRAINT; Schema: public; Owner: trpkb
+-- Name: KB_SNP_subgroup KB_SNP_subgroup_pkey; Type: CONSTRAINT; Schema: public; Owner: trpkb
 --
 
 ALTER TABLE ONLY "KB_SNP_subgroup"
@@ -6452,7 +6894,7 @@ ALTER TABLE ONLY "KB_SNP_subgroup"
 
 
 --
--- Name: KB_SNP_tumor_mesh_id_key; Type: CONSTRAINT; Schema: public; Owner: trpkb
+-- Name: KB_SNP_tumor KB_SNP_tumor_mesh_id_key; Type: CONSTRAINT; Schema: public; Owner: trpkb
 --
 
 ALTER TABLE ONLY "KB_SNP_tumor"
@@ -6460,7 +6902,7 @@ ALTER TABLE ONLY "KB_SNP_tumor"
 
 
 --
--- Name: KB_SNP_tumor_mesh_term_key; Type: CONSTRAINT; Schema: public; Owner: trpkb
+-- Name: KB_SNP_tumor KB_SNP_tumor_mesh_term_key; Type: CONSTRAINT; Schema: public; Owner: trpkb
 --
 
 ALTER TABLE ONLY "KB_SNP_tumor"
@@ -6468,7 +6910,7 @@ ALTER TABLE ONLY "KB_SNP_tumor"
 
 
 --
--- Name: KB_SNP_tumor_name_key; Type: CONSTRAINT; Schema: public; Owner: trpkb
+-- Name: KB_SNP_tumor KB_SNP_tumor_name_key; Type: CONSTRAINT; Schema: public; Owner: trpkb
 --
 
 ALTER TABLE ONLY "KB_SNP_tumor"
@@ -6476,7 +6918,7 @@ ALTER TABLE ONLY "KB_SNP_tumor"
 
 
 --
--- Name: KB_SNP_tumor_pkey; Type: CONSTRAINT; Schema: public; Owner: trpkb
+-- Name: KB_SNP_tumor KB_SNP_tumor_pkey; Type: CONSTRAINT; Schema: public; Owner: trpkb
 --
 
 ALTER TABLE ONLY "KB_SNP_tumor"
@@ -6484,7 +6926,7 @@ ALTER TABLE ONLY "KB_SNP_tumor"
 
 
 --
--- Name: KB_SNP_variant_pkey; Type: CONSTRAINT; Schema: public; Owner: trpkb
+-- Name: KB_SNP_variant KB_SNP_variant_pkey; Type: CONSTRAINT; Schema: public; Owner: trpkb
 --
 
 ALTER TABLE ONLY "KB_SNP_variant"
@@ -6492,7 +6934,39 @@ ALTER TABLE ONLY "KB_SNP_variant"
 
 
 --
--- Name: auth_group_name_key; Type: CONSTRAINT; Schema: public; Owner: trpkb
+-- Name: account_emailaddress account_emailaddress_email_key; Type: CONSTRAINT; Schema: public; Owner: trpkb
+--
+
+ALTER TABLE ONLY account_emailaddress
+    ADD CONSTRAINT account_emailaddress_email_key UNIQUE (email);
+
+
+--
+-- Name: account_emailaddress account_emailaddress_pkey; Type: CONSTRAINT; Schema: public; Owner: trpkb
+--
+
+ALTER TABLE ONLY account_emailaddress
+    ADD CONSTRAINT account_emailaddress_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: account_emailconfirmation account_emailconfirmation_key_key; Type: CONSTRAINT; Schema: public; Owner: trpkb
+--
+
+ALTER TABLE ONLY account_emailconfirmation
+    ADD CONSTRAINT account_emailconfirmation_key_key UNIQUE (key);
+
+
+--
+-- Name: account_emailconfirmation account_emailconfirmation_pkey; Type: CONSTRAINT; Schema: public; Owner: trpkb
+--
+
+ALTER TABLE ONLY account_emailconfirmation
+    ADD CONSTRAINT account_emailconfirmation_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: auth_group auth_group_name_key; Type: CONSTRAINT; Schema: public; Owner: trpkb
 --
 
 ALTER TABLE ONLY auth_group
@@ -6500,7 +6974,7 @@ ALTER TABLE ONLY auth_group
 
 
 --
--- Name: auth_group_permissions_group_id_permission_id_0cd325b0_uniq; Type: CONSTRAINT; Schema: public; Owner: trpkb
+-- Name: auth_group_permissions auth_group_permissions_group_id_permission_id_0cd325b0_uniq; Type: CONSTRAINT; Schema: public; Owner: trpkb
 --
 
 ALTER TABLE ONLY auth_group_permissions
@@ -6508,7 +6982,7 @@ ALTER TABLE ONLY auth_group_permissions
 
 
 --
--- Name: auth_group_permissions_pkey; Type: CONSTRAINT; Schema: public; Owner: trpkb
+-- Name: auth_group_permissions auth_group_permissions_pkey; Type: CONSTRAINT; Schema: public; Owner: trpkb
 --
 
 ALTER TABLE ONLY auth_group_permissions
@@ -6516,7 +6990,7 @@ ALTER TABLE ONLY auth_group_permissions
 
 
 --
--- Name: auth_group_pkey; Type: CONSTRAINT; Schema: public; Owner: trpkb
+-- Name: auth_group auth_group_pkey; Type: CONSTRAINT; Schema: public; Owner: trpkb
 --
 
 ALTER TABLE ONLY auth_group
@@ -6524,7 +6998,7 @@ ALTER TABLE ONLY auth_group
 
 
 --
--- Name: auth_permission_content_type_id_codename_01ab375a_uniq; Type: CONSTRAINT; Schema: public; Owner: trpkb
+-- Name: auth_permission auth_permission_content_type_id_codename_01ab375a_uniq; Type: CONSTRAINT; Schema: public; Owner: trpkb
 --
 
 ALTER TABLE ONLY auth_permission
@@ -6532,7 +7006,7 @@ ALTER TABLE ONLY auth_permission
 
 
 --
--- Name: auth_permission_pkey; Type: CONSTRAINT; Schema: public; Owner: trpkb
+-- Name: auth_permission auth_permission_pkey; Type: CONSTRAINT; Schema: public; Owner: trpkb
 --
 
 ALTER TABLE ONLY auth_permission
@@ -6540,7 +7014,7 @@ ALTER TABLE ONLY auth_permission
 
 
 --
--- Name: auth_user_groups_pkey; Type: CONSTRAINT; Schema: public; Owner: trpkb
+-- Name: auth_user_groups auth_user_groups_pkey; Type: CONSTRAINT; Schema: public; Owner: trpkb
 --
 
 ALTER TABLE ONLY auth_user_groups
@@ -6548,7 +7022,7 @@ ALTER TABLE ONLY auth_user_groups
 
 
 --
--- Name: auth_user_groups_user_id_group_id_94350c0c_uniq; Type: CONSTRAINT; Schema: public; Owner: trpkb
+-- Name: auth_user_groups auth_user_groups_user_id_group_id_94350c0c_uniq; Type: CONSTRAINT; Schema: public; Owner: trpkb
 --
 
 ALTER TABLE ONLY auth_user_groups
@@ -6556,7 +7030,7 @@ ALTER TABLE ONLY auth_user_groups
 
 
 --
--- Name: auth_user_pkey; Type: CONSTRAINT; Schema: public; Owner: trpkb
+-- Name: auth_user auth_user_pkey; Type: CONSTRAINT; Schema: public; Owner: trpkb
 --
 
 ALTER TABLE ONLY auth_user
@@ -6564,7 +7038,7 @@ ALTER TABLE ONLY auth_user
 
 
 --
--- Name: auth_user_user_permissions_pkey; Type: CONSTRAINT; Schema: public; Owner: trpkb
+-- Name: auth_user_user_permissions auth_user_user_permissions_pkey; Type: CONSTRAINT; Schema: public; Owner: trpkb
 --
 
 ALTER TABLE ONLY auth_user_user_permissions
@@ -6572,7 +7046,7 @@ ALTER TABLE ONLY auth_user_user_permissions
 
 
 --
--- Name: auth_user_user_permissions_user_id_permission_id_14a6b632_uniq; Type: CONSTRAINT; Schema: public; Owner: trpkb
+-- Name: auth_user_user_permissions auth_user_user_permissions_user_id_permission_id_14a6b632_uniq; Type: CONSTRAINT; Schema: public; Owner: trpkb
 --
 
 ALTER TABLE ONLY auth_user_user_permissions
@@ -6580,7 +7054,7 @@ ALTER TABLE ONLY auth_user_user_permissions
 
 
 --
--- Name: auth_user_username_key; Type: CONSTRAINT; Schema: public; Owner: trpkb
+-- Name: auth_user auth_user_username_key; Type: CONSTRAINT; Schema: public; Owner: trpkb
 --
 
 ALTER TABLE ONLY auth_user
@@ -6588,7 +7062,7 @@ ALTER TABLE ONLY auth_user
 
 
 --
--- Name: django_admin_log_pkey; Type: CONSTRAINT; Schema: public; Owner: trpkb
+-- Name: django_admin_log django_admin_log_pkey; Type: CONSTRAINT; Schema: public; Owner: trpkb
 --
 
 ALTER TABLE ONLY django_admin_log
@@ -6596,7 +7070,7 @@ ALTER TABLE ONLY django_admin_log
 
 
 --
--- Name: django_content_type_app_label_model_76bd3d3b_uniq; Type: CONSTRAINT; Schema: public; Owner: trpkb
+-- Name: django_content_type django_content_type_app_label_model_76bd3d3b_uniq; Type: CONSTRAINT; Schema: public; Owner: trpkb
 --
 
 ALTER TABLE ONLY django_content_type
@@ -6604,7 +7078,7 @@ ALTER TABLE ONLY django_content_type
 
 
 --
--- Name: django_content_type_pkey; Type: CONSTRAINT; Schema: public; Owner: trpkb
+-- Name: django_content_type django_content_type_pkey; Type: CONSTRAINT; Schema: public; Owner: trpkb
 --
 
 ALTER TABLE ONLY django_content_type
@@ -6612,7 +7086,7 @@ ALTER TABLE ONLY django_content_type
 
 
 --
--- Name: django_migrations_pkey; Type: CONSTRAINT; Schema: public; Owner: trpkb
+-- Name: django_migrations django_migrations_pkey; Type: CONSTRAINT; Schema: public; Owner: trpkb
 --
 
 ALTER TABLE ONLY django_migrations
@@ -6620,11 +7094,83 @@ ALTER TABLE ONLY django_migrations
 
 
 --
--- Name: django_session_pkey; Type: CONSTRAINT; Schema: public; Owner: trpkb
+-- Name: django_session django_session_pkey; Type: CONSTRAINT; Schema: public; Owner: trpkb
 --
 
 ALTER TABLE ONLY django_session
     ADD CONSTRAINT django_session_pkey PRIMARY KEY (session_key);
+
+
+--
+-- Name: django_site django_site_domain_a2e37b91_uniq; Type: CONSTRAINT; Schema: public; Owner: trpkb
+--
+
+ALTER TABLE ONLY django_site
+    ADD CONSTRAINT django_site_domain_a2e37b91_uniq UNIQUE (domain);
+
+
+--
+-- Name: django_site django_site_pkey; Type: CONSTRAINT; Schema: public; Owner: trpkb
+--
+
+ALTER TABLE ONLY django_site
+    ADD CONSTRAINT django_site_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: socialaccount_socialaccount socialaccount_socialaccount_pkey; Type: CONSTRAINT; Schema: public; Owner: trpkb
+--
+
+ALTER TABLE ONLY socialaccount_socialaccount
+    ADD CONSTRAINT socialaccount_socialaccount_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: socialaccount_socialaccount socialaccount_socialaccount_provider_uid_fc810c6e_uniq; Type: CONSTRAINT; Schema: public; Owner: trpkb
+--
+
+ALTER TABLE ONLY socialaccount_socialaccount
+    ADD CONSTRAINT socialaccount_socialaccount_provider_uid_fc810c6e_uniq UNIQUE (provider, uid);
+
+
+--
+-- Name: socialaccount_socialapp_sites socialaccount_socialapp__socialapp_id_site_id_71a9a768_uniq; Type: CONSTRAINT; Schema: public; Owner: trpkb
+--
+
+ALTER TABLE ONLY socialaccount_socialapp_sites
+    ADD CONSTRAINT socialaccount_socialapp__socialapp_id_site_id_71a9a768_uniq UNIQUE (socialapp_id, site_id);
+
+
+--
+-- Name: socialaccount_socialapp socialaccount_socialapp_pkey; Type: CONSTRAINT; Schema: public; Owner: trpkb
+--
+
+ALTER TABLE ONLY socialaccount_socialapp
+    ADD CONSTRAINT socialaccount_socialapp_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: socialaccount_socialapp_sites socialaccount_socialapp_sites_pkey; Type: CONSTRAINT; Schema: public; Owner: trpkb
+--
+
+ALTER TABLE ONLY socialaccount_socialapp_sites
+    ADD CONSTRAINT socialaccount_socialapp_sites_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: socialaccount_socialtoken socialaccount_socialtoken_app_id_account_id_fca4e0ac_uniq; Type: CONSTRAINT; Schema: public; Owner: trpkb
+--
+
+ALTER TABLE ONLY socialaccount_socialtoken
+    ADD CONSTRAINT socialaccount_socialtoken_app_id_account_id_fca4e0ac_uniq UNIQUE (app_id, account_id);
+
+
+--
+-- Name: socialaccount_socialtoken socialaccount_socialtoken_pkey; Type: CONSTRAINT; Schema: public; Owner: trpkb
+--
+
+ALTER TABLE ONLY socialaccount_socialtoken
+    ADD CONSTRAINT socialaccount_socialtoken_pkey PRIMARY KEY (id);
 
 
 --
@@ -6719,6 +7265,34 @@ CREATE INDEX "KB_SNP_variant_gene_id_b4449893" ON "KB_SNP_variant" USING btree (
 
 
 --
+-- Name: account_emailaddress_email_03be32b2_like; Type: INDEX; Schema: public; Owner: trpkb
+--
+
+CREATE INDEX account_emailaddress_email_03be32b2_like ON account_emailaddress USING btree (email varchar_pattern_ops);
+
+
+--
+-- Name: account_emailaddress_user_id_2c513194; Type: INDEX; Schema: public; Owner: trpkb
+--
+
+CREATE INDEX account_emailaddress_user_id_2c513194 ON account_emailaddress USING btree (user_id);
+
+
+--
+-- Name: account_emailconfirmation_email_address_id_5b7f8c58; Type: INDEX; Schema: public; Owner: trpkb
+--
+
+CREATE INDEX account_emailconfirmation_email_address_id_5b7f8c58 ON account_emailconfirmation USING btree (email_address_id);
+
+
+--
+-- Name: account_emailconfirmation_key_f43612bd_like; Type: INDEX; Schema: public; Owner: trpkb
+--
+
+CREATE INDEX account_emailconfirmation_key_f43612bd_like ON account_emailconfirmation USING btree (key varchar_pattern_ops);
+
+
+--
 -- Name: auth_group_name_a6ea08ec_like; Type: INDEX; Schema: public; Owner: trpkb
 --
 
@@ -6810,7 +7384,49 @@ CREATE INDEX django_session_session_key_c0390e0f_like ON django_session USING bt
 
 
 --
--- Name: KB_SNP_association_prognosis_id_4759f347_fk_KB_SNP_prognosis_id; Type: FK CONSTRAINT; Schema: public; Owner: trpkb
+-- Name: django_site_domain_a2e37b91_like; Type: INDEX; Schema: public; Owner: trpkb
+--
+
+CREATE INDEX django_site_domain_a2e37b91_like ON django_site USING btree (domain varchar_pattern_ops);
+
+
+--
+-- Name: socialaccount_socialaccount_user_id_8146e70c; Type: INDEX; Schema: public; Owner: trpkb
+--
+
+CREATE INDEX socialaccount_socialaccount_user_id_8146e70c ON socialaccount_socialaccount USING btree (user_id);
+
+
+--
+-- Name: socialaccount_socialapp_sites_site_id_2579dee5; Type: INDEX; Schema: public; Owner: trpkb
+--
+
+CREATE INDEX socialaccount_socialapp_sites_site_id_2579dee5 ON socialaccount_socialapp_sites USING btree (site_id);
+
+
+--
+-- Name: socialaccount_socialapp_sites_socialapp_id_97fb6e7d; Type: INDEX; Schema: public; Owner: trpkb
+--
+
+CREATE INDEX socialaccount_socialapp_sites_socialapp_id_97fb6e7d ON socialaccount_socialapp_sites USING btree (socialapp_id);
+
+
+--
+-- Name: socialaccount_socialtoken_account_id_951f210e; Type: INDEX; Schema: public; Owner: trpkb
+--
+
+CREATE INDEX socialaccount_socialtoken_account_id_951f210e ON socialaccount_socialtoken USING btree (account_id);
+
+
+--
+-- Name: socialaccount_socialtoken_app_id_636a42d7; Type: INDEX; Schema: public; Owner: trpkb
+--
+
+CREATE INDEX socialaccount_socialtoken_app_id_636a42d7 ON socialaccount_socialtoken USING btree (app_id);
+
+
+--
+-- Name: KB_SNP_association KB_SNP_association_prognosis_id_4759f347_fk_KB_SNP_prognosis_id; Type: FK CONSTRAINT; Schema: public; Owner: trpkb
 --
 
 ALTER TABLE ONLY "KB_SNP_association"
@@ -6818,7 +7434,7 @@ ALTER TABLE ONLY "KB_SNP_association"
 
 
 --
--- Name: KB_SNP_association_research_id_52c939bf_fk_KB_SNP_research_id; Type: FK CONSTRAINT; Schema: public; Owner: trpkb
+-- Name: KB_SNP_association KB_SNP_association_research_id_52c939bf_fk_KB_SNP_research_id; Type: FK CONSTRAINT; Schema: public; Owner: trpkb
 --
 
 ALTER TABLE ONLY "KB_SNP_association"
@@ -6826,7 +7442,7 @@ ALTER TABLE ONLY "KB_SNP_association"
 
 
 --
--- Name: KB_SNP_association_subgroup_id_d8ad58ba_fk_KB_SNP_subgroup_id; Type: FK CONSTRAINT; Schema: public; Owner: trpkb
+-- Name: KB_SNP_association KB_SNP_association_subgroup_id_d8ad58ba_fk_KB_SNP_subgroup_id; Type: FK CONSTRAINT; Schema: public; Owner: trpkb
 --
 
 ALTER TABLE ONLY "KB_SNP_association"
@@ -6834,7 +7450,7 @@ ALTER TABLE ONLY "KB_SNP_association"
 
 
 --
--- Name: KB_SNP_association_tumor_id_77bcc162_fk_KB_SNP_tumor_id; Type: FK CONSTRAINT; Schema: public; Owner: trpkb
+-- Name: KB_SNP_association KB_SNP_association_tumor_id_77bcc162_fk_KB_SNP_tumor_id; Type: FK CONSTRAINT; Schema: public; Owner: trpkb
 --
 
 ALTER TABLE ONLY "KB_SNP_association"
@@ -6842,7 +7458,7 @@ ALTER TABLE ONLY "KB_SNP_association"
 
 
 --
--- Name: KB_SNP_association_variant_id_3f194d36_fk_KB_SNP_variant_id; Type: FK CONSTRAINT; Schema: public; Owner: trpkb
+-- Name: KB_SNP_association KB_SNP_association_variant_id_3f194d36_fk_KB_SNP_variant_id; Type: FK CONSTRAINT; Schema: public; Owner: trpkb
 --
 
 ALTER TABLE ONLY "KB_SNP_association"
@@ -6850,7 +7466,7 @@ ALTER TABLE ONLY "KB_SNP_association"
 
 
 --
--- Name: KB_SNP_research_ebml_id_653bc366_fk_KB_SNP_ev; Type: FK CONSTRAINT; Schema: public; Owner: trpkb
+-- Name: KB_SNP_research KB_SNP_research_ebml_id_653bc366_fk_KB_SNP_ev; Type: FK CONSTRAINT; Schema: public; Owner: trpkb
 --
 
 ALTER TABLE ONLY "KB_SNP_research"
@@ -6858,7 +7474,7 @@ ALTER TABLE ONLY "KB_SNP_research"
 
 
 --
--- Name: KB_SNP_subgroup_prognosis_id_ead28cad_fk_KB_SNP_prognosis_id; Type: FK CONSTRAINT; Schema: public; Owner: trpkb
+-- Name: KB_SNP_subgroup KB_SNP_subgroup_prognosis_id_ead28cad_fk_KB_SNP_prognosis_id; Type: FK CONSTRAINT; Schema: public; Owner: trpkb
 --
 
 ALTER TABLE ONLY "KB_SNP_subgroup"
@@ -6866,7 +7482,7 @@ ALTER TABLE ONLY "KB_SNP_subgroup"
 
 
 --
--- Name: KB_SNP_variant_gene_id_b4449893_fk_KB_SNP_gene_id; Type: FK CONSTRAINT; Schema: public; Owner: trpkb
+-- Name: KB_SNP_variant KB_SNP_variant_gene_id_b4449893_fk_KB_SNP_gene_id; Type: FK CONSTRAINT; Schema: public; Owner: trpkb
 --
 
 ALTER TABLE ONLY "KB_SNP_variant"
@@ -6874,7 +7490,23 @@ ALTER TABLE ONLY "KB_SNP_variant"
 
 
 --
--- Name: auth_group_permissio_permission_id_84c5c92e_fk_auth_perm; Type: FK CONSTRAINT; Schema: public; Owner: trpkb
+-- Name: account_emailaddress account_emailaddress_user_id_2c513194_fk_auth_user_id; Type: FK CONSTRAINT; Schema: public; Owner: trpkb
+--
+
+ALTER TABLE ONLY account_emailaddress
+    ADD CONSTRAINT account_emailaddress_user_id_2c513194_fk_auth_user_id FOREIGN KEY (user_id) REFERENCES auth_user(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: account_emailconfirmation account_emailconfirm_email_address_id_5b7f8c58_fk_account_e; Type: FK CONSTRAINT; Schema: public; Owner: trpkb
+--
+
+ALTER TABLE ONLY account_emailconfirmation
+    ADD CONSTRAINT account_emailconfirm_email_address_id_5b7f8c58_fk_account_e FOREIGN KEY (email_address_id) REFERENCES account_emailaddress(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: auth_group_permissions auth_group_permissio_permission_id_84c5c92e_fk_auth_perm; Type: FK CONSTRAINT; Schema: public; Owner: trpkb
 --
 
 ALTER TABLE ONLY auth_group_permissions
@@ -6882,7 +7514,7 @@ ALTER TABLE ONLY auth_group_permissions
 
 
 --
--- Name: auth_group_permissions_group_id_b120cbf9_fk_auth_group_id; Type: FK CONSTRAINT; Schema: public; Owner: trpkb
+-- Name: auth_group_permissions auth_group_permissions_group_id_b120cbf9_fk_auth_group_id; Type: FK CONSTRAINT; Schema: public; Owner: trpkb
 --
 
 ALTER TABLE ONLY auth_group_permissions
@@ -6890,7 +7522,7 @@ ALTER TABLE ONLY auth_group_permissions
 
 
 --
--- Name: auth_permission_content_type_id_2f476e4b_fk_django_co; Type: FK CONSTRAINT; Schema: public; Owner: trpkb
+-- Name: auth_permission auth_permission_content_type_id_2f476e4b_fk_django_co; Type: FK CONSTRAINT; Schema: public; Owner: trpkb
 --
 
 ALTER TABLE ONLY auth_permission
@@ -6898,7 +7530,7 @@ ALTER TABLE ONLY auth_permission
 
 
 --
--- Name: auth_user_groups_group_id_97559544_fk_auth_group_id; Type: FK CONSTRAINT; Schema: public; Owner: trpkb
+-- Name: auth_user_groups auth_user_groups_group_id_97559544_fk_auth_group_id; Type: FK CONSTRAINT; Schema: public; Owner: trpkb
 --
 
 ALTER TABLE ONLY auth_user_groups
@@ -6906,7 +7538,7 @@ ALTER TABLE ONLY auth_user_groups
 
 
 --
--- Name: auth_user_groups_user_id_6a12ed8b_fk_auth_user_id; Type: FK CONSTRAINT; Schema: public; Owner: trpkb
+-- Name: auth_user_groups auth_user_groups_user_id_6a12ed8b_fk_auth_user_id; Type: FK CONSTRAINT; Schema: public; Owner: trpkb
 --
 
 ALTER TABLE ONLY auth_user_groups
@@ -6914,7 +7546,7 @@ ALTER TABLE ONLY auth_user_groups
 
 
 --
--- Name: auth_user_user_permi_permission_id_1fbb5f2c_fk_auth_perm; Type: FK CONSTRAINT; Schema: public; Owner: trpkb
+-- Name: auth_user_user_permissions auth_user_user_permi_permission_id_1fbb5f2c_fk_auth_perm; Type: FK CONSTRAINT; Schema: public; Owner: trpkb
 --
 
 ALTER TABLE ONLY auth_user_user_permissions
@@ -6922,7 +7554,7 @@ ALTER TABLE ONLY auth_user_user_permissions
 
 
 --
--- Name: auth_user_user_permissions_user_id_a95ead1b_fk_auth_user_id; Type: FK CONSTRAINT; Schema: public; Owner: trpkb
+-- Name: auth_user_user_permissions auth_user_user_permissions_user_id_a95ead1b_fk_auth_user_id; Type: FK CONSTRAINT; Schema: public; Owner: trpkb
 --
 
 ALTER TABLE ONLY auth_user_user_permissions
@@ -6930,7 +7562,7 @@ ALTER TABLE ONLY auth_user_user_permissions
 
 
 --
--- Name: django_admin_log_content_type_id_c4bce8eb_fk_django_co; Type: FK CONSTRAINT; Schema: public; Owner: trpkb
+-- Name: django_admin_log django_admin_log_content_type_id_c4bce8eb_fk_django_co; Type: FK CONSTRAINT; Schema: public; Owner: trpkb
 --
 
 ALTER TABLE ONLY django_admin_log
@@ -6938,7 +7570,7 @@ ALTER TABLE ONLY django_admin_log
 
 
 --
--- Name: django_admin_log_user_id_c564eba6_fk_auth_user_id; Type: FK CONSTRAINT; Schema: public; Owner: trpkb
+-- Name: django_admin_log django_admin_log_user_id_c564eba6_fk_auth_user_id; Type: FK CONSTRAINT; Schema: public; Owner: trpkb
 --
 
 ALTER TABLE ONLY django_admin_log
@@ -6946,13 +7578,43 @@ ALTER TABLE ONLY django_admin_log
 
 
 --
--- Name: public; Type: ACL; Schema: -; Owner: postgres
+-- Name: socialaccount_socialtoken socialaccount_social_account_id_951f210e_fk_socialacc; Type: FK CONSTRAINT; Schema: public; Owner: trpkb
 --
 
-REVOKE ALL ON SCHEMA public FROM PUBLIC;
-REVOKE ALL ON SCHEMA public FROM postgres;
-GRANT ALL ON SCHEMA public TO postgres;
-GRANT ALL ON SCHEMA public TO PUBLIC;
+ALTER TABLE ONLY socialaccount_socialtoken
+    ADD CONSTRAINT socialaccount_social_account_id_951f210e_fk_socialacc FOREIGN KEY (account_id) REFERENCES socialaccount_socialaccount(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: socialaccount_socialtoken socialaccount_social_app_id_636a42d7_fk_socialacc; Type: FK CONSTRAINT; Schema: public; Owner: trpkb
+--
+
+ALTER TABLE ONLY socialaccount_socialtoken
+    ADD CONSTRAINT socialaccount_social_app_id_636a42d7_fk_socialacc FOREIGN KEY (app_id) REFERENCES socialaccount_socialapp(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: socialaccount_socialapp_sites socialaccount_social_site_id_2579dee5_fk_django_si; Type: FK CONSTRAINT; Schema: public; Owner: trpkb
+--
+
+ALTER TABLE ONLY socialaccount_socialapp_sites
+    ADD CONSTRAINT socialaccount_social_site_id_2579dee5_fk_django_si FOREIGN KEY (site_id) REFERENCES django_site(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: socialaccount_socialapp_sites socialaccount_social_socialapp_id_97fb6e7d_fk_socialacc; Type: FK CONSTRAINT; Schema: public; Owner: trpkb
+--
+
+ALTER TABLE ONLY socialaccount_socialapp_sites
+    ADD CONSTRAINT socialaccount_social_socialapp_id_97fb6e7d_fk_socialacc FOREIGN KEY (socialapp_id) REFERENCES socialaccount_socialapp(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: socialaccount_socialaccount socialaccount_socialaccount_user_id_8146e70c_fk_auth_user_id; Type: FK CONSTRAINT; Schema: public; Owner: trpkb
+--
+
+ALTER TABLE ONLY socialaccount_socialaccount
+    ADD CONSTRAINT socialaccount_socialaccount_user_id_8146e70c_fk_auth_user_id FOREIGN KEY (user_id) REFERENCES auth_user(id) DEFERRABLE INITIALLY DEFERRED;
 
 
 --

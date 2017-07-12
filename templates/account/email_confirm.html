@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 
+{% load static %}
 {% load i18n %}
 {% load account %}
 
@@ -7,11 +8,11 @@
 
     {% block head_link %}
     <!-- Flat UI -->
-    <link href="/static/vendors/flat-ui/2.2.2/css/flat-ui.mod.css" rel="stylesheet">
+    <link href='{% static "vendors/flat-ui/2.2.2/css/flat-ui.mod.css" %}' rel="stylesheet">
     {% endblock head_link %}
 
   {% block body_lable %}<body class="login">{% endblock body_lable %}
-    {% block container %}
+  {% block body %}
     <div class="login-wrapper">
       <div class="col-md-12 col-sm-12 col-xs-12">
         <h1>{% trans "Confirm E-mail Address" %}</h1>
@@ -37,4 +38,4 @@
       </div>
     </div>
 
-    {% endblock container %}
+  {% endblock body %}

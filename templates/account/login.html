@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 
+{% load static %}
 {% load i18n %}
 {% load account socialaccount %}
 
@@ -7,16 +8,16 @@
 
     {% block head_link %}
     <!-- Flat UI -->
-    <link href="/static/vendors/flat-ui/2.2.2/css/flat-ui.mod.css" rel="stylesheet">
+    <link href='{% static "vendors/flat-ui/2.2.2/css/flat-ui.mod.css" %}' rel="stylesheet">
     {% endblock head_link %}
 
   {% block body_lable %}<body class="login">{% endblock body_lable %}
-    {% block container %}
+  {% block body %}
     <div class="login-wrapper">
       <div class="col-md-5 col-sm-12 col-xs-12">
         <div class="login-icon">
-          <img src="/static/images/logo.png" alt="...">
-          <h4>Welcome to <small>Topgen Dashboard</small></h4>
+          <img src='{% static "images/logo.png" %}' alt="...">
+          <h4>Welcome to <small>TRPKB</small></h4>
         </div>
       </div>
       <div class="col-md-7 col-sm-12 col-xs-12">
@@ -34,14 +35,14 @@
             {% if form.errors %}
               {% for field in form %}
                 {% for error in field.errors %}
-                  <div class="alert alert-error alert-dismissible fade in">
+                  <div class="alert alert-danger alert-dismissible fade in">
                     <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
                     <strong>{{ error|escape }}</strong>
                   </div>
                 {% endfor %}
               {% endfor %}
               {% for error in form.non_field_errors %}
-                <div class="alert alert-error alert-dismissible fade in">
+                <div class="alert alert-danger alert-dismissible fade in">
                     <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
                     <strong>{{ error|escape }}</strong>
                   </div>
@@ -55,9 +56,17 @@
         </div>
       </div>
     </div>
-    {% endblock container %}
 
     {% block script %}
+    <!-- jQuery -->
+    <script src='{% static "vendors/jQuery/2.2.4/jquery.min.js" %}'></script>
+    <!-- Bootstrap -->
+    <script src='{% static "vendors/bootstrap/3.3.7/js/bootstrap.min.js" %}'></script>
     <!-- Flat UI -->
-    <script src="/static/vendors/flat-ui/2.2.2/js/flat-ui.min.js"></script>
+    <script src='{% static "vendors/flat-ui/2.2.2/js/flat-ui.min.js" %}'></script>
+
+    <script type="text/javascript">
+      $("input").attr("class", "form-control login-field")
+    </script>
     {% endblock script %}
+  {% endblock body %}

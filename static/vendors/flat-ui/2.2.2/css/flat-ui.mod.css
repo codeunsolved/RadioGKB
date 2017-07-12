@@ -5831,6 +5831,56 @@ fieldset[disabled] .navbar-inverse .navbar-btn.active {
   font-weight: 700;
   margin-top: -3px;
 }
+.login {
+  background-color: #1abc9c;
+  color: #ffffff;
+}
+.login .fa-paw {
+  font-size: 26px;
+}
+a.hiddenanchor {
+  display: none;
+}
+.login-wrapper {
+  right: 0px;
+  margin: 0px auto;
+  margin-top: 10%;
+  max-width: 600px;
+  position: relative;
+}
+.login-form {
+  background-color: #edeff1;
+  padding: 24px 23px 20px;
+  position: relative;
+  top: 0px;
+  width: 100%;
+  border-radius: 6px;
+}
+.login-form {
+  z-index: 22;
+}
+.login-icon {
+  margin: 24px 0px 20px;
+  position: relative;
+  text-align: center;
+  width: 100%;
+}
+.login-icon > img {
+  margin-bottom: 6px;
+  width: 96px;
+}
+.login-icon > h4 {
+  font-size: 17px;
+  font-weight: 300;
+  line-height: 34px;
+  opacity: .95;
+}
+.login-icon > h4 small {
+  color: inherit;
+  display: block;
+  font-size: inherit;
+  font-weight: 700;
+}
 .login-form .control-group {
   margin-bottom: 6px;
   position: relative;
@@ -5861,6 +5911,13 @@ fieldset[disabled] .navbar-inverse .navbar-btn.active {
   font-size: 13px;
   margin-top: 15px;
   text-align: center;
+}
+.clearfix:after, form:after {
+  content: ".";
+  display: block;
+  height: 0;
+  clear: both;
+  visibility: hidden;
 }
 @media only screen and (-webkit-min-device-pixel-ratio: 2), only screen and (-webkit-min-device-pixel-ratio: 1.5), only screen and (-moz-min-device-pixel-ratio: 2), only screen and (-o-min-device-pixel-ratio: 3/2), only screen and (-o-min-device-pixel-ratio: 2/1), only screen and (-moz-min-device-pixel-ratio: 1.5), only screen and (min-device-pixel-ratio: 1.5), only screen and (min-device-pixel-ratio: 2) {
   .login {
