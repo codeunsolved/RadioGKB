@@ -1,5 +1,5 @@
 from django.apps import AppConfig
 
 
-class KbConfig(AppConfig):
+class KbSnpConfig(AppConfig):
     name = 'KB_SNP'

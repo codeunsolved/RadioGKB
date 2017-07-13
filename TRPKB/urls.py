@@ -13,7 +13,8 @@ Including another URLconf
     1. Import the include() function: from django.conf.urls import url, include
     2. Add a URL to urlpatterns:  url(r'^blog/', include('blog.urls'))
 """
-from django.conf.urls import url, include
+from django.conf import settings
+from django.conf.urls import url, include, static
 from django.contrib import admin
 
 from . import views
@@ -25,10 +26,11 @@ urlpatterns = [
     url(r'^access/', views.access, name='access'),
     url(r'^submit/', views.submit, name='submit'),
     url(r'^news/', views.news, name='news'),
-    url(r'^snp/submit', views.snp_submit, name='snp_submit'),
+    url(r'^query/submit', views.query_submit, name='query_submit'),
+    url(r'^snp/new', views.snp_new, name='snp_new'),
     url(r'^snp/search', views.snp_search, name='snp_search'),
     url(r'^snp/details/(?P<research_id>\d+)/(?P<tumor_id>\d+)/(?P<variant_id>\d+)', views.snp_details, name='snp_details'),
     url(r'^accounts/', include('allauth.urls')),
     url(r'^admin/', admin.site.urls),
     url(r'^import_data/', views.import_data, name='import_data'),
-]
+] + static.static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

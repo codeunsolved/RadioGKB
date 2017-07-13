@@ -1,10 +1,12 @@
 import re
+import json
 
 from django.http import HttpResponse, Http404
 from django.shortcuts import render
 
 from KB_SNP.models import Association
 from KB_SNP.models import Tumor, Gene, Variant, EvidenceBasedMedicineLevel, Research, Prognosis, Subgroup
+#from Submit.models import Draft
 
 from .importData import read_xls
 
@@ -47,8 +49,79 @@ def news(request):
     return render(request, 'index.html', context)
 
 
-def snp_submit(request):
-    pass
+def query_submit(request):
+    def get_status_html(status):
+        if status in ['Revison', 'Rejected']:
+            return '<strong style="color: red;">{}</strong>{}'.format(
+                status, content['comments'])
+        if status == 'Accepted':
+            return '<strong style="color: green;">{}</strong>'.format(status)
+        else:
+            return '<strong>{}</strong>'.format(status)
+
+    response = {'data': []}
+    try:
+        tab = request.POST['tab']
+
+        username = request.user.username
+
+        if tab == 'draft':
+            results = Draft.objects.filter(user__username=username).exclude(status='Accepted')
+            for i, r in enumerate(results):
+                content = json.loads(r.content)
+                row = [i + 1,
+                       r.kb,
+                       r.title,
+                       get_status_html(r.status),
+                       content['log']['last_change']['time']]
+                response['data'].append(row)
+        elif tab == 'accepted':
+            results = Draft.objects.filter(user__username=username).filter(status='Accepted')
+            for i, r in enumerate(results):
+                content = json.loads(r.content)
+                row = [i + 1,
+                       r.kb,
+                       r.title,
+                       get_status_html(r.status),
+                       content['log']['last_change']['time']]
+                response['data'].append(row)
+        elif tab == 'approved':
+            results = Draft.objects.filter(status='Accepted')
+            for i, r in enumerate(results):
+                content = json.loads(r.content)
+                last_change = "{} at {}".format(content['log']['last_change']['user'],
+                                                content['log']['last_change']['time'])
+                row = [i + 1,
+                       r.kb,
+                       r.title,
+                       get_status_html(r.status),
+                       last_change]
+                response['data'].append(row)
+        elif tab == 'pending':
+            results = Draft.objects.filter(status='Under Review')
+            for i, r in enumerate(results):
+                action = ''
+                row = [i + 1,
+                       r.kb,
+                       r.title,
+                       r.user.username,
+                       action]
+                response['data'].append(row)
+        elif tab == 'new':
+            kb = request.POST['kb']
+            step = request.POST['step']
+            content = json.loads(request.POST['content'])
+
+
+    except Exception as e:
+        raise e
+
+    return HttpResponse(json.dumps(response), content_type="application/json")
+
+
+def snp_new(request):
+    context = {'stats': get_stats()}
+    return render(request, 'snp_new.html', context)
 
 
 def snp_search(request):
@@ -164,7 +237,7 @@ def snp_details(request, research_id, tumor_id, variant_id):
                 'p_m': row.p_m})
         context['tabs']['content'][p_id] = subgroups
 
-    return render(request, 'details_snp.html', context)
+    return render(request, 'snp_details.html', context)
 
 
 def import_data(request):
@@ -241,14 +314,14 @@ def import_data(request):
                     or_m = float(row[16]) if row[16] else None
                     hr_m = float(row[17]) if row[17] else None
                     rr_m = float(row[18]) if row[18] else None
-                    i_m_95 = [float(x) for x in row[19].split('-')] if row[19] else None
+                    ci_m_95 = [float(x) for x in row[19].split('-')] if row[19] else None
                     p_m = row[20] if row[20] else None
                     Association.objects.get_or_create(research=research, tumor=tumor, variant=variant,
                                                       prognosis=prognosis, subgroup=subgroup, genotype=row[7],
                                                       case_number=case_number, control_number=control_number,
                                                       total_number=total_number,
                                                       or_u=or_u, hr_u=hr_u, rr_u=rr_u, ci_u_95=ci_u_95, p_u=p_u,
-                                                      or_m=or_m, hr_m=hr_m, rr_m=rr_m, i_m_95=i_m_95, p_m=p_m)
+                                                      or_m=or_m, hr_m=hr_m, rr_m=rr_m, ci_m_95=ci_m_95, p_m=p_m)
         except Exception as e:
             raise e
 

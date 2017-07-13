@@ -6,7 +6,6 @@ __pycache__/
 # Django stuff:
 *.log
 local_settings.py
-migrations/
 
 # Jupyter Notebook
 .ipynb_checkpoints

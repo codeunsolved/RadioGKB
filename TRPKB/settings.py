@@ -33,7 +33,8 @@ ALLOWED_HOSTS = ['*']
 # Application definition
 
 INSTALLED_APPS = [
-    'KB_SNP.apps.KbConfig',
+    'KB_SNP.apps.KbSnpConfig',
+    'Submit.apps.SubmitConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -180,3 +181,12 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static")
 ]
+
+
+# Media
+# https://docs.djangoproject.com/en/1.11/topics/files/
+# https://docs.djangoproject.com/en/1.11/ref/models/fields/#django.db.models.FileField
+
+MEDIA_URL = '/media/'
+
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')

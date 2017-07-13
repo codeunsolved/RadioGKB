@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+    {% block head_title %}Submit new - SNP{% endblock head_title %}
+
+    {% block nav %}
+    <ul class="nav nav-pills nav-justified" style="border-top: 1px solid black;border-bottom: 1px solid black;">
+      <li role="presentation"><a href="{% url 'about' %}">About the Knowledgebase</a></li>
+      <li role="presentation"><a href="{% url 'about_k' %}">About the Knowledge</a></li>
+      <li role="presentation"><a href="{% url 'access' %}">Access the Knowledge</a></li>
+      <li role="presentation" class="active"><a href="{% url 'submit' %}">Submit the Knowledge</a></li>
+      <li role="presentation"><a href="{% url 'news' %}">News</a></li>
+    </ul>
+    {% endblock nav %}
+
+      {% block container %}
+      <div class="row" style="margin-top: 40px;">
+        {% if user.is_authenticated %}
+        <div class="col-md-3 col-sm-3 col-xs-3">
+          <ul class="nav nav-pills nav-stacked">
+            <li role="presentation" class="active"><a id="STEP01_nav" href="#STEP01" data-toggle="tab">Check duplication</a></li>
+            <li role="presentation" class="disabled"><a id="STEP02_nav" href="#STEP02">Research</a></li>
+            <li role="presentation" class="disabled"><a id="STEP03_nav" href="#STEP03">Tumor</a></li>
+            <li role="presentation" class="disabled"><a id="STEP04_nav" href="#STEP04">Gene</a></li>
+            <li role="presentation" class="disabled"><a id="STEP05_nav" href="#STEP05">Variant</a></li>
+            <li role="presentation" class="disabled"><a id="STEP06_nav" href="#STEP06">Prognosis</a></li>
+            <li role="presentation" class="disabled"><a id="STEP07_nav" href="#STEP07">Association</a></li>
+            <li role="presentation" class="disabled"><a id="STEP08_nav" href="#STEP08">Confirm & Submit</a></li>
+          </ul>
+        </div>
+        <div class="col-md-9 col-sm-9 col-xs-9">
+          <div class="tab-content">
+            <div id="STEP01" class="tab-pane fade in active">
+              <div class="panel panel-default">
+                <div class="panel-body">
+                  <form>
+                    <div class="input-group">
+                      
+                      <span class="input-group-addon">Title<span style="color: red;">*</span></span>
+                      <input name="title" class="form-control" type="text" required>
+
+                    </div>
+
+                    <br>
+                    <div class="input-group">
+                      <span class="input-group-addon">PMID</span>
+                      <input name="pubmed_id" class="form-control" type="text">
+                    </div>
+                    <br>
+                    <div class="well well-sm">
+                      Note: Please provide the Title or PMID to check for duplication. If you provide both, we use PMID first.
+                    </div>
+
+                    <div id="STEP01_msg"></div>
+
+                    <nav>
+                      <ul class="pager">
+                        <li><a id="STEP01_next" type="submit">Next</a></li>
+                      </ul>
+                    </nav>
+                  </form>
+                </div>
+              </div>
+            </div>
+
+            <div id="STEP02" class="tab-pane fade">
+              222222
+            </div>
+          </div>
+        </div>
+        {% else %}
+        <div class="col-md-12 col-sm-12 col-xs-12">
+          <p>Login Required to submit</p>
+        </div>
+        {% endif %}
+      </div>
+      {% endblock container %}
+
+    {% block script %}
+    <script src='{% static "js/submit_new.js" %}'></script>
+    {% endblock script %}
