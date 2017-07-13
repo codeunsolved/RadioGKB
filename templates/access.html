@@ -4,10 +4,10 @@
 
     {% block nav %}
     <ul class="nav nav-pills nav-justified" style="border-top: 1px solid black;border-bottom: 1px solid black;">
-      <li role="presentation"><a href="{% url 'about_the_knowledgebase' %}">About the Knowledgebase</a></li>
-      <li role="presentation"><a href="{% url 'about_the_knowledge' %}">About the Knowledge</a></li>
-      <li role="presentation" class="active"><a href="{% url 'access_the_knowledge' %}">Access the Knowledge</a></li>
-      <li role="presentation"><a href="{% url 'submit_the_knowledge' %}">Submit the Knowledge</a></li>
+      <li role="presentation"><a href="{% url 'about' %}">About the Knowledgebase</a></li>
+      <li role="presentation"><a href="{% url 'about_k' %}">About the Knowledge</a></li>
+      <li role="presentation" class="active"><a href="{% url 'access' %}">Access the Knowledge</a></li>
+      <li role="presentation"><a href="{% url 'submit' %}">Submit the Knowledge</a></li>
       <li role="presentation"><a href="{% url 'news' %}">News</a></li>
     </ul>
     {% endblock nav %}
@@ -27,7 +27,7 @@
             <div id="SNP" class="tab-pane fade in active">
               <div class="panel panel-default" style="border-top: none;">
                 <div class="panel-body">
-                  <form class="form-horizontal" role="form" method="POST" action="{% url 'search_snp' %}">
+                  <form class="form-horizontal" role="form" method="POST" action="{% url 'snp_search' %}">
                     {% csrf_token %}
                     <div class="input-group">
                       <span class="input-group-addon">Gene</span>

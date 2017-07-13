@@ -13,7 +13,7 @@ def get_stats():
     return {'research_num': len(Research.objects.all()),
             'gene_num': len(Gene.objects.all()),
             'variant_num': len(Variant.objects.all()),
-            'case_num': len(Association.objects.all()),}
+            'case_num': len(Association.objects.all()), }
 
 
 def index(request):
@@ -21,24 +21,25 @@ def index(request):
     return render(request, 'index.html', context)
 
 
-def about_the_knowledgebase(request):
+def about(request):
     context = {'stats': get_stats()}
     return render(request, 'index.html', context)
 
 
-def about_the_knowledge(request):
+def about_k(request):
     context = {'stats': get_stats()}
     return render(request, 'index.html', context)
 
 
-def access_the_knowledge(request):
+def access(request):
     context = {'stats': get_stats()}
-    return render(request, 'access_the_knowledge.html', context)
+    return render(request, 'access.html', context)
 
 
-def submit_the_knowledge(request):
+def submit(request):
     context = {'stats': get_stats()}
-    return render(request, 'index.html', context)
+    
+    return render(request, 'submit.html', context)
 
 
 def news(request):
@@ -46,7 +47,11 @@ def news(request):
     return render(request, 'index.html', context)
 
 
-def search_snp(request):
+def snp_submit(request):
+    pass
+
+
+def snp_search(request):
     context = {'stats': get_stats(), 'num': None, 'desc': None, 'dt_data': []}
     try:
         term_gene = request.POST['gene']
@@ -67,8 +72,6 @@ def search_snp(request):
             context['num'] = 0
             context['desc'] = ", Please refine your key words."
         else:
-            
-
             row_data = {}
             for i, r in enumerate(results):
                 tumor = r.tumor.name
@@ -84,7 +87,7 @@ def search_snp(request):
             for i, (k, v) in enumerate(row_data.items()):
                 research = ""
                 for title, pk in v['research']:
-                    research += "<p><a href=\"/details_snp/{}/{}/{}\">{}</a></p>".format(pk, v['tumor_id'], v['variant_id'], title)
+                    research += "<p><a href=\"/snp/details/{}/{}/{}\">{}</a></p>".format(pk, v['tumor_id'], v['variant_id'], title)
                 row = [i + 1,
                        v['gene'],
                        v['variant'],
@@ -101,7 +104,7 @@ def search_snp(request):
     return render(request, 'search_results.html', context)
 
 
-def details_snp(request, research_id, tumor_id, variant_id):
+def snp_details(request, research_id, tumor_id, variant_id):
     context = {'stats': get_stats(),
                'research': {}, 'tumor': {}, 'variant': {}, 'gene': {},
                'tabs': {'tab': [], 'content': {}}}
@@ -158,8 +161,7 @@ def details_snp(request, research_id, tumor_id, variant_id):
                 'p_u': row.p_u,
                 'hr_m': row.hr_m,
                 'ci_m_95': row.ci_m_95,
-                'p_m': row.p_m,
-                })
+                'p_m': row.p_m})
         context['tabs']['content'][p_id] = subgroups
 
     return render(request, 'details_snp.html', context)
@@ -191,10 +193,10 @@ def import_data(request):
                     mean_age = float(row[13]) if row[13] else None
                     age_range = [float(x) for x in row[14].split('-')] if row[14] else None
                     Research.objects.get_or_create(title=row[1], language=row[2], pub_year=int(row[3]),
-                        pubmed_id=pubmed_id, url=row[5], pub_type=row[6], ebml=ebml,
-                        ethnicity=ethnicity, patient_number=int(row[9]), male=male, female=male,
-                        median_age=median_age, mean_age=mean_age,
-                        age_range=age_range)
+                                                   pubmed_id=pubmed_id, url=row[5], pub_type=row[6], ebml=ebml,
+                                                   ethnicity=ethnicity, patient_number=int(row[9]),
+                                                   male=male, female=male,
+                                                   median_age=median_age, mean_age=mean_age, age_range=age_range)
             if re.search('tumor', table) or re.search('all', table):
                 for row in data['tumor']:
                     Tumor.objects.get_or_create(name=row[1])
@@ -214,8 +216,9 @@ def import_data(request):
                     total_meaning = row[7] if row[7] else None
                     annotation = row[9] if row[9] else None
                     Prognosis.objects.create(prognosis_name=row[1], prognosis_type=prognosis_type,
-                        endpoint=endpoint, original=row[4], case_meaning=case_meaning, control_meaning=control_meaning,
-                        total_meaning=total_meaning, annotation=annotation)
+                                             endpoint=endpoint, original=row[4],
+                                             case_meaning=case_meaning, control_meaning=control_meaning,
+                                             total_meaning=total_meaning, annotation=annotation)
             if re.search('subgroup', table) or re.search('all', table):
                 for row in data['subgroup']:
                     prognosis = Prognosis.objects.get(pk=int(row[1]))
@@ -241,9 +244,11 @@ def import_data(request):
                     i_m_95 = [float(x) for x in row[19].split('-')] if row[19] else None
                     p_m = row[20] if row[20] else None
                     Association.objects.get_or_create(research=research, tumor=tumor, variant=variant,
-                        prognosis=prognosis, subgroup=subgroup, genotype=row[7], case_number=case_number,
-                        control_number=control_number, total_number=total_number, or_u=or_u, hr_u=hr_u,
-                        rr_u=rr_u, ci_u_95=ci_u_95, p_u=p_u, or_m=or_m, hr_m=hr_m, rr_m=rr_m, i_m_95=i_m_95, p_m=p_m)
+                                                      prognosis=prognosis, subgroup=subgroup, genotype=row[7],
+                                                      case_number=case_number, control_number=control_number,
+                                                      total_number=total_number,
+                                                      or_u=or_u, hr_u=hr_u, rr_u=rr_u, ci_u_95=ci_u_95, p_u=p_u,
+                                                      or_m=or_m, hr_m=hr_m, rr_m=rr_m, i_m_95=i_m_95, p_m=p_m)
         except Exception as e:
             raise e
 

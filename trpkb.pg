@@ -6460,6 +6460,7 @@ SELECT pg_catalog.setval('"KB_SNP_variant_id_seq"', 389, true);
 --
 
 COPY account_emailaddress (id, email, verified, "primary", user_id) FROM stdin;
+2	weicongchong@topgen.com.cn	t	t	2
 \.
 
 
@@ -6467,7 +6468,7 @@ COPY account_emailaddress (id, email, verified, "primary", user_id) FROM stdin;
 -- Name: account_emailaddress_id_seq; Type: SEQUENCE SET; Schema: public; Owner: trpkb
 --
 
-SELECT pg_catalog.setval('account_emailaddress_id_seq', 1, true);
+SELECT pg_catalog.setval('account_emailaddress_id_seq', 2, true);
 
 
 --
@@ -6595,8 +6596,9 @@ SELECT pg_catalog.setval('auth_permission_id_seq', 42, true);
 --
 
 COPY auth_user (id, password, last_login, is_superuser, username, first_name, last_name, email, is_staff, is_active, date_joined) FROM stdin;
-3	pbkdf2_sha256$36000$fwxVjfwx2AFZ$TA7W3iWy7SaDqY0JIV9gdWRyIQvGTvwqdqfbxrwlXog=	2017-07-12 15:58:01.697804+08	t	admin			trpkb2017@163.com	t	t	2017-07-12 15:57:42.722903+08
-1	pbkdf2_sha256$36000$kKZDr2bPvs4l$H/vWFYseGGfh4zlghNCl0dvqtw+4FTiKS+hUsXNydx4=	2017-07-08 19:44:39.112318+08	t	trpkb				t	t	2017-07-08 19:43:09.240183+08
+2	pbkdf2_sha256$36000$I461C0LCQdqr$T4WHME24LqrXEcVq5/VD+OOeJ2uowWOsM1bTNJ06j2A=	2017-07-12 16:53:21.830636+08	f	wei			weicongchong@topgen.com.cn	f	t	2017-07-12 16:05:23.750827+08
+3	pbkdf2_sha256$36000$fwxVjfwx2AFZ$TA7W3iWy7SaDqY0JIV9gdWRyIQvGTvwqdqfbxrwlXog=	2017-07-13 13:54:35.927398+08	t	admin			trpkb2017@163.com	t	t	2017-07-12 15:57:42.722903+08
+1	pbkdf2_sha256$36000$kKZDr2bPvs4l$H/vWFYseGGfh4zlghNCl0dvqtw+4FTiKS+hUsXNydx4=	2017-07-13 13:58:07.651534+08	f	trpkb			trpkb2017@163.com	t	t	2017-07-08 19:43:00+08
 \.
 
 
@@ -6619,7 +6621,7 @@ SELECT pg_catalog.setval('auth_user_groups_id_seq', 1, false);
 -- Name: auth_user_id_seq; Type: SEQUENCE SET; Schema: public; Owner: trpkb
 --
 
-SELECT pg_catalog.setval('auth_user_id_seq', 1, true);
+SELECT pg_catalog.setval('auth_user_id_seq', 2, true);
 
 
 --
@@ -6643,6 +6645,7 @@ SELECT pg_catalog.setval('auth_user_user_permissions_id_seq', 1, false);
 
 COPY django_admin_log (id, action_time, object_id, object_repr, action_flag, change_message, content_type_id, user_id) FROM stdin;
 3	2017-07-12 15:58:50.708328+08	1	trpkb.com	2	[{"changed": {"fields": ["domain", "name"]}}]	15	3
+1	2017-07-13 13:57:23.409138+08	1	trpkb	2	[{"changed": {"fields": ["email", "is_superuser", "last_login"]}}]	10	3
 \.
 
 
@@ -6650,7 +6653,7 @@ COPY django_admin_log (id, action_time, object_id, object_repr, action_flag, cha
 -- Name: django_admin_log_id_seq; Type: SEQUENCE SET; Schema: public; Owner: trpkb
 --
 
-SELECT pg_catalog.setval('django_admin_log_id_seq', 1, false);
+SELECT pg_catalog.setval('django_admin_log_id_seq', 1, true);
 
 
 --
@@ -6734,6 +6737,7 @@ SELECT pg_catalog.setval('django_migrations_id_seq', 17, true);
 COPY django_session (session_key, session_data, expire_date) FROM stdin;
 mf5zek4339fv2dakize19l74vpj8u2il	ZGNiNmMwY2JkZDE2M2NlNTY4YzY4MDc2YTg0MDcyMzNiNjQ4ZjVlZDp7Il9hdXRoX3VzZXJfYmFja2VuZCI6ImRqYW5nby5jb250cmliLmF1dGguYmFja2VuZHMuTW9kZWxCYWNrZW5kIiwiX2F1dGhfdXNlcl9oYXNoIjoiMDgyZTBkZDYyZjBmNWFjMmE0ZDAxNzg2MmMwZjUxODFlMzdmZGMzYSIsIl9hdXRoX3VzZXJfaWQiOiIxIn0=	2017-07-22 19:44:39.126877+08
 d61s0lwubkqspof0u2fob00j6s2rk224	NjdjZTY0Yzc0NDRjMGRmOGE5MWQ1MmM0Njg5ZGRlYTJiNjdmZTIxNjp7Il9hdXRoX3VzZXJfaWQiOiIzIiwiX2F1dGhfdXNlcl9oYXNoIjoiM2JlZGEwMDYyZGM4YzEzZGE1ODIwZWQwNGNmZTYwMDZlZjQ0ZWJjYiIsIl9hdXRoX3VzZXJfYmFja2VuZCI6ImRqYW5nby5jb250cmliLmF1dGguYmFja2VuZHMuTW9kZWxCYWNrZW5kIn0=	2017-07-26 15:58:01.701009+08
+3pv2viq1y1l7dka28dyus3h3cjjfssnn	OThkZTIyMDQyOTQ5MDQ0NDU1MWZmY2RmZDBmNDA1OGY0N2I0MjA2OTp7Il9hdXRoX3VzZXJfaWQiOiIxIiwiX2F1dGhfdXNlcl9iYWNrZW5kIjoiZGphbmdvLmNvbnRyaWIuYXV0aC5iYWNrZW5kcy5Nb2RlbEJhY2tlbmQiLCJfYXV0aF91c2VyX2hhc2giOiIxMzYwYTkyYTQ1YWRmOTczODVlNWUzMTg4MTM4MWVlNjJiMWEwY2E5In0=	2017-07-27 13:58:07.653619+08
 \.
 
 

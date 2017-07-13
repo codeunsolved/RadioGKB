@@ -4,19 +4,19 @@ from django.contrib.postgres.fields import JSONField
 
 
 class Draft(models.Model):
-    STATE_CHOICES = (
-    ('Draft', 'Draft'),
-    ('Under Review', 'Under Review'),
-    ('Revision', 'Revision'),
-    ('Accepted', ' Accepted'),
-    ('Rejected', 'Rejected'),)
+    STATUS_CHOICES = (
+        ('Draft', 'Draft'),
+        ('Under Review', 'Under Review'),
+        ('Revision', 'Revision'),
+        ('Accepted', ' Accepted'),
+        ('Rejected', 'Rejected'),)
 
     KB_CHOICES = (
-    ('SNP', 'SNP'),
-    ('Expression', 'Expression'),)
+        ('SNP', 'SNP'),
+        ('Expression', 'Expression'),)
 
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    state = models.CharField(max_length=20, choices=STATE_CHOICES)
+    state = models.CharField(max_length=20, choices=STATUS_CHOICES)
     kb = models.CharField(max_length=20, choices=KB_CHOICES)
     pubmed_id = models.IntegerField()
     content = JSONField()
