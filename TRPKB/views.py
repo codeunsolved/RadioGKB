@@ -6,7 +6,9 @@ from django.shortcuts import render
 
 from KB_SNP.models import Association
 from KB_SNP.models import Tumor, Gene, Variant, EvidenceBasedMedicineLevel, Research, Prognosis, Subgroup
-#from Submit.models import Draft
+from Submit.models import Draft
+
+from Submit.forms_snp import *
 
 from .importData import read_xls
 
@@ -40,7 +42,6 @@ def access(request):
 
 def submit(request):
     context = {'stats': get_stats()}
-    
     return render(request, 'submit.html', context)
 
 
@@ -49,7 +50,7 @@ def news(request):
     return render(request, 'index.html', context)
 
 
-def query_submit(request):
+def submit_query(request):
     def get_status_html(status):
         if status in ['Revison', 'Rejected']:
             return '<strong style="color: red;">{}</strong>{}'.format(
@@ -107,11 +108,23 @@ def query_submit(request):
                        r.user.username,
                        action]
                 response['data'].append(row)
-        elif tab == 'new':
-            kb = request.POST['kb']
+    except Exception as e:
+        raise e
+
+    return HttpResponse(json.dumps(response), content_type="application/json")
+
+
+def submit_add(request):
+    response = {}
+
+    try:
+        kb = request.POST['kb']
+
+        if kb == 'SNP':
             step = request.POST['step']
             content = json.loads(request.POST['content'])
 
+            response = {'code': 1}
 
     except Exception as e:
         raise e
@@ -119,9 +132,14 @@ def query_submit(request):
     return HttpResponse(json.dumps(response), content_type="application/json")
 
 
-def snp_new(request):
-    context = {'stats': get_stats()}
-    return render(request, 'snp_new.html', context)
+def snp_add(request, submit_id):
+    forms = {'research': KbSnpResearchForm(),
+             }
+    if submit_id == 'new':
+        context = {'stats': get_stats(), 'submit_id': 0, 'step': 1, 'forms': forms}
+    else:
+        pass
+    return render(request, 'snp_add.html', context)
 
 
 def snp_search(request):

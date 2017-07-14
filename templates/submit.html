@@ -77,7 +77,7 @@
                       <span class="caret"></span>
                     </button>
                     <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
-                      <li><a href="{% url 'snp_new' %}">SNP</a></li>
+                      <li><a href="{% url 'snp_add' submit_id='new' %}">SNP</a></li>
                       <li><a href="#">Expression</a></li>
                     </ul>
                   </div>
@@ -127,5 +127,5 @@
       {% endblock container %}
 
     {% block script %}
-    <script src='{% static "js/query_submit.js" %}'></script>
+    <script src='{% static "js/submit_query.js" %}'></script>
     {% endblock script %}

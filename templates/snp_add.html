@@ -2,7 +2,7 @@
 
 {% load static %}
 
-    {% block head_title %}Submit new - SNP{% endblock head_title %}
+    {% block head_title %}Submit add - SNP{% endblock head_title %}
 
     {% block nav %}
     <ul class="nav nav-pills nav-justified" style="border-top: 1px solid black;border-bottom: 1px solid black;">
@@ -34,18 +34,16 @@
             <div id="STEP01" class="tab-pane fade in active">
               <div class="panel panel-default">
                 <div class="panel-body">
-                  <form>
+                  <form id="STEP01_form">
                     <div class="input-group">
-                      
                       <span class="input-group-addon">Title<span style="color: red;">*</span></span>
-                      <input name="title" class="form-control" type="text" required>
-
+                      <input name="title_" class="form-control" type="text" required>
                     </div>
 
                     <br>
                     <div class="input-group">
                       <span class="input-group-addon">PMID</span>
-                      <input name="pubmed_id" class="form-control" type="text">
+                      <input name="pubmed_id_" class="form-control" type="text">
                     </div>
                     <br>
                     <div class="well well-sm">
@@ -54,18 +52,28 @@
 
                     <div id="STEP01_msg"></div>
 
-                    <nav>
-                      <ul class="pager">
-                        <li><a id="STEP01_next" type="submit">Next</a></li>
-                      </ul>
-                    </nav>
+                    <div class="text-center">
+                      <div class="btn-group">
+                        <a id="STEP01_next" class="btn btn-default">Next >></a>
+                      </div>
+                    </div>
                   </form>
                 </div>
               </div>
             </div>
 
             <div id="STEP02" class="tab-pane fade">
-              222222
+              <div class="panel panel-default">
+                <div class="panel-body">
+                  <form id="STEP02_form">
+                    <div class="input-group">
+                      <span class="input-group-addon">Title<span style="color: red;">*</span></span>
+                      <input name="title" class="form-control" type="text" required>
+                    </div>
+                    <br>
+                  </form>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -78,5 +86,9 @@
       {% endblock container %}
 
     {% block script %}
+    <script type="text/javascript">
+      var submit_id = {{ submit_id }};
+      var step = {{ step }};
+    </script>
     <script src='{% static "js/submit_new.js" %}'></script>
     {% endblock script %}
