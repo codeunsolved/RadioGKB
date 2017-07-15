@@ -5,7 +5,7 @@
     {% block head_title %}Submit add - SNP{% endblock head_title %}
 
     {% block nav %}
-    <ul class="nav nav-pills nav-justified" style="border-top: 1px solid black;border-bottom: 1px solid black;">
+    <ul class="nav nav-pills nav-justified" style="border-top:1px solid black;border-bottom:1px solid black;">
       <li role="presentation"><a href="{% url 'about' %}">About the Knowledgebase</a></li>
       <li role="presentation"><a href="{% url 'about_k' %}">About the Knowledge</a></li>
       <li role="presentation"><a href="{% url 'access' %}">Access the Knowledge</a></li>
@@ -15,31 +15,30 @@
     {% endblock nav %}
 
       {% block container %}
-      <div class="row" style="margin-top: 40px;">
+      <div class="row" style="margin-top:40px;">
         {% if user.is_authenticated %}
         <div class="col-md-3 col-sm-3 col-xs-3">
           <ul class="nav nav-pills nav-stacked">
             <li role="presentation" class="active"><a id="STEP01_nav" href="#STEP01" data-toggle="tab">Check duplication</a></li>
             <li role="presentation" class="disabled"><a id="STEP02_nav" href="#STEP02">Research</a></li>
             <li role="presentation" class="disabled"><a id="STEP03_nav" href="#STEP03">Tumor</a></li>
-            <li role="presentation" class="disabled"><a id="STEP04_nav" href="#STEP04">Gene</a></li>
-            <li role="presentation" class="disabled"><a id="STEP05_nav" href="#STEP05">Variant</a></li>
-            <li role="presentation" class="disabled"><a id="STEP06_nav" href="#STEP06">Prognosis</a></li>
-            <li role="presentation" class="disabled"><a id="STEP07_nav" href="#STEP07">Association</a></li>
-            <li role="presentation" class="disabled"><a id="STEP08_nav" href="#STEP08">Confirm & Submit</a></li>
+            <li role="presentation" class="disabled"><a id="STEP04_nav" href="#STEP04">Gene & Variant</a></li>
+            <li role="presentation" class="disabled"><a id="STEP05_nav" href="#STEP05">Prognosis</a></li>
+            <li role="presentation" class="disabled"><a id="STEP06_nav" href="#STEP06">Association</a></li>
+            <li role="presentation" class="disabled"><a id="STEP07_nav" href="#STEP07">Confirm & Submit</a></li>
           </ul>
         </div>
         <div class="col-md-9 col-sm-9 col-xs-9">
           <div class="tab-content">
+            <!-- STEP01 -->
             <div id="STEP01" class="tab-pane fade in active">
               <div class="panel panel-default">
                 <div class="panel-body">
                   <form id="STEP01_form">
                     <div class="input-group">
-                      <span class="input-group-addon">Title<span style="color: red;">*</span></span>
+                      <span class="input-group-addon">Title<span style="color:red;">*</span></span>
                       <input name="title_" class="form-control" type="text" required>
                     </div>
-
                     <br>
                     <div class="input-group">
                       <span class="input-group-addon">PMID</span>
@@ -54,27 +53,285 @@
 
                     <div class="text-center">
                       <div class="btn-group">
-                        <a id="STEP01_next" class="btn btn-default">Next >></a>
+                        <a class="btn btn-default next">Next »</a>
                       </div>
                     </div>
                   </form>
                 </div>
               </div>
             </div>
-
+            <!-- /STEP01 -->
+            <!-- STEP02 -->
             <div id="STEP02" class="tab-pane fade">
               <div class="panel panel-default">
                 <div class="panel-body">
                   <form id="STEP02_form">
                     <div class="input-group">
-                      <span class="input-group-addon">Title<span style="color: red;">*</span></span>
+                      <span class="input-group-addon">Title<span style="color:red;">*</span></span>
                       <input name="title" class="form-control" type="text" required>
                     </div>
                     <br>
+                    <div class="input-group">
+                      <span class="input-group-addon">PMID</span>
+                      <input name="pubmed_id" class="form-control" type="text">
+                    </div>
+                    <br>
+                    <div class="input-group">
+                      <span class="input-group-addon">Language<span style="color:red;">*</span></span>
+                      <select name="language" class="form-control">
+                        <option value="English" selected>English</option>
+                        <option value="Chinese">Chinese</option>
+                      </select>
+                    </div>
+                    <br>
+                    <div class="input-group">
+                      <span class="input-group-addon">Publish Year<span style="color:red;">*</span></span>
+                      <input name="pub_year" class="form-control" type="number">
+                    </div>
+                    <br>
+                    <div class="input-group">
+                      <span class="input-group-addon">Reference URL<span style="color:red;">*</span></span>
+                      <input name="url" class="form-control" type="text" required>
+                    </div>
+                    <br>
+                    <div class="input-group">
+                      <span class="input-group-addon">Publication Type<span style="color:red;">*</span></span>
+                      <select name="pub_type" class="form-control">
+                        <option value="" selected>- SELECT -</option>
+                        <option value="Ph.D. thesis">Ph.D. thesis</option>
+                        <option value="Master's thesis">Master's thesis</option>
+                        <option value="Peer Review">Peer Review</option>
+                        <option value="Proceeding's paper">Proceeding's paper</option>
+                      </select>
+                    </div>
+                    <br>
+                    <div class="input-group">
+                      <span class="input-group-addon">Evidence-base Medicine Level<span style="color:red;">*</span></span>
+                      <select name="ebml" class="form-control">
+                        <option value="" selected>- SELECT -</option>
+                        {% for x in forms.research.ebml %}
+                        <option value="{{ x }}">{{ x }}</option>
+                        {% endfor %}
+                      </select>
+                    </div>
+                    <br>
+                    <div class="input-group">
+                      <span class="input-group-addon">Ethnicity</span>
+                      <input name="ethnicity" class="form-control" type="text">
+                    </div>
+                    <br>
+                    <div class="input-group">
+                      <span class="input-group-addon">Total Patients<span style="color:red;">*</span></span>
+                      <input name="patient_number" class="form-control" type="number" required>
+                    </div>
+                    <br>
+                    <div class="input-group">
+                      <span class="input-group-addon">Male</span>
+                      <input name="male" class="form-control" type="number">
+                    </div>
+                    <br>
+                    <div class="input-group">
+                      <span class="input-group-addon">Female</span>
+                      <input name="female" class="form-control" type="number">
+                    </div>
+                    <br>
+                    <div class="input-group">
+                      <span class="input-group-addon">Median Age</span>
+                      <input name="median_age" class="form-control" type="number">
+                    </div>
+                    <br>
+                    <div class="input-group">
+                      <span class="input-group-addon">Mean Age</span>
+                      <input name="mean_age" class="form-control" type="number">
+                    </div>
+                    <br>
+                    <div class="input-group">
+                      <span class="input-group-addon">Age Range</span>
+                      <input name="age_range_0" class="form-control" type="number" placeholder="Start">
+                      <input name="age_range_1" class="form-control" type="number" placeholder="End">
+                    </div>
+                    <br>
+                    <div class="input-group">
+                      <span class="input-group-addon">Treatment Description</span>
+                      <textarea name="treatment_desc" class="form-control"></textarea>
+                    </div>
+                    <br>
+                    <div class="input-group">
+                      <span class="input-group-addon">Treatment Type</span>
+                      <input name="treatment_type" class="form-control" type="text">
+                    </div>
+                    <br>
+
+                    <div id="STEP02_msg"></div>
+
+                    <div class="text-center">
+                      <div class="btn-group">
+                        <a class="btn btn-default back">« Back</a>
+                        <a class="btn btn-default save">Save</a>
+                        <a class="btn btn-default next">Next »</a>
+                      </div>
+                    </div>
                   </form>
                 </div>
               </div>
             </div>
+            <!-- /STEP02 -->
+            <!-- STEP03 -->
+            <div id="STEP03" class="tab-pane fade">
+              <div class="panel panel-default">
+                <div class="panel-body">
+                  <form id="STEP03_form">
+                    <div class="panel panel-success">
+                      <div class="panel-heading">
+                        <strong>Tumor No.1</strong>
+                      </div>
+                      <div class="panel-body tumor">
+                        <div class="input-group">
+                          <span class="input-group-addon">Tumor Ontology Name<span style="color:red;">*</span></span>
+                          <input name="tumor" class="form-control" type="text" required>
+                        </div>
+                        <br>
+                        <div class="input-group">
+                          <span class="input-group-addon">MeSH term</span>
+                          <input name="mesh_term" class="form-control" type="text">
+                        </div>
+                        <br>
+                        <div class="input-group">
+                          <span class="input-group-addon">MeSH id</span>
+                          <input name="mesh_id" class="form-control" type="number">
+                        </div>
+                      </div>
+                    </div>
+                    <div class="well well-sm">
+                      Note: If the research you submit contains one more tumor, you can <strong>add</strong> another below.
+                    </div>
+
+                    <div id="tumor_above"></div>
+
+                    <div>
+                      <span id="STEP03_tumor_add" class="btn glyphicon glyphicon-plus-sign" style="cursor:pointer;font-size:1.5em;color:limegreen;"></span>
+                    </div>
+
+                    <div id="STEP03_msg"></div>
+
+                    <div class="text-center">
+                      <div class="btn-group">
+                        <a class="btn btn-default back">« Back</a>
+                        <a class="btn btn-default save">Save</a>
+                        <a class="btn btn-default next">Next »</a>
+                      </div>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+            <!-- /STEP03 -->
+            <!-- STEP04 -->
+            <div id="STEP04" class="tab-pane fade">
+              <div class="panel panel-default">
+                <div class="panel-body">
+                  <form id="STEP04_form">
+                    <div id="STEP04_container">
+                      <div class="panel panel-success">
+                        <div class="panel-heading">
+                          <strong>Tumor: </strong>
+                        </div>
+                        <div class="panel-body tumor_gene">
+                          <div class="panel panel-default">
+                            <div class="panel-body gene_variant">
+                              <div class="input-group">
+                                <span class="input-group-addon">Gene Symbol<span style="color:red;">*</span></span>
+                                <input name="gene" class="form-control" type="text" required>
+                              </div>
+                              <br>
+                              <div class="input-group">
+                                <span class="input-group-addon">Entrez Gene ID</span>
+                                <input name="entrez_id" class="form-control" type="number">
+                              </div>
+                              <br>
+                              <div class="input-group">
+                                <span class="input-group-addon">dbSNP RS ID<span style="color:red;">*</span></span>
+                                <input name="dbsnp" class="form-control" type="text" required>
+                              </div>
+                            </div>
+                          </div>
+
+                          <div class="variant_above"></div>
+
+                          <div>
+                            <span class="btn glyphicon glyphicon-plus-sign STEP04_variant_add" style="cursor:pointer;font-size:1.5em;color:limegreen;"></span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div id="STEP04_msg"></div>
+
+                    <div class="text-center">
+                      <div class="btn-group">
+                        <a class="btn btn-default back">« Back</a>
+                        <a class="btn btn-default save">Save</a>
+                        <a class="btn btn-default next">Next »</a>
+                      </div>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+            <!-- /STEP04 -->
+            <!-- STEP05 -->
+            <div id="STEP05" class="tab-pane fade">
+              <div class="panel panel-default">
+                <div class="panel-body">
+                  <form id="STEP05_form">
+                    <div class="panel panel-success table-responsive prognosis">
+                      <div class="panel-heading">
+                        <strong>Prognosis No.1</strong>
+                      </div>
+                      <table class="table table-striped">
+                        <thead>
+                          <tr class="headings">
+                            <th class="column-title">Prognosis<span style="color:red;">*</span></th>
+                            <th class="column-title">Type</th>
+                            <th class="column-title">Endpoint<span style="color:red;">*</span></th>
+                            <th class="column-title">Original<span style="color:red;">*</span></th>
+                            <th class="column-title">Case Meaning</th>
+                            <th class="column-title">Control Meaning</th>
+                            <th class="column-title">Total Meaning</th>
+                            <th class="column-title">Subgroup</th>
+                            <th class="column-title">Annotation</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+
+                        </tbody> 
+                      </table>
+                    </div>
+
+                    <div id="prognosis_above"></div>
+
+                    <div>
+                      <span id="STEP05_prognosis_add" class="btn glyphicon glyphicon-plus-sign" style="cursor:pointer;font-size:1.5em;color:limegreen;"></span>
+                    </div>
+
+                    <div id="STEP05_msg"></div>
+
+                    <div class="text-center">
+                      <div class="btn-group">
+                        <a class="btn btn-default back">« Back</a>
+                        <a class="btn btn-default save">Save</a>
+                        <a class="btn btn-default next">Next »</a>
+                      </div>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+            <!-- /STEP05 -->
+            <!-- STEP06 -->
+            <!-- /STEP06 -->
+            <!-- STEP07 -->
+            <!-- /STEP07 -->
           </div>
         </div>
         {% else %}
@@ -89,6 +346,7 @@
     <script type="text/javascript">
       var submit_id = {{ submit_id }};
       var step = {{ step }};
+      var content = JSON.parse('{{ content|safe }}');
     </script>
     <script src='{% static "js/submit_new.js" %}'></script>
     {% endblock script %}

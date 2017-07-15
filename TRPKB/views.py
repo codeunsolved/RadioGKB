@@ -133,10 +133,12 @@ def submit_add(request):
 
 
 def snp_add(request, submit_id):
-    forms = {'research': KbSnpResearchForm(),
+    forms = {'research_': KbSnpResearchForm(),
+             'research': {}
              }
     if submit_id == 'new':
-        context = {'stats': get_stats(), 'submit_id': 0, 'step': 1, 'forms': forms}
+        forms['research']['ebml'] = [x.ebml for x in EvidenceBasedMedicineLevel.objects.all()]
+        context = {'stats': get_stats(), 'submit_id': 0, 'step': 5, 'content': {}, 'forms': forms}
     else:
         pass
     return render(request, 'snp_add.html', context)
