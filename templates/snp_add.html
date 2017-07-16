@@ -183,7 +183,7 @@
                   <form id="STEP03_form">
                     <div class="panel panel-success">
                       <div class="panel-heading">
-                        <strong>Tumor No.1</strong>
+                        <strong id="STEP03_tumor_no">Tumor No.1</strong>
                       </div>
                       <div class="panel-body tumor">
                         <div class="input-group">
@@ -234,14 +234,21 @@
                     <div id="STEP04_container">
                       <div class="panel panel-success">
                         <div class="panel-heading">
-                          <strong>Tumor: </strong>
+                          <strong id="STEP04_tumor_name">Tumor: ???</strong>
                         </div>
-                        <div class="panel-body tumor_gene">
+                        <div class="panel-body tumor_variant">
                           <div class="panel panel-default">
-                            <div class="panel-body gene_variant">
-                              <div class="input-group">
+                            <div class="panel-body variant">
+                              <div class="input-group STEP04_gene_existed">
                                 <span class="input-group-addon">Gene Symbol<span style="color:red;">*</span></span>
-                                <input name="gene" class="form-control" type="text" required>
+                                <input name="gene" class="form-control" type="text" list="genes" required>
+                              </div>
+                              <div class="input-group">
+                                <span class="input-group-addon">
+                                  <input class="STEP04_gene_new" type="radio">
+                                  Not in suggestions? Specify a new one:<span style="color:red;">*</span>
+                                </span>
+                                <input name="gene_new" class="form-control" type="text" disabled>
                               </div>
                               <br>
                               <div class="input-group">
@@ -265,6 +272,14 @@
                       </div>
                     </div>
 
+                    <div class="well well-sm">
+                      Note: If the <strong>gene</strong> you submit doesn't in suggestions, please specify a new one.
+                    </div>
+
+                    <div class="well well-sm">
+                      Note: If the <strong>variant</strong> you submit doesn't belong to any genes, please choose '<strong>- N/A -</strong>' in suggestions.
+                    </div>
+
                     <div id="STEP04_msg"></div>
 
                     <div class="text-center">
@@ -277,6 +292,11 @@
                   </form>
                 </div>
               </div>
+              <datalist id="genes">
+                {% for gene in genes %}
+                <option value="{{ gene }}">
+                {% endfor %}
+              </datalist>
             </div>
             <!-- /STEP04 -->
             <!-- STEP05 -->
@@ -284,28 +304,61 @@
               <div class="panel panel-default">
                 <div class="panel-body">
                   <form id="STEP05_form">
-                    <div class="panel panel-success table-responsive prognosis">
+                    <div class="panel panel-success">
                       <div class="panel-heading">
-                        <strong>Prognosis No.1</strong>
+                        <strong id="STEP05_prognosis_no">Prognosis No.1</strong>
                       </div>
-                      <table class="table table-striped">
-                        <thead>
-                          <tr class="headings">
-                            <th class="column-title">Prognosis<span style="color:red;">*</span></th>
-                            <th class="column-title">Type</th>
-                            <th class="column-title">Endpoint<span style="color:red;">*</span></th>
-                            <th class="column-title">Original<span style="color:red;">*</span></th>
-                            <th class="column-title">Case Meaning</th>
-                            <th class="column-title">Control Meaning</th>
-                            <th class="column-title">Total Meaning</th>
-                            <th class="column-title">Subgroup</th>
-                            <th class="column-title">Annotation</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-
-                        </tbody> 
-                      </table>
+                      <div class="panel-body">
+                        <div class="input-group">
+                          <span class="input-group-addon">Prognosis<span style="color:red;">*</span></span>
+                          <input name="prognosis_name" class="form-control" type="text" required>
+                        </div>
+                        <br>
+                        <div class="input-group">
+                          <span class="input-group-addon">Type</span>
+                          <input name="prognosis_type" class="form-control" type="text">
+                        </div>
+                        <br>
+                        <div class="input-group">
+                          <span class="input-group-addon">Endpoint<span style="color:red;">*</span></span>
+                          <input name="endpoint" class="form-control" type="text" required>
+                        </div>
+                        <br>
+                        <div class="input-group">
+                          <span class="input-group-addon">Original<span style="color:red;">*</span></span>
+                          <select name="original" class="form-control">
+                            <option value="" selected>- SELECT -</option>
+                            <option value="Yes">Yes</option>
+                            <option value="No">No</option>
+                          </select>
+                        </div>
+                        <br>
+                        <div class="input-group">
+                          <span class="input-group-addon">Case Meaning</span>
+                          <input name="case_meaning" class="form-control" type="text">
+                        </div>
+                        <br>
+                        <div class="input-group">
+                          <span class="input-group-addon">Control Meaning</span>
+                          <input name="control_meaning" class="form-control" type="text">
+                        </div>
+                        <br>
+                        <div class="input-group">
+                          <span class="input-group-addon">Total Meaning</span>
+                          <input name="total_meaning" class="form-control" type="text">
+                        </div>
+                        <br>
+                        <div class="input-group">
+                          <span class="input-group-addon">Subgroup</span>
+                          <input name="subgroup" class="form-control" type="text">
+                          <span class="input-group-addon" style="cursor:pointer;"><strong class="STEP05_subgroup_add" style="font-size:1.3em;color:limegreen;">+</strong></span>
+                        </div>
+                        <br>
+                        <div class="input-group">
+                          <span class="input-group-addon">Case Meaning</span>
+                          <textarea name="annotation" class="form-control"></textarea>
+                        </div>
+                      </div>
                     </div>
 
                     <div id="prognosis_above"></div>
@@ -347,6 +400,10 @@
       var submit_id = {{ submit_id }};
       var step = {{ step }};
       var content = JSON.parse('{{ content|safe }}');
+      var genes = [];
+      $("#genes option").each(function() {
+          genes.push($(this).val());
+      });
     </script>
     <script src='{% static "js/submit_new.js" %}'></script>
     {% endblock script %}

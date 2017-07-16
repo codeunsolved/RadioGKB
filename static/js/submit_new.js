@@ -12,6 +12,11 @@ function addNew() {
     var tumor_num = 1;
     var prognosis_num = 1;
 
+    var tumor_html = $('#STEP03_form .panel').prop('outerHTML');
+    var variant_html = $('#STEP04_form .variant').parent().prop('outerHTML');
+    var tumor_variant_html = $('#STEP04_container').html();
+    var prognosis_html = $('#STEP05_form .panel').prop('outerHTML');
+
     activeTab(step, true);
 
     $('#STEP01_nav').click({'id': 1}, setStep);
@@ -27,8 +32,12 @@ function addNew() {
     $('.back').click(backStep);
 
     $('#STEP03_tumor_add').click(addTumor);
+    $('#STEP03_form').on('click', '.STEP03_tumor_minus', minusTumor); //DOM changed, click() doesn't work
     $('#STEP04_nav').click(genStep04);
-    $('#STEP04_form').on('click', '.STEP04_variant_add', addTumorGene); //DOM changed, click() doesn't work
+    $('#STEP04_form').on('click', '.STEP04_variant_add', addVariant);
+    $('#STEP04_form').on('click', '.STEP04_variant_minus', minusVariant);
+    $('#STEP04_form').on('click', '.STEP04_gene_new', toggleGeneNew);
+    $('#STEP04_form').on('click', '.STEP04_gene_existed', toggleGeneExisted);
     $('#STEP05_prognosis_add').click(addPrognosis);
 
     function setStep(event) {
@@ -42,13 +51,11 @@ function addNew() {
         var step_id = 'STEP0' + id.toString();
         var form = {};
 
-        content[step_id] = {};
+        content[step_id] = {}; // reset
 
         $("#"+step_id+"_form :input").each(function() {
             var key = $(this).attr("name");
             form[key] = $(this).val();
-            //console.log(key);
-            //console.log(form[key]);
         });
 
         if (checkForm(step_id)) {
@@ -68,9 +75,26 @@ function addNew() {
                     });
                     content[step_id]['tumor'].push(tumor_vals);
                 });
+            } else if (id == 4) {
+                content[step_id]['variant'] = [];
+                $("#"+step_id+"_form .tumor_variant").each(function() {
+                    var variants = [];
+                    $(".variant", this).each(function() {
+                        var new_ = false;
+                        var gene = $(this).find('input[name=gene]').val();
+                        if ($(this).find('.STEP04_gene_new').is(":checked")) {
+                            gene = $(this).find('input[name=gene_new]').val();
+                            new_ = true;
+                        }
+                        var entrez_id = $(this).find('input[name=entrez_id]').val();
+                        var dbsnp = $(this).find('input[name=dbsnp]').val();
+                        variants.push({'gene': gene, 'new': new_, 'entrez_id': entrez_id, 'dbsnp': dbsnp});
+                    });
+                    content[step_id]['variant'].push(variants);
+                });
             } else {
                 for (var key in form) {
-                     content[step_id][key] = form[key];
+                    content[step_id][key] = form[key];
                 }
             }
 
@@ -100,15 +124,30 @@ function addNew() {
 
     function checkForm(step_id) {
         var valid = true;
+        var msgs = [];
 
         $("#"+step_id+"_form").find("input:required, select").each(function() {
             var v = $(this).val();
             if (v.length == 0 || v.match(/^\s+$/g)) {
-                $("#"+step_id+"_msg").html(formatMsg('Got empty required field(s)', 'danger'));
+                msgs.push('Please fill required field(s)');
                 valid = false;
                 return false;
             }
         });
+        if (step_id == 'STEP04') {
+            $("#"+step_id+"_form").find("input[name=gene]:required").each(function() {
+                var v = $(this).val();
+                if ($.inArray(v, genes) == -1) {
+                    console.log(v);
+                    msgs.push('Please use Gene Symbol in suggestions! If it is not in suggestions, please specify a new one.');
+                    valid = false;
+                    return false;
+                }
+            });
+        }
+        if (msgs.length >= 1) {
+            $("#"+step_id+"_msg").html(formatMsg(msgs.join('<br><br>'), 'danger'));
+        }
         return valid;
     }
 
@@ -148,64 +187,69 @@ function addNew() {
         var msg_html = '<div class="alert alert-' + type + ' typedanger alert-dismissible fade in">' +
                        '<button type="button" class="close" data-dismiss="alert" aria-label="Close">' +
                        '<span aria-hidden="true">×</span></button><strong>' + msg + '</strong></div>';
-        return msg_html
+        return msg_html;
     }
 
     function addTumor() {
+        var tumor_minus_html = '<span class="pull-right glyphicon glyphicon-minus STEP03_tumor_minus" style="cursor:pointer;color:red;"></span>';
+        var $tumor_html = $(tumor_html);
         tumor_num += 1;
-        tumor_html = '<div id="tumor_' + tumor_num + '" class="panel panel-success"><div class="panel-heading">' +
-                     '<strong>Tumor No.' + tumor_num.toString() + '</strong>' +
-                     '<span class="pull-right glyphicon glyphicon-minus" onclick="$(\'#tumor_' + tumor_num +
-                     '\').remove();" style="cursor:pointer;color:red;"></span>' +
-                     '</div><div class="panel-body tumor"><div class="input-group">' +
-                     '<span class="input-group-addon">Tumor Ontology Name' +
-                     '<span style="color:red;">*</span></span><input name="tumor"' +
-                     ' class="form-control" type="text" required>' +
-                     '</div><br><div class="input-group"><span class="input-group-addon">' +
-                     'MeSH term</span><input name="mesh_term" class="form-control" ' +
-                     'type="text"></div><br><div class="input-group">' +
-                     '<span class="input-group-addon">MeSH id</span>' +
-                     '<input name="mesh_id" class="form-control" type="number">' +
-                     '</div></div></div>';
-        $('#tumor_above').before(tumor_html);
+
+        $tumor_html.find('#STEP03_tumor_no').text("Tumor No."+tumor_num.toString());
+        $tumor_html.find('#STEP03_tumor_no').after(tumor_minus_html);
+        $tumor_html.insertBefore('#tumor_above');
+    }
+
+    function minusTumor() {
+        $(this).parent().parent().remove();
     }
 
     function genStep04() {
-        var tumor_gene_html = '';
-        tumors = content.STEP03.tumor;
-
-        for (var i = 0; i < tumors.length; i++) {
-            tumor_gene_html += '<div class="panel panel-success"><div class="panel-heading">' +
-                               '<strong>Tumor: ' + tumors[i].tumor + '</strong></div>' +
-                               '<div class="panel-body tumor_gene"><div class="panel panel-default">' +
-                               '<div class="panel-body gene_variant"><div class="input-group">' +
-                               '<span class="input-group-addon">Gene Symbol<span style="color:red;">*</span></span>' +
-                               '<input name="gene" class="form-control" type="text" required></div><br>' +
-                               '<div class="input-group"><span class="input-group-addon">Entrez Gene ID</span>' +
-                               '<input name="entrez_id" class="form-control" type="number"></div><br>' +
-                               '<div class="input-group"><span class="input-group-addon">dbSNP RS ID' +
-                               '<span style="color:red;">*</span></span><input name="dbsnp" ' +
-                               'class="form-control" type="text" required></div></div></div>' +
-                               '<div class="variant_above"></div><div><span ' +
-                               ' class="btn glyphicon glyphicon-plus-sign STEP04_variant_add" ' +
-                               'style="cursor:pointer;font-size:1.5em;color:limegreen;">' +
-                               '</span></div></div></div>';
+        if ('STEP03' in content) {
+            var tumors = content.STEP03.tumor;
+            var tumor_variant_htmls = '';
+            for (var i = 0; i < tumors.length; i++) {
+                var $tumor_variant_html = $(tumor_variant_html);
+                $tumor_variant_html.find('#STEP04_tumor_name').text("Tumor: "+tumors[i].tumor);
+                tumor_variant_htmls += $tumor_variant_html.prop('outerHTML');
+            }
+            $('#STEP04_container').html(tumor_variant_htmls);
+        } else {
+            $('#STEP04_container').html('');
+            $("#STEP04_msg").html(formatMsg('Please complete STEP03 Tumor first!', 'danger'));
         }
-        $('#STEP04_container').html(tumor_gene_html);
     }
 
-    function addTumorGene() {
-        gene_variant_html = '<div class="panel panel-default"><div class="panel-body gene_variant">' +
-                            '<div class="input-group"><span class="input-group-addon">' +
-                            'Gene Symbol<span style="color:red;">*</span></span>' +
-                            '<input name="gene" class="form-control" type="text" required>' +
-                            '</div><br><div class="input-group"><span class="input-group-addon">' +
-                            'Entrez Gene ID</span><input name="entrez_id" class="form-control" ' +
-                            'type="number"></div><br><div class="input-group">' +
-                            '<span class="input-group-addon">dbSNP RS ID<span style="color:red;">' +
-                            '*</span></span><input name="dbsnp" class="form-control" type="text" required>' +
-                            '</div></div></div>';
-        $(this).parent().parent().find('.variant_above').before(gene_variant_html);
+    function addVariant() {
+        var variant_minus_html = '<div class="col-md-12 col-sm-12 col-xs-12">' +
+                                 '<span class="pull-right glyphicon glyphicon-minus STEP04_variant_minus" ' +
+                                 'style="cursor:pointer;color:red;"></span><br></div>';
+        var $variant_html = $(variant_html);
+        $variant_html.find('.STEP04_gene_existed').before(variant_minus_html);
+        $(this).parent().parent().find('.variant_above').before($variant_html.prop('outerHTML'));
+    }
+
+    function minusVariant() {
+        $(this).parent().parent().parent().remove();
+    }
+
+    function toggleGeneNew() {
+        var gene_existed = $(this).parent().parent().parent().find('input[name=gene]');
+        var gene_new = $(this).parent().parent().find('input[name=gene_new]');
+        gene_existed.prop('disabled', true);
+        gene_existed.prop('required', false);
+        gene_new.prop('disabled', false);
+        gene_new.prop('required', true);
+    }
+
+    function toggleGeneExisted() {
+        var gene_existed = $(this).find('input[name=gene]');
+        var gene_new = $(this).parent().parent().find('input[name=gene_new]');
+        gene_existed.prop('disabled', false);
+        gene_existed.prop('required', true);
+        gene_new.prop('disabled', true);
+        gene_new.prop('required', false);
+        $(this).parent().find('.STEP04_gene_new').prop('checked', false);
     }
 
     function addPrognosis () {

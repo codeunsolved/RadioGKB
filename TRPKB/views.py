@@ -133,12 +133,17 @@ def submit_add(request):
 
 
 def snp_add(request, submit_id):
-    forms = {'research_': KbSnpResearchForm(),
-             'research': {}
-             }
+    context = {'stats': get_stats(), 'submit_id': None, 'step': None, 'content': {}}
+    forms = {'research': {}}
+
     if submit_id == 'new':
         forms['research']['ebml'] = [x.ebml for x in EvidenceBasedMedicineLevel.objects.all()]
-        context = {'stats': get_stats(), 'submit_id': 0, 'step': 5, 'content': {}, 'forms': forms}
+        genes = [x.gene_official_symbol for x in Gene.objects.all()] + ['- N/A -']
+
+        context['submit_id'] = 0
+        context['step'] = 5
+        context['forms'] = forms
+        context['genes'] = genes
     else:
         pass
     return render(request, 'snp_add.html', context)
