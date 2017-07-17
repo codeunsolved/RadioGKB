@@ -50,6 +50,9 @@ function addNew() {
     $('#STEP06_form').on('click', '.STEP06_association_minus', minusAssociation);
     $('#STEP06_form').on('click', '.STEP06_column_add', addAssociationColumn);
     $('#STEP06_form').on('click', '.STEP06_column_minus', minusAssociationColumn);
+    $('#STEP06_form').on('change', '.STEP06_tumor', changeGene);
+    $('#STEP06_form').on('change', '.STEP06_gene', changeVariant);
+    $('#STEP06_form').on('change', '.STEP06_prognosis', changeSubgroup);
 
     function setStep(event) {
         step_now = event.data.id;
@@ -330,15 +333,95 @@ function addNew() {
 
         } else {
             var tumors = content.STEP03.tumor;
+            var prognoses = content.STEP05.prognosis;
             var tumors_options_html = '<option value="" selected>- SELECT -</option>';
+            var prognoses_options_html = '<option value="" selected>- SELECT -</option>';
 
             for (var i = 0; i < tumors.length; i++) {
-                tumors_options_html += '<option value="'+tumors[i]+'" selected>'+tumors[i]+'</option>';
+                tumors_options_html += '<option value="'+tumors[i].tumor+'" index_tumor="'+i.toString()+'">'+tumors[i].tumor+'</option>';
+            }
+            for (var i = 0; i < prognoses.length; i++) {
+                prognoses_options_html += '<option value="'+prognoses[i].prognosis_name+'" index_prognosis="'+i.toString()+'">'+prognoses[i].prognosis_name+'</option>';
             }
 
             $('#STEP06_container').html(step06_container_html);
-            $('#STEP06_form .panel').first().find('.STEP_tumor').html(tumors_options_html);
+            $('#STEP06_form .panel').first().find('.STEP06_tumor').html(tumors_options_html);
+            $('#STEP06_form .panel').first().find('.STEP06_prognosis').html(prognoses_options_html);
             association_html = $('#STEP06_form .panel').first().prop('outerHTML');
+        }
+    }
+
+    function changeGene() {
+        var i_tumor = parseInt($(":selected", this).attr('index_tumor'));
+        var genes_options_html = '<option value="" selected>- SELECT -</option>';
+        var genes = [];
+        var genes_index = {}; //for deduplication and storing variant's first index(no need all of them)
+
+        var variants = content.STEP04.variant[i_tumor];
+        for (var i = 0; i < variants.length; i++) {
+            var gene = '';
+            if (variants[i].new) {
+                gene = variants[i].gene_new;
+            } else {
+                gene = variants[i].gene;
+            }
+            if (!genes_index.hasOwnProperty(gene)) {
+                genes_index[gene] = i;
+                genes.push(gene);
+            }
+        }
+
+        for (var i = 0; i < genes.length; i++) {
+            genes_options_html += '<option value="'+genes[i]+'" index_tumor="'+i_tumor.toString()+'">'+genes[i]+'</option>';
+        }
+
+        $(this).parent().parent().parent().find('.STEP06_gene').html(genes_options_html);
+    }
+
+    function changeVariant() {
+        var i_tumor = parseInt($(":selected", this).attr('index_tumor'));
+        var gene = $(this).val();
+        var variants_options_html = '<option value="" selected>- SELECT -</option>';
+
+        var variants = content.STEP04.variant[i_tumor];
+        var dbsnps = []; // maybe duplicate actually
+
+        for (var i = 0; i < variants.length; i++) {
+            var gene_ = '';
+            if (variants[i].new) {
+                gene_ = variants[i].gene_new;
+            } else {
+                gene_ = variants[i].gene;
+            }
+
+            if (gene == gene_) {
+                dbsnps.push(variants[i].dbsnp);
+            }
+        }
+
+        for (var i = 0; i < dbsnps.length; i++) {
+            variants_options_html += '<option value="'+dbsnps[i]+'">'+dbsnps[i]+'</option>';
+        }
+
+        $(this).parent().parent().parent().find('.STEP06_variant').html(variants_options_html);
+    }
+
+    function changeSubgroup() {
+        var i_prognosis = parseInt($(":selected", this).attr('index_prognosis'));
+        var subgroup_options_html = '<option value="" selected>- SELECT -</option>';
+
+        var subgroups = content.STEP05.prognosis[i_prognosis].subgroup;
+        var $subgroup = $(this).parent().parent().parent().find('.STEP06_subgroup');
+        if (subgroups.length == 1 && subgroups[0] == "") {
+            subgroup_options_html = '<option value="N/A" selected>- N/A -</option>';
+            $subgroup.html(subgroup_options_html);
+            $subgroup.prop('disabled', true);
+        } else {
+            $subgroup.removeAttr("disabled");
+            for (var i = 0; i < subgroups.length; i++) {
+                subgroup_options_html += '<option value="'+subgroups[i]+'">'+subgroups[i]+'</option>';
+            }
+            $subgroup.html(subgroup_options_html);
         }
     }
 
