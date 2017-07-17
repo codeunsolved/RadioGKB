@@ -140,8 +140,9 @@ def snp_add(request, submit_id):
         forms['research']['ebml'] = [x.ebml for x in EvidenceBasedMedicineLevel.objects.all()]
         genes = [x.gene_official_symbol for x in Gene.objects.all()] + ['- N/A -']
 
+        context['review'] = 'false'
         context['submit_id'] = 0
-        context['step'] = 5
+        context['step'] = 6
         context['forms'] = forms
         context['genes'] = genes
     else:

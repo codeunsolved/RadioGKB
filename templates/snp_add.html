@@ -185,7 +185,7 @@
                       <div class="panel-heading">
                         <strong id="STEP03_tumor_no">Tumor No.1</strong>
                       </div>
-                      <div class="panel-body tumor">
+                      <div class="panel-body STEP03_tumor">
                         <div class="input-group">
                           <span class="input-group-addon">Tumor Ontology Name<span style="color:red;">*</span></span>
                           <input name="tumor" class="form-control" type="text" required>
@@ -236,9 +236,9 @@
                         <div class="panel-heading">
                           <strong id="STEP04_tumor_name">Tumor: ???</strong>
                         </div>
-                        <div class="panel-body tumor_variant">
+                        <div class="panel-body STEP04_tumor">
                           <div class="panel panel-default">
-                            <div class="panel-body variant">
+                            <div class="panel-body STEP04_variant">
                               <div class="input-group STEP04_gene_existed">
                                 <span class="input-group-addon">Gene Symbol<span style="color:red;">*</span></span>
                                 <input name="gene" class="form-control" type="text" list="genes" required>
@@ -280,6 +280,10 @@
                       Note: If the <strong>variant</strong> you submit doesn't belong to any genes, please choose '<strong>- N/A -</strong>' in suggestions.
                     </div>
 
+                    <div class="well well-sm">
+                      Note: This page will recreate content based on formmer step(s), save first if you want to preserve modifications.
+                    </div>
+
                     <div id="STEP04_msg"></div>
 
                     <div class="text-center">
@@ -308,7 +312,7 @@
                       <div class="panel-heading">
                         <strong id="STEP05_prognosis_no">Prognosis No.1</strong>
                       </div>
-                      <div class="panel-body">
+                      <div class="panel-body STEP05_prognosis">
                         <div class="input-group">
                           <span class="input-group-addon">Prognosis<span style="color:red;">*</span></span>
                           <input name="prognosis_name" class="form-control" type="text" required>
@@ -350,8 +354,11 @@
                         <br>
                         <div class="input-group">
                           <span class="input-group-addon">Subgroup</span>
-                          <input name="subgroup" class="form-control" type="text">
-                          <span class="input-group-addon" style="cursor:pointer;"><strong class="STEP05_subgroup_add" style="font-size:1.3em;color:limegreen;">+</strong></span>
+                          <div class="input-group">
+                            <input name="subgroup" class="form-control" type="text">
+                            <span class="input-group-addon STEP05_subgroup_add" style="cursor:pointer;"><strong style="color:limegreen;">+</strong></span>
+                          </div>
+                          <div class="subgroup_above"></div>
                         </div>
                         <br>
                         <div class="input-group">
@@ -382,6 +389,161 @@
             </div>
             <!-- /STEP05 -->
             <!-- STEP06 -->
+            <div id="STEP06" class="tab-pane fade">
+              <div class="panel panel-default">
+                <div class="panel-body">
+                  <form id="STEP06_form">
+                    <div id="STEP06_container">
+                      <div class="panel panel-success">
+                        <div class="panel-heading">
+                          <strong id="STEP06_association_no">Association No.1</strong>
+                        </div>
+                        <div class="panel-body">
+                          <div class="row">
+                            <div class="col-md-4 col-sm-4 col-xs-4">
+                              <div class="input-group">
+                                <span class="input-group-addon">Tumor<span style="color:red;">*</span></span>
+                                <select name="language" class="form-control STEP06_tumor">
+                                  <option value="" selected>- SELECT -</option>
+                                </select>
+                              </div>
+                            </div>
+                            <div class="col-md-4 col-sm-4 col-xs-4">
+                              <div class="input-group STEP06_gene">
+                                <span class="input-group-addon">Gene<span style="color:red;">*</span></span>
+                                <select name="language" class="form-control STEP06_gene">
+                                  <option value="" selected>- SELECT -</option>
+                                </select>
+                              </div>
+                            </div>
+                            <div class="col-md-4 col-sm-4 col-xs-4">
+                              <div class="input-group">
+                                <span class="input-group-addon">Variant<span style="color:red;">*</span></span>
+                                <select name="language" class="form-control STEP06_variant">
+                                  <option value="" selected>- SELECT -</option>
+                                </select>
+                              </div>
+                            </div>
+                          </div>
+                          <br>
+                          <div class="row">
+                            <div class="col-md-6 col-sm-6 col-xs-6">
+                              <div class="input-group">
+                                <span class="input-group-addon">Prognosis<span style="color:red;">*</span></span>
+                                <select name="language" class="form-control STEP06_prognosis">
+                                  <option value="" selected>- SELECT -</option>
+                                </select>
+                              </div>
+                            </div>
+                            <div class="col-md-6 col-sm-6 col-xs-6">
+                              <div class="input-group">
+                                <span class="input-group-addon">Subgroup<span style="color:red;">*</span></span>
+                                <select name="language" class="form-control STEP06_subgroup">
+                                  <option value="" selected>- SELECT -</option>
+                                </select>
+                              </div>
+                            </div>
+                          </div>
+                          <br>
+                          <div class="panel panel-default">
+                            <div class="panel-body">
+                              <table class="table table-striped">
+                                <thead>
+                                  <tr>
+                                    <th></th>
+                                    <th style="text-align:right;">
+                                      <span class="btn glyphicon glyphicon-plus-sign STEP06_column_add" style="cursor:pointer;font-size:1.5em;color:limegreen;"></span>
+                                    </th>
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                  <tr>
+                                    <td>Genotype<span style="color:red;">*</span></td>
+                                    <td><input name="genotype" class="form-control" type="text"></td>
+                                  </tr>
+                                  <tr>
+                                    <td>Case Number</td>
+                                    <td><input name="case_number" class="form-control" type="text"></td>
+                                  </tr>
+                                  <tr>
+                                    <td>Control Number</td>
+                                    <td><input name="control_number" class="form-control" type="text"></td>
+                                  </tr>
+                                  <tr>
+                                    <td>Total Number</td>
+                                    <td><input name="total_number" class="form-control" type="text"></td>
+                                  </tr>
+                                  <tr>
+                                    <td>OR(U)</td>
+                                    <td><input name="or_u" class="form-control" type="text"></td>
+                                  </tr>
+                                  <tr>
+                                    <td>HR(U)</td>
+                                    <td><input name="hr_u" class="form-control" type="text"></td>
+                                  </tr>
+                                  <tr>
+                                    <td>RR(U)</td>
+                                    <td><input name="rr_u" class="form-control" type="text"></td>
+                                  </tr>
+                                  <tr>
+                                    <td>95%CI(U)</td>
+                                    <td><input name="ci_u_95" class="form-control" type="text"></td>
+                                  </tr>
+                                  <tr>
+                                    <td>P(U)</td>
+                                    <td><input name="p_u" class="form-control" type="text"></td>
+                                  </tr>
+                                  <tr>
+                                    <td>OR(M)</td>
+                                    <td><input name="or_m" class="form-control" type="text"></td>
+                                  </tr>
+                                  <tr>
+                                    <td>HR(M)</td>
+                                    <td><input name="hr_m" class="form-control" type="text"></td>
+                                  </tr>
+                                  <tr>
+                                    <td>RR(M)</td>
+                                    <td><input name="rr_m" class="form-control" type="text"></td>
+                                  </tr>
+                                  <tr>
+                                    <td>95%CI(M)</td>
+                                    <td><input name="ci_m_95" class="form-control" type="text"></td>
+                                  </tr>
+                                  <tr>
+                                    <td>P(M)</td>
+                                    <td><input name="p_m" class="form-control" type="text"></td>
+                                  </tr>
+                                </tbody>
+                              </table>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div id="association_above"></div>
+
+                      <div>
+                        <span id="STEP06_association_add" class="btn glyphicon glyphicon-plus-sign" style="cursor:pointer;font-size:1.5em;color:limegreen;"></span>
+                      </div>
+                    </div>
+
+                    <div class="well well-sm">
+                      Note: This page will recreate content based on formmer step(s), save first if you want to preserve modifications.
+                    </div>
+
+                    <div id="STEP06_msg"></div>
+
+                    <div class="text-center">
+                      <div class="btn-group">
+                        <a class="btn btn-default back">« Back</a>
+                        <a class="btn btn-default save">Save</a>
+                        <a class="btn btn-default next">Next »</a>
+                      </div>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
             <!-- /STEP06 -->
             <!-- STEP07 -->
             <!-- /STEP07 -->
@@ -397,6 +559,8 @@
 
     {% block script %}
     <script type="text/javascript">
+      var review_mode = {{ review }};
+
       var submit_id = {{ submit_id }};
       var step = {{ step }};
       var content = JSON.parse('{{ content|safe }}');
@@ -405,5 +569,5 @@
           genes.push($(this).val());
       });
     </script>
-    <script src='{% static "js/submit_new.js" %}'></script>
+    <script src='{% static "js/submit_snp.js" %}'></script>
     {% endblock script %}
