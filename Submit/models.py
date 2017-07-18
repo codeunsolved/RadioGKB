@@ -19,6 +19,7 @@ class Draft(models.Model):
     status = models.CharField(max_length=20, choices=STATUS_CHOICES)
     kb = models.CharField(max_length=20, choices=KB_CHOICES)
     title = models.CharField(max_length=500)
+    pubmed_id = models.IntegerField(null=True, blank=True)
     content = JSONField()
     paper = models.FileField(upload_to='uploads/%Y/%m%d/', null=True, blank=True)
 

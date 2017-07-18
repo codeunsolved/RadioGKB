@@ -1,5 +1,6 @@
 import re
 import json
+import datetime
 
 from django.http import HttpResponse, Http404
 from django.shortcuts import render
@@ -74,7 +75,7 @@ def submit_query(request):
                        r.kb,
                        r.title,
                        get_status_html(r.status),
-                       content['log']['last_change']['time']]
+                       content['log'][-1]['time'][:19]]
                 response['data'].append(row)
         elif tab == 'accepted':
             results = Draft.objects.filter(user__username=username).filter(status='Accepted')
@@ -84,14 +85,14 @@ def submit_query(request):
                        r.kb,
                        r.title,
                        get_status_html(r.status),
-                       content['log']['last_change']['time']]
+                       content['log'][-1]['time'][:19]]
                 response['data'].append(row)
         elif tab == 'approved':
             results = Draft.objects.filter(status='Accepted')
             for i, r in enumerate(results):
                 content = json.loads(r.content)
-                last_change = "{} at {}".format(content['log']['last_change']['user'],
-                                                content['log']['last_change']['time'])
+                last_change = "{} at {}".format(content['log'][-1]['user'],
+                                                content['log'][-1]['time'][:19])
                 row = [i + 1,
                        r.kb,
                        r.title,
@@ -117,14 +118,66 @@ def submit_query(request):
 def submit_add(request):
     response = {}
 
+    username = request.user.username
     try:
         kb = request.POST['kb']
-
+        step = int(request.POST['step'])
+        type_ = request.POST['type']
+        content = json.loads(request.POST['content'])
         if kb == 'SNP':
-            step = request.POST['step']
-            content = json.loads(request.POST['content'])
+            if step == 1:
+                dup = False
 
-            response = {'code': 1}
+                pubmed_id = None
+                title = None
+                if 'pubmed_id' in content['STEP01']:
+                    pubmed_id = int(content['STEP01']['pubmed_id'])
+                    if Research.objects.filter(pubmed_id=pubmed_id).fisrt():
+                        dup = 1
+                    else:
+                        if Draft.objects.filter(
+                                pubmed_id=pubmed_id).exclude(status__in=['Draft', 'Rejected']).fisrt():
+                            dup = 2
+                else:
+                    title = content['STEP01']['title']
+                    if Research.objects.filter(title=title).fisrt():
+                        dup = 1
+                    else:
+                        if Draft.objects.filter(
+                                title=title).exclude(status__in=['Draft', 'Rejected']).fisrt():
+                            dup = 2
+
+                if dup == 1:
+                    response['code'] = 0
+                    response['msg'] = "Already got this paper in KB-SNP! Please choose another."
+                elif dup == 2:
+                    response['code'] = 0
+                    response['msg'] = "Someone has been submited this paper already! Please choose another."
+                else:
+                    content_ = {'time': {}, 'log': [], 'step': step}
+                    content_['submit_id'] = record.pk
+                    content_['time']['create'] = datetime.datetime.now()
+                    content_['log'].append({'user': username, 'step': step,
+                                            'action': 'create', 'time': datetime.datetime.now()})
+                    content_['content'] = content
+                    record = Draft.objects.create(user__username=username,
+                                                  status='Draft',
+                                                  kb='SNP',
+                                                  title=title,
+                                                  pubmed_id=pubmed_id,
+                                                  content=json.dumps(content_))
+                    response['code'] = 1
+                    response['submit_id'] = record.pk
+            else:
+                submit_id = int(content['submit_id'])
+                record = Draft.objects.get(pk=submit_id)
+                content_ = json.loads(record.content)
+                content_['step'] = step
+                content_['log'].append({'user': username, 'step': step,
+                                        'action': type_, 'time': datetime.datetime.now()})
+                record.content = content_
+                record.save()
+                response['code'] = 1
 
     except Exception as e:
         raise e
@@ -136,17 +189,28 @@ def snp_add(request, submit_id):
     context = {'stats': get_stats(), 'submit_id': None, 'step': None, 'content': {}}
     forms = {'research': {}}
 
-    if submit_id == 'new':
-        forms['research']['ebml'] = [x.ebml for x in EvidenceBasedMedicineLevel.objects.all()]
-        genes = [x.gene_official_symbol for x in Gene.objects.all()] + ['- N/A -']
+    forms['research']['ebml'] = [x.ebml for x in EvidenceBasedMedicineLevel.objects.all()]
+    genes = [x.gene_official_symbol for x in Gene.objects.all()] + ['- N/A -']
 
+    context['forms'] = forms
+    context['genes'] = genes
+
+    if submit_id == 'new':
         context['review'] = 'false'
         context['submit_id'] = 0
-        context['step'] = 6
-        context['forms'] = forms
-        context['genes'] = genes
+        context['step'] = 7
+        context['content'] = '{{}}'
     else:
-        pass
+        result = Draft.object.get(pk=int(submit_id))
+        username = result.user.username
+        content = json.loads(result.content)
+        if request.user.is_staff or request.user.username == username:
+            context['review'] = 'true'
+            context['submit_id'] = submit_id
+            context['step'] = int(content['step']) if result.status == 'Draft' else 7
+            context['content'] = json.dumps(content['content'])
+        else:
+            raise Http404
     return render(request, 'snp_add.html', context)
 
 

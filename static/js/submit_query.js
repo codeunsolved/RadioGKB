@@ -7,6 +7,18 @@
 
 var dt = {};
 
+$(document).ready(querySubmit());
+
+function querySubmit() {
+    $('#pending').click(queryPending);
+    $('#approved').click(queryApproved);
+    $('#draft').click(queryDraft);
+    $('#accepted').click(queryAccepted);
+
+    $('#pending').trigger("click");
+    $('#draft').trigger("click");
+}
+
 // drawDataTable
 function drawDataTable(id, fn, options_add) {
     var options = {
