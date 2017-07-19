@@ -244,7 +244,7 @@ def submit_add(request):
                             dup = 1
                         else:
                             if Draft.objects.filter(
-                                    pubmed_id=pubmed_id, user__username=username).first():
+                                    pubmed_id=pubmed_id, user__username=username).exclude(pk=submit_id).first():
                                 dup = 2
                             elif Draft.objects.filter(
                                     pubmed_id=pubmed_id).exclude(status__in=['Draft', 'Rejected']).first():
