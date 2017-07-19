@@ -2,6 +2,7 @@ import re
 import json
 import datetime
 
+from django.contrib.auth.models import User
 from django.http import HttpResponse, Http404
 from django.shortcuts import render
 
@@ -52,14 +53,22 @@ def news(request):
 
 
 def submit_query(request):
-    def get_status_html(status):
+    def get_status_html(status, content):
         if status in ['Revison', 'Rejected']:
-            return '<strong style="color: red;">{}</strong>{}'.format(
-                status, content['comments'])
-        if status == 'Accepted':
-            return '<strong style="color: green;">{}</strong>'.format(status)
+            status_html = '<strong style="color: red;">{}</strong>'.format(status)
+        elif status == 'Accepted':
+            status_html =  '<strong style="color: green;">{}</strong>'.format(status)
         else:
-            return '<strong>{}</strong>'.format(status)
+            status_html =  '<strong>{}</strong>'.format(status)
+
+        if 'comments' in content:
+            status_html += '<br><span>{}</span>'.format(content['comments'])
+
+        return status_html
+
+    def get_last_change(content):
+        return "{} by {}".format(content['log'][-1]['time'][:19],
+                                 content['log'][-1]['user'])
 
     response = {'data': []}
     try:
@@ -70,45 +79,85 @@ def submit_query(request):
         if tab == 'draft':
             results = Draft.objects.filter(user__username=username).exclude(status='Accepted')
             for i, r in enumerate(results):
-                content = json.loads(r.content)
+                content = r.content
+
+                if r.status == 'Under Review':
+                    edit_link = '<a style="pointer-events:none;color:gray;">Edit</a></li>'
+                else:
+                    edit_link = '<a href="{}/add/{}">Edit</a></li>'.format(r.kb.lower(), r.pk)
+
+                delete_link = '<a class="draft_delete" submit_id="{}">Delete</a></li>'.format(r.pk)
+
+                action = "{}&nbsp;&nbsp;{}".format(edit_link, delete_link)
                 row = [i + 1,
                        r.kb,
                        r.title,
-                       get_status_html(r.status),
-                       content['log'][-1]['time'][:19]]
+                       get_status_html(r.status, content),
+                       get_last_change(content),
+                       action]
                 response['data'].append(row)
         elif tab == 'accepted':
             results = Draft.objects.filter(user__username=username).filter(status='Accepted')
             for i, r in enumerate(results):
-                content = json.loads(r.content)
+                content = r.content
+
                 row = [i + 1,
                        r.kb,
                        r.title,
-                       get_status_html(r.status),
-                       content['log'][-1]['time'][:19]]
-                response['data'].append(row)
-        elif tab == 'approved':
-            results = Draft.objects.filter(status='Accepted')
-            for i, r in enumerate(results):
-                content = json.loads(r.content)
-                last_change = "{} at {}".format(content['log'][-1]['user'],
-                                                content['log'][-1]['time'][:19])
-                row = [i + 1,
-                       r.kb,
-                       r.title,
-                       get_status_html(r.status),
-                       last_change]
+                       get_status_html(r.status, content),
+                       get_last_change(content)]
                 response['data'].append(row)
         elif tab == 'pending':
-            results = Draft.objects.filter(status='Under Review')
+            results = Draft.objects.exclude(status__in=['Draft', 'Accepted'])
             for i, r in enumerate(results):
-                action = ''
+                content = r.content
+
+                edit_link = '<a href="{}/add/{}">View</a></li>'.format(r.kb.lower(), r.pk)
+                approve_link = '<a class="pending_action" submit_id="{}">Approve</a></li>'.format(r.pk)
+                action = "{}&nbsp;&nbsp;{}".format(edit_link, approve_link)
                 row = [i + 1,
                        r.kb,
                        r.title,
                        r.user.username,
+                       get_status_html(r.status, content),
+                       get_last_change(content),
                        action]
                 response['data'].append(row)
+        elif tab == 'approved':
+            results = Draft.objects.filter(status='Accepted')
+            for i, r in enumerate(results):
+                content = r.content
+
+                row = [i + 1,
+                       r.kb,
+                       r.title,
+                       r.user.username,
+                       get_last_change(content)]
+                response['data'].append(row)
+        elif tab == 'pending_action':
+            try:
+                action = request.POST['action']
+                submit_id = int(request.POST['submit_id'])
+                if action != 'delete':
+                    comments = request.POST['comments']
+
+                    record = Draft.objects.get(pk=submit_id)
+
+                    record.content['comments'] = comments
+
+                    record.status = action
+
+                    record.content['log'].append({'user': username, 'comments': comments,
+                                                  'action': action, 'time': str(datetime.datetime.now())})
+                    record.save()
+                    response['code'] = 1
+                else:
+                    Draft.objects.get(pk=submit_id).delete()
+                    response['code'] = 1
+            except Exception as e:
+                response['code'] = 0
+                response['msg'] = e
+
     except Exception as e:
         raise e
 
@@ -116,6 +165,10 @@ def submit_query(request):
 
 
 def submit_add(request):
+    dup_msg = {1: "We already had this paper in KB-SNP! Please choose another.",
+               2: "You already submitted/saved this paper! Please check your Draft box.",
+               3: "Someone has been submited this paper already! Please choose another."}
+
     response = {}
 
     username = request.user.username
@@ -126,58 +179,91 @@ def submit_add(request):
         content = json.loads(request.POST['content'])
         if kb == 'SNP':
             if step == 1:
-                dup = False
-
+                dup = 0
                 pubmed_id = None
-                title = None
+                title = content['STEP01']['title'].strip()
+
                 if 'pubmed_id' in content['STEP01']:
                     pubmed_id = int(content['STEP01']['pubmed_id'])
-                    if Research.objects.filter(pubmed_id=pubmed_id).fisrt():
+                    if Research.objects.filter(pubmed_id=pubmed_id).first():
                         dup = 1
                     else:
                         if Draft.objects.filter(
-                                pubmed_id=pubmed_id).exclude(status__in=['Draft', 'Rejected']).fisrt():
+                                pubmed_id=pubmed_id, user__username=username).first():
                             dup = 2
+                        elif Draft.objects.filter(
+                                pubmed_id=pubmed_id).exclude(status__in=['Draft', 'Rejected']).first():
+                            dup = 3
                 else:
-                    title = content['STEP01']['title']
-                    if Research.objects.filter(title=title).fisrt():
+                    if Research.objects.filter(title=title).first():
                         dup = 1
                     else:
                         if Draft.objects.filter(
-                                title=title).exclude(status__in=['Draft', 'Rejected']).fisrt():
+                                title=title, user__username=username).first():
                             dup = 2
+                        elif Draft.objects.filter(
+                                title=title).exclude(status__in=['Draft', 'Rejected']).first():
+                            dup = 3
 
-                if dup == 1:
+                if dup:
                     response['code'] = 0
-                    response['msg'] = "Already got this paper in KB-SNP! Please choose another."
-                elif dup == 2:
-                    response['code'] = 0
-                    response['msg'] = "Someone has been submited this paper already! Please choose another."
+                    response['msg'] = dup_msg[dup]
                 else:
                     content_ = {'time': {}, 'log': [], 'step': step}
-                    content_['submit_id'] = record.pk
-                    content_['time']['create'] = datetime.datetime.now()
+
+                    content_['step'] = step
+                    content_['time']['create'] = str(datetime.datetime.now())
                     content_['log'].append({'user': username, 'step': step,
-                                            'action': 'create', 'time': datetime.datetime.now()})
+                                            'action': 'create', 'time': str(datetime.datetime.now())})
+
                     content_['content'] = content
-                    record = Draft.objects.create(user__username=username,
+                    user = User.objects.get(username=username)
+                    record = Draft.objects.create(user=user,
                                                   status='Draft',
                                                   kb='SNP',
                                                   title=title,
                                                   pubmed_id=pubmed_id,
-                                                  content=json.dumps(content_))
+                                                  content=content_)
                     response['code'] = 1
                     response['submit_id'] = record.pk
             else:
-                submit_id = int(content['submit_id'])
-                record = Draft.objects.get(pk=submit_id)
-                content_ = json.loads(record.content)
-                content_['step'] = step
-                content_['log'].append({'user': username, 'step': step,
-                                        'action': type_, 'time': datetime.datetime.now()})
-                record.content = content_
-                record.save()
-                response['code'] = 1
+                try:
+                    submit_id = int(content['submit_id'])
+                    record = Draft.objects.get(pk=submit_id)
+
+                    record.content['step'] = step
+                    record.content['log'].append({'user': username, 'step': step,
+                                                  'action': type_,
+                                                  'time': str(datetime.datetime.now())})
+                    record.content['content'] = content
+
+                    if step == 2 and content['STEP02']['pubmed_id'] != "":
+                        dup = 0
+                        pubmed_id = int(content['STEP02']['pubmed_id'])
+                        if Research.objects.filter(pubmed_id=pubmed_id).first():
+                            dup = 1
+                        else:
+                            if Draft.objects.filter(
+                                    pubmed_id=pubmed_id, user__username=username).first():
+                                dup = 2
+                            elif Draft.objects.filter(
+                                    pubmed_id=pubmed_id).exclude(status__in=['Draft', 'Rejected']).first():
+                                dup = 3
+                        if dup:
+                            response['code'] = 0
+                            response['msg'] = "PMID ERROR! " + dup_msg[dup]
+                        else:
+                            record.save()
+                            response['code'] = 1
+                    else:
+                        if step == 7:
+                            record.content['time']['submit'] = str(datetime.datetime.now())
+                            record.status = 'Under Review'
+                        record.save()
+                        response['code'] = 1
+                except Exception as e:
+                    response['code'] = 0
+                    response['msg'] = e
 
     except Exception as e:
         raise e
@@ -198,16 +284,23 @@ def snp_add(request, submit_id):
     if submit_id == 'new':
         context['review'] = 'false'
         context['submit_id'] = 0
-        context['step'] = 7
-        context['content'] = '{{}}'
+        context['step'] = 1
+        context['content'] = '{}'
     else:
-        result = Draft.object.get(pk=int(submit_id))
+        result = Draft.objects.get(pk=int(submit_id))
         username = result.user.username
-        content = json.loads(result.content)
+        content = result.content
         if request.user.is_staff or request.user.username == username:
             context['review'] = 'true'
-            context['submit_id'] = submit_id
-            context['step'] = int(content['step']) if result.status == 'Draft' else 7
+            if result.status == 'Draft':
+                if int(content['step']) == 1:
+                    context['step'] = 2
+                else:
+                    context['step'] = int(content['step'])
+            else:
+                context['step'] = 7
+            if 'submit_id' not in content['content']:
+                content['content']['submit_id'] = submit_id
             context['content'] = json.dumps(content['content'])
         else:
             raise Http404

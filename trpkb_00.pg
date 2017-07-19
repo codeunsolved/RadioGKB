@@ -349,44 +349,6 @@ ALTER SEQUENCE "KB_SNP_variant_id_seq" OWNED BY "KB_SNP_variant".id;
 
 
 --
--- Name: Submit_draft; Type: TABLE; Schema: public; Owner: trpkb
---
-
-CREATE TABLE "Submit_draft" (
-    id integer NOT NULL,
-    status character varying(20) NOT NULL,
-    kb character varying(20) NOT NULL,
-    title character varying(500) NOT NULL,
-    content jsonb NOT NULL,
-    paper character varying(100),
-    user_id integer NOT NULL
-);
-
-
-ALTER TABLE "Submit_draft" OWNER TO trpkb;
-
---
--- Name: Submit_draft_id_seq; Type: SEQUENCE; Schema: public; Owner: trpkb
---
-
-CREATE SEQUENCE "Submit_draft_id_seq"
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
-ALTER TABLE "Submit_draft_id_seq" OWNER TO trpkb;
-
---
--- Name: Submit_draft_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: trpkb
---
-
-ALTER SEQUENCE "Submit_draft_id_seq" OWNED BY "Submit_draft".id;
-
-
---
 -- Name: account_emailaddress; Type: TABLE; Schema: public; Owner: trpkb
 --
 
@@ -1026,13 +988,6 @@ ALTER TABLE ONLY "KB_SNP_tumor" ALTER COLUMN id SET DEFAULT nextval('"KB_SNP_tum
 --
 
 ALTER TABLE ONLY "KB_SNP_variant" ALTER COLUMN id SET DEFAULT nextval('"KB_SNP_variant_id_seq"'::regclass);
-
-
---
--- Name: id; Type: DEFAULT; Schema: public; Owner: trpkb
---
-
-ALTER TABLE ONLY "Submit_draft" ALTER COLUMN id SET DEFAULT nextval('"Submit_draft_id_seq"'::regclass);
 
 
 --
@@ -6500,27 +6455,12 @@ SELECT pg_catalog.setval('"KB_SNP_variant_id_seq"', 389, true);
 
 
 --
--- Data for Name: Submit_draft; Type: TABLE DATA; Schema: public; Owner: trpkb
---
-
-COPY "Submit_draft" (id, status, kb, title, content, paper, user_id) FROM stdin;
-\.
-
-
---
--- Name: Submit_draft_id_seq; Type: SEQUENCE SET; Schema: public; Owner: trpkb
---
-
-SELECT pg_catalog.setval('"Submit_draft_id_seq"', 1, false);
-
-
---
 -- Data for Name: account_emailaddress; Type: TABLE DATA; Schema: public; Owner: trpkb
 --
 
 COPY account_emailaddress (id, email, verified, "primary", user_id) FROM stdin;
-1	weicongchong@topgen.com.cn	t	t	3
-2	trpkb2017@163.com	t	t	2
+1	trpkb2017@163.com	t	t	1
+2	weicongchong@topgen.com.cn	t	t	3
 \.
 
 
@@ -6528,7 +6468,7 @@ COPY account_emailaddress (id, email, verified, "primary", user_id) FROM stdin;
 -- Name: account_emailaddress_id_seq; Type: SEQUENCE SET; Schema: public; Owner: trpkb
 --
 
-SELECT pg_catalog.setval('account_emailaddress_id_seq', 3, true);
+SELECT pg_catalog.setval('account_emailaddress_id_seq', 2, true);
 
 
 --
@@ -6581,42 +6521,42 @@ SELECT pg_catalog.setval('auth_group_permissions_id_seq', 1, false);
 --
 
 COPY auth_permission (id, name, content_type_id, codename) FROM stdin;
-1	Can add tumor	1	add_tumor
-2	Can change tumor	1	change_tumor
-3	Can delete tumor	1	delete_tumor
-4	Can add gene	2	add_gene
-5	Can change gene	2	change_gene
-6	Can delete gene	2	delete_gene
-7	Can add variant	3	add_variant
-8	Can change variant	3	change_variant
-9	Can delete variant	3	delete_variant
+1	Can add variant	1	add_variant
+2	Can change variant	1	change_variant
+3	Can delete variant	1	delete_variant
+4	Can add subgroup	2	add_subgroup
+5	Can change subgroup	2	change_subgroup
+6	Can delete subgroup	2	delete_subgroup
+7	Can add association	3	add_association
+8	Can change association	3	change_association
+9	Can delete association	3	delete_association
 10	Can add evidence based medicine level	4	add_evidencebasedmedicinelevel
 11	Can change evidence based medicine level	4	change_evidencebasedmedicinelevel
 12	Can delete evidence based medicine level	4	delete_evidencebasedmedicinelevel
-13	Can add research	5	add_research
-14	Can change research	5	change_research
-15	Can delete research	5	delete_research
-16	Can add prognosis	6	add_prognosis
-17	Can change prognosis	6	change_prognosis
-18	Can delete prognosis	6	delete_prognosis
-19	Can add subgroup	7	add_subgroup
-20	Can change subgroup	7	change_subgroup
-21	Can delete subgroup	7	delete_subgroup
-22	Can add association	8	add_association
-23	Can change association	8	change_association
-24	Can delete association	8	delete_association
+13	Can add prognosis	5	add_prognosis
+14	Can change prognosis	5	change_prognosis
+15	Can delete prognosis	5	delete_prognosis
+16	Can add tumor	6	add_tumor
+17	Can change tumor	6	change_tumor
+18	Can delete tumor	6	delete_tumor
+19	Can add research	7	add_research
+20	Can change research	7	change_research
+21	Can delete research	7	delete_research
+22	Can add gene	8	add_gene
+23	Can change gene	8	change_gene
+24	Can delete gene	8	delete_gene
 25	Can add log entry	9	add_logentry
 26	Can change log entry	9	change_logentry
 27	Can delete log entry	9	delete_logentry
-28	Can add permission	10	add_permission
-29	Can change permission	10	change_permission
-30	Can delete permission	10	delete_permission
-31	Can add group	11	add_group
-32	Can change group	11	change_group
-33	Can delete group	11	delete_group
-34	Can add user	12	add_user
-35	Can change user	12	change_user
-36	Can delete user	12	delete_user
+28	Can add user	10	add_user
+29	Can change user	10	change_user
+30	Can delete user	10	delete_user
+31	Can add permission	11	add_permission
+32	Can change permission	11	change_permission
+33	Can delete permission	11	delete_permission
+34	Can add group	12	add_group
+35	Can change group	12	change_group
+36	Can delete group	12	delete_group
 37	Can add content type	13	add_contenttype
 38	Can change content type	13	change_contenttype
 39	Can delete content type	13	delete_contenttype
@@ -6632,18 +6572,15 @@ COPY auth_permission (id, name, content_type_id, codename) FROM stdin;
 49	Can add email confirmation	17	add_emailconfirmation
 50	Can change email confirmation	17	change_emailconfirmation
 51	Can delete email confirmation	17	delete_emailconfirmation
-52	Can add social application	18	add_socialapp
-53	Can change social application	18	change_socialapp
-54	Can delete social application	18	delete_socialapp
-55	Can add social account	19	add_socialaccount
-56	Can change social account	19	change_socialaccount
-57	Can delete social account	19	delete_socialaccount
-58	Can add social application token	20	add_socialtoken
-59	Can change social application token	20	change_socialtoken
-60	Can delete social application token	20	delete_socialtoken
-61	Can add draft	21	add_draft
-62	Can change draft	21	change_draft
-63	Can delete draft	21	delete_draft
+52	Can add social account	18	add_socialaccount
+53	Can change social account	18	change_socialaccount
+54	Can delete social account	18	delete_socialaccount
+55	Can add social application token	19	add_socialtoken
+56	Can change social application token	19	change_socialtoken
+57	Can delete social application token	19	delete_socialtoken
+58	Can add social application	20	add_socialapp
+59	Can change social application	20	change_socialapp
+60	Can delete social application	20	delete_socialapp
 \.
 
 
@@ -6651,7 +6588,7 @@ COPY auth_permission (id, name, content_type_id, codename) FROM stdin;
 -- Name: auth_permission_id_seq; Type: SEQUENCE SET; Schema: public; Owner: trpkb
 --
 
-SELECT pg_catalog.setval('auth_permission_id_seq', 63, true);
+SELECT pg_catalog.setval('auth_permission_id_seq', 60, true);
 
 
 --
@@ -6659,9 +6596,9 @@ SELECT pg_catalog.setval('auth_permission_id_seq', 63, true);
 --
 
 COPY auth_user (id, password, last_login, is_superuser, username, first_name, last_name, email, is_staff, is_active, date_joined) FROM stdin;
-3	pbkdf2_sha256$36000$qmynwyh6YDfm$/zvbayQrJAwDT6oHSanbqfcMW8FZiyZlB6UFw/WhfAM=	2017-07-13 14:50:43.537638+00	f	wei				f	t	2017-07-13 14:43:06.397688+00
-2	pbkdf2_sha256$36000$LyuD1YJlWL5F$Twf1OhO514c7XgZURhvd3vGd33IhIriDxaQP7SnMTd8=	2017-07-13 15:03:36.264411+00	f	trpkb			trpkb2017@163.com	t	t	2017-07-13 14:41:00+00
-1	pbkdf2_sha256$36000$gqVSZb9WfCt3$uQ+LqFfvOkKlhvfOJg2XonYUDNwfvCkjNELD1PNx144=	2017-07-13 15:03:54.70027+00	t	admin				t	t	2017-07-13 14:41:00+00
+1	pbkdf2_sha256$36000$YZMSWvPPBwQJ$UFN+baPQdVhuhUgjuZTRwOJx2pg9F3sfZMtq/t0lpDw=	2017-07-19 09:36:40.294831+00	f	trpkb			trpkb2017@163.com	t	t	2017-07-19 09:32:00+00
+3	pbkdf2_sha256$36000$AbeqeMuRmBLq$ehR+gaHKgeGCa821oVrquDDx8+3Ylvqonr6YIueRIj4=	2017-07-19 09:37:34.626901+00	f	wei			weicongchong@topgen.com.cn	f	t	2017-07-19 09:37:12.690414+00
+2	pbkdf2_sha256$36000$QKkLVgKriArF$v7FnmMca5+mxOlLlwqLuPuVNSuOSq32fis9sGNjyrg8=	2017-07-19 09:37:50.289499+00	t	admin				t	t	2017-07-19 09:34:05.999901+00
 \.
 
 
@@ -6707,6 +6644,9 @@ SELECT pg_catalog.setval('auth_user_user_permissions_id_seq', 1, false);
 --
 
 COPY django_admin_log (id, action_time, object_id, object_repr, action_flag, change_message, content_type_id, user_id) FROM stdin;
+1	2017-07-19 09:34:53.731751+00	1	trpkb	2	[{"changed": {"fields": ["email", "is_superuser", "last_login"]}}]	10	1
+2	2017-07-19 09:35:24.139761+00	1	trpkb	2	[]	10	2
+3	2017-07-19 09:38:07.345809+00	1	trpkb.com	2	[{"changed": {"fields": ["domain", "name"]}}]	15	2
 \.
 
 
@@ -6714,7 +6654,7 @@ COPY django_admin_log (id, action_time, object_id, object_repr, action_flag, cha
 -- Name: django_admin_log_id_seq; Type: SEQUENCE SET; Schema: public; Owner: trpkb
 --
 
-SELECT pg_catalog.setval('django_admin_log_id_seq', 5, true);
+SELECT pg_catalog.setval('django_admin_log_id_seq', 3, true);
 
 
 --
@@ -6722,27 +6662,26 @@ SELECT pg_catalog.setval('django_admin_log_id_seq', 5, true);
 --
 
 COPY django_content_type (id, app_label, model) FROM stdin;
-1	KB_SNP	tumor
-2	KB_SNP	gene
-3	KB_SNP	variant
+1	KB_SNP	variant
+2	KB_SNP	subgroup
+3	KB_SNP	association
 4	KB_SNP	evidencebasedmedicinelevel
-5	KB_SNP	research
-6	KB_SNP	prognosis
-7	KB_SNP	subgroup
-8	KB_SNP	association
+5	KB_SNP	prognosis
+6	KB_SNP	tumor
+7	KB_SNP	research
+8	KB_SNP	gene
 9	admin	logentry
-10	auth	permission
-11	auth	group
-12	auth	user
+10	auth	user
+11	auth	permission
+12	auth	group
 13	contenttypes	contenttype
 14	sessions	session
 15	sites	site
 16	account	emailaddress
 17	account	emailconfirmation
-18	socialaccount	socialapp
-19	socialaccount	socialaccount
-20	socialaccount	socialtoken
-21	Submit	draft
+18	socialaccount	socialaccount
+19	socialaccount	socialtoken
+20	socialaccount	socialapp
 \.
 
 
@@ -6750,7 +6689,7 @@ COPY django_content_type (id, app_label, model) FROM stdin;
 -- Name: django_content_type_id_seq; Type: SEQUENCE SET; Schema: public; Owner: trpkb
 --
 
-SELECT pg_catalog.setval('django_content_type_id_seq', 21, true);
+SELECT pg_catalog.setval('django_content_type_id_seq', 20, true);
 
 
 --
@@ -6758,28 +6697,27 @@ SELECT pg_catalog.setval('django_content_type_id_seq', 21, true);
 --
 
 COPY django_migrations (id, app, name, applied) FROM stdin;
-1	KB_SNP	0001_initial	2017-07-13 13:21:28.003143+00
-2	contenttypes	0001_initial	2017-07-13 13:21:28.160799+00
-3	auth	0001_initial	2017-07-13 13:21:29.48724+00
-4	account	0001_initial	2017-07-13 13:21:30.211887+00
-5	account	0002_email_max_length	2017-07-13 13:21:30.358839+00
-6	admin	0001_initial	2017-07-13 13:21:30.757066+00
-7	admin	0002_logentry_remove_auto_add	2017-07-13 13:21:30.798631+00
-8	contenttypes	0002_remove_content_type_name	2017-07-13 13:21:30.887609+00
-9	auth	0002_alter_permission_name_max_length	2017-07-13 13:21:30.921142+00
-10	auth	0003_alter_user_email_max_length	2017-07-13 13:21:30.962669+00
-11	auth	0004_alter_user_username_opts	2017-07-13 13:21:30.990738+00
-12	auth	0005_alter_user_last_login_null	2017-07-13 13:21:31.040578+00
-13	auth	0006_require_contenttypes_0002	2017-07-13 13:21:31.055276+00
-14	auth	0007_alter_validators_add_error_messages	2017-07-13 13:21:31.08427+00
-15	auth	0008_alter_user_username_max_length	2017-07-13 13:21:31.131896+00
-16	sessions	0001_initial	2017-07-13 13:21:31.446263+00
-17	sites	0001_initial	2017-07-13 13:21:31.554587+00
-18	sites	0002_alter_domain_unique	2017-07-13 13:21:31.687824+00
-19	socialaccount	0001_initial	2017-07-13 13:21:32.672174+00
-20	socialaccount	0002_token_max_lengths	2017-07-13 13:21:32.747247+00
-21	socialaccount	0003_extra_data_default_dict	2017-07-13 13:21:32.788966+00
-22	Submit	0001_initial	2017-07-13 15:07:39.298091+00
+1	KB_SNP	0001_initial	2017-07-19 09:21:18.519852+00
+2	contenttypes	0001_initial	2017-07-19 09:21:18.737983+00
+3	auth	0001_initial	2017-07-19 09:21:19.921155+00
+4	account	0001_initial	2017-07-19 09:21:20.404251+00
+5	account	0002_email_max_length	2017-07-19 09:21:20.45422+00
+6	admin	0001_initial	2017-07-19 09:21:20.733621+00
+7	admin	0002_logentry_remove_auto_add	2017-07-19 09:21:20.796458+00
+8	contenttypes	0002_remove_content_type_name	2017-07-19 09:21:20.862852+00
+9	auth	0002_alter_permission_name_max_length	2017-07-19 09:21:20.904758+00
+10	auth	0003_alter_user_email_max_length	2017-07-19 09:21:20.954503+00
+11	auth	0004_alter_user_username_opts	2017-07-19 09:21:20.985459+00
+12	auth	0005_alter_user_last_login_null	2017-07-19 09:21:21.046025+00
+13	auth	0006_require_contenttypes_0002	2017-07-19 09:21:21.067726+00
+14	auth	0007_alter_validators_add_error_messages	2017-07-19 09:21:21.09668+00
+15	auth	0008_alter_user_username_max_length	2017-07-19 09:21:21.146147+00
+16	sessions	0001_initial	2017-07-19 09:21:21.388023+00
+17	sites	0001_initial	2017-07-19 09:21:21.479676+00
+18	sites	0002_alter_domain_unique	2017-07-19 09:21:21.621337+00
+19	socialaccount	0001_initial	2017-07-19 09:21:22.643065+00
+20	socialaccount	0002_token_max_lengths	2017-07-19 09:21:22.705902+00
+21	socialaccount	0003_extra_data_default_dict	2017-07-19 09:21:22.755979+00
 \.
 
 
@@ -6787,7 +6725,7 @@ COPY django_migrations (id, app, name, applied) FROM stdin;
 -- Name: django_migrations_id_seq; Type: SEQUENCE SET; Schema: public; Owner: trpkb
 --
 
-SELECT pg_catalog.setval('django_migrations_id_seq', 22, true);
+SELECT pg_catalog.setval('django_migrations_id_seq', 21, true);
 
 
 --
@@ -6795,6 +6733,7 @@ SELECT pg_catalog.setval('django_migrations_id_seq', 22, true);
 --
 
 COPY django_session (session_key, session_data, expire_date) FROM stdin;
+gvje7bqa5v48yt1dbtedizb8ninj7ame	MjQ2MGIxNWMwODdhZjM5NjI0ODAxZjY5OTY2YzlhZGYwNDhmNGViZTp7Il9hdXRoX3VzZXJfaGFzaCI6IjY0YmEzZjYyYTE5MDU1NzNjMDI2ZTdkZDZjOWRhNDU3YmY3NzZhN2MiLCJfYXV0aF91c2VyX2lkIjoiMiIsIl9hdXRoX3VzZXJfYmFja2VuZCI6ImRqYW5nby5jb250cmliLmF1dGguYmFja2VuZHMuTW9kZWxCYWNrZW5kIn0=	2017-08-02 09:37:50.30764+00
 \.
 
 
@@ -6992,22 +6931,6 @@ ALTER TABLE ONLY "KB_SNP_tumor"
 
 ALTER TABLE ONLY "KB_SNP_variant"
     ADD CONSTRAINT "KB_SNP_variant_pkey" PRIMARY KEY (id);
-
-
---
--- Name: Submit_draft_pkey; Type: CONSTRAINT; Schema: public; Owner: trpkb
---
-
-ALTER TABLE ONLY "Submit_draft"
-    ADD CONSTRAINT "Submit_draft_pkey" PRIMARY KEY (id);
-
-
---
--- Name: Submit_draft_user_id_key; Type: CONSTRAINT; Schema: public; Owner: trpkb
---
-
-ALTER TABLE ONLY "Submit_draft"
-    ADD CONSTRAINT "Submit_draft_user_id_key" UNIQUE (user_id);
 
 
 --
@@ -7564,14 +7487,6 @@ ALTER TABLE ONLY "KB_SNP_subgroup"
 
 ALTER TABLE ONLY "KB_SNP_variant"
     ADD CONSTRAINT "KB_SNP_variant_gene_id_b4449893_fk_KB_SNP_gene_id" FOREIGN KEY (gene_id) REFERENCES "KB_SNP_gene"(id) DEFERRABLE INITIALLY DEFERRED;
-
-
---
--- Name: Submit_draft_user_id_2b01e533_fk_auth_user_id; Type: FK CONSTRAINT; Schema: public; Owner: trpkb
---
-
-ALTER TABLE ONLY "Submit_draft"
-    ADD CONSTRAINT "Submit_draft_user_id_2b01e533_fk_auth_user_id" FOREIGN KEY (user_id) REFERENCES auth_user(id) DEFERRABLE INITIALLY DEFERRED;
 
 
 --

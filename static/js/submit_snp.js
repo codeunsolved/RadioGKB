@@ -5,6 +5,14 @@
  * VERSION : v0.0.1
  */
 
+$.ajaxSetup({
+    beforeSend: function(xhr, settings) {
+        if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+            xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
+        }
+    }
+});
+
 $(document).ready(addNew());
 
 function addNew() {
@@ -12,6 +20,8 @@ function addNew() {
     var tumor_num = 1;
     var prognosis_num = 1;
     var association_num = 1;
+    var recur_step04 = 0;
+    var recur_step06 = 0;
 
     var tumor_html = $('#STEP03_form .panel').first().prop('outerHTML');
     var variant_html = $('#STEP04_form .STEP04_variant').first().parent().prop('outerHTML');
@@ -53,9 +63,13 @@ function addNew() {
     $('#STEP06_form').on('change', '.STEP06_prognosis', changeSubgroup);
     $('#STEP07_submit').click(submit);
 
+    if (review_mode) {
+        reviewSubmit();
+    }
+
     function setStep(event) {
         step_now = event.data.id;
-        console.log("STEP:0"+step_now);
+        console.log("NOW:STEP0"+step_now);
     }
 
     function checkStep(event) {
@@ -80,8 +94,8 @@ function addNew() {
                 $("#"+step_id+"_form .STEP03_tumor").each(function() {
                     var tumor_vals = {};
                     $(":input", this).each(function() {
-                        var key = $(this).attr("name");
-                        tumor_vals[key] = $(this).val();
+                        var name = $(this).attr("name");
+                        tumor_vals[name] = $(this).val();
                     });
                     content[step_id]['tumor'].push(tumor_vals);
                 });
@@ -147,8 +161,6 @@ function addNew() {
                         for (var key in form_genotype) {
                             form_[key] = form_genotype[key][i];
                         }
-                        console.log(form_)
-                        console.log(Object.assign(form_, form_meta));
                         form.push(Object.assign(form_, form_meta)); //merge two hash
                     }
 
@@ -157,7 +169,6 @@ function addNew() {
             } else {
                 $("#"+step_id+"_form :input").each(function() {
                     var name = $(this).attr("name");
-                    console.log(name);
                     content[step_id][name] = $(this).val();
                 });
             }
@@ -216,6 +227,17 @@ function addNew() {
         return valid;
     }
 
+    function freezeTitlePubmedId() {
+        if ('pubmed_id' in content.STEP01) {
+            $("input[name='pubmed_id']").val(content.STEP01.pubmed_id);
+            $("input[name='pubmed_id']").prop('disabled', true);
+        } else {
+            $("input[name='pubmed_id']").val('');
+            $("input[name='pubmed_id']").removeAttr("disabled");
+        }
+        $("input[name='title']").val(content.STEP01.title);
+        $("input[name='title']").prop('disabled', true);
+    }
     function querySubmit(data, id, type) {
         $.post("/submit/add",
             data,
@@ -230,15 +252,9 @@ function addNew() {
                         }
 
                         if (id == 1) {
-                            if ('pubmed_id' in content.STEP01) {
-                                $("input[name='pubmed_id']").val(content.STEP01.pubmed_id);
-                                $("input[name='pubmed_id']").prop('disabled', true);
-                            } else {
-                                $("input[name='pubmed_id']").val('');
-                                $("input[name='pubmed_id']").removeAttr("disabled");
-                            }
-                            $("input[name='title']").val(content.STEP01.title);
-                            $("input[name='title']").prop('disabled', true);
+                            content['submit_id'] = data.submit_id; //important!
+
+                            freezeTitlePubmedId();
                         } else if (id == 3) {
                             genStep04();
                         } else if (id == 5) {
@@ -286,13 +302,7 @@ function addNew() {
     }
 
     function genStep04() {
-        if ('STEP04' in content) {
-            if (!review_mode) {
-
-            } else {
-
-            }
-        } else if ('STEP03' in content) {
+        function genFrame() {
             var tumors = content.STEP03.tumor;
             var tumor_variant_htmls = '';
 
@@ -302,6 +312,14 @@ function addNew() {
                 tumor_variant_htmls += $tumor_variant_html.prop('outerHTML');
             }
             $('#STEP04_container').html(tumor_variant_htmls);
+        }
+        if ('STEP04' in content) {
+            if (recur_step04) {
+                genFrame();
+                recur_step04 = 0;
+            } else {}
+        } else if ('STEP03' in content) {
+            genFrame();
         } else {
             $('#STEP04_container').html('');
             $("#STEP04_msg").html(formatMsg('Please complete STEP03: Tumor first!', 'danger'));
@@ -366,24 +384,7 @@ function addNew() {
     }
 
     function genStep06() {
-        var missing_steps = [];
-
-        if (!('STEP03' in content)) {
-            missing_steps.push('STEP03: Tumor')
-        }
-        if (!('STEP04' in content)) {
-            missing_steps.push('STEP04: Gene & Variant')
-        }
-        if (!('STEP05' in content)) {
-            missing_steps.push('STEP05: Prognosis')
-        }
-
-        if (missing_steps.length >= 1) {
-            $('#STEP06_container').html('');
-            $("#STEP06_msg").html(formatMsg('Please complete '+missing_steps.join(', ')+' first!', 'danger'));
-        } else if ('STEP06' in content) {
-
-        } else {
+        function genFrame() {
             var tumors = content.STEP03.tumor;
             var prognoses = content.STEP05.prognosis;
             var tumors_options_html = '<option value="" selected>- SELECT -</option>';
@@ -400,6 +401,29 @@ function addNew() {
             $('#STEP06_form .panel').first().find('.STEP06_tumor').html(tumors_options_html);
             $('#STEP06_form .panel').first().find('.STEP06_prognosis').html(prognoses_options_html);
             association_html = $('#STEP06_form .panel').first().prop('outerHTML');
+        }
+        var missing_steps = [];
+
+        if (!('STEP03' in content)) {
+            missing_steps.push('STEP03: Tumor')
+        }
+        if (!('STEP04' in content)) {
+            missing_steps.push('STEP04: Gene & Variant')
+        }
+        if (!('STEP05' in content)) {
+            missing_steps.push('STEP05: Prognosis')
+        }
+
+        if (missing_steps.length >= 1) {
+            $('#STEP06_container').html('');
+            $("#STEP06_msg").html(formatMsg('Please complete '+missing_steps.join(', ')+' first!', 'danger'));
+        } else if ('STEP06' in content) {
+            if (recur_step06) {
+                genFrame();
+                recur_step06 = 0;
+            } else {}
+        } else {
+            genFrame();
         }
     }
 
@@ -537,6 +561,129 @@ function addNew() {
             theme: 'bootstrap',
         });
     }
+
+    function reviewSubmit() {
+        $('#review_alert').show();
+
+        //disable STEP01 and jump to step now
+        $("#STEP0"+(step).toString()+"_nav").trigger("click");
+        $("#STEP01_nav").parent().addClass("disabled");
+        $("#STEP01_nav").prop("data-toggle", null);
+        //disable STEP02's title and pubmed_id
+        freezeTitlePubmedId();
+
+        //fill STEP02
+        if ('STEP02' in content) {
+            $("#STEP02_form :input").each(function() {
+                var name = $(this).attr("name");
+                $(this).val(content['STEP02'][name]);
+            });
+        } else { console.log('REVIEW:NO STEP02'); }
+        //fill STEP03
+        if ('STEP03' in content) {
+            var tumors = content.STEP03.tumor;
+            for (var i = 1; i < tumors.length; i++) {
+                $('#STEP03_tumor_add').trigger("click");
+            }
+            var i_tumor = 0;
+            $("#STEP03_form .STEP03_tumor").each(function() {
+                var tumor_vals = tumors[i_tumor];
+                $(":input", this).each(function() {
+                    var name = $(this).attr("name");
+                    $(this).val(tumor_vals[name]);
+                });
+                i_tumor += 1;
+            });
+        } else { console.log('REVIEW:NO STEP03'); }
+        //fill STEP04
+        recur_step04 = 1;
+        if ('STEP04' in content) {
+            genStep04()
+
+            var i_tumor = 0;
+            $("#STEP04_form .STEP04_tumor").each(function() {
+                var variants = content.STEP04.variant[i_tumor];
+                for (var i = 1; i < variants.length; i++) {
+                    $('.STEP04_variant_add', this).trigger("click");
+                }
+                var i_variant = 0
+                $(".STEP04_variant", this).each(function() {
+                    var variant_vals = variants[i_variant];
+                    if (variant_vals['new']) {
+                        $('.STEP04_gene_new', this).trigger("click");
+                    }
+                    $(":input", this).each(function() {
+                        var name = $(this).attr("name");
+                        $(this).val(variant_vals[name]);
+                    });
+                    i_variant += 1;
+                });
+                i_tumor += 1;
+            });
+        } else { console.log('REVIEW:NO STEP04'); }
+        //fill STEP05
+        if ('STEP05' in content) {
+            var prognoses = content.STEP05.prognosis;
+            for (var i = 1; i < prognoses.length; i++) {
+                $('#STEP05_prognosis_add').trigger("click");
+            }
+            var i_prognosis = 0;
+            $("#STEP05_form .STEP05_prognosis").each(function() {
+                var prognosis_vals = prognoses[i_prognosis];
+                var subgroups = prognosis_vals.subgroup;
+                for (var i = 1; i < subgroups.length; i++) {
+                    $('.STEP05_subgroup_add', this).trigger("click");
+                }
+                var i_subgroup = 0;
+                $(":input", this).each(function() {
+                    var name = $(this).attr("name");
+                    if (name != 'subgroup') {
+                        $(this).val(prognosis_vals[name]);
+                    } else {
+                        $(this).val(subgroups[i_subgroup]);
+                        i_subgroup += 1
+                    }
+                });
+                i_prognosis += 1;
+            });
+        } else { console.log('REVIEW:NO STEP05'); }
+        //fill STEP06
+        recur_step06 = 1;
+        if ('STEP06' in content) {
+            genStep06()
+
+            var associations = content.STEP06.association;
+            for (var i = 1; i < associations.length; i++) {
+                $('#STEP06_association_add').trigger("click");
+            }
+
+            i_association = 0;
+            $("#STEP06_form .STEP06_association").each(function() {
+                associations_ = associations[i_association];
+                select_order = ['tumor', 'gene', 'variant', 'prognosis', 'subgroup'];
+                for (var i = 0; i < select_order.length; i++) {
+                    var name = select_order[i];
+                    $('select[name='+name+']', this).val(associations_[0][name]).trigger("change");
+                }
+
+                for (var i = 1; i < associations_.length; i++) {
+                    $('.STEP06_column_add', this).trigger("click");
+                }
+
+                $(".STEP06_association_genotype tbody tr", this).each(function() {
+                    var $inputs = $(":input", this);
+                    var name = $inputs.first().attr("name");
+                    var i_column = 0;
+                    $inputs.each(function() {
+                        $(this).val(associations_[i_column][name]);
+                        i_column += 1;
+                    });
+                });
+                i_association += 1;
+            });
+        } else { console.log('REVIEW:NO STEP06'); }
+
+    }
 }
 
 // CSRF
@@ -560,11 +707,3 @@ function csrfSafeMethod(method) {
     // these HTTP methods do not require CSRF protection
     return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
 }
-
-$.ajaxSetup({
-    beforeSend: function(xhr, settings) {
-        if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
-            xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
-        }
-    }
-});

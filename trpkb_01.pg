@@ -2,13 +2,12 @@
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 9.6.3
--- Dumped by pg_dump version 9.6.3
+-- Dumped from database version 9.5.7
+-- Dumped by pg_dump version 9.5.7
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
-SET idle_in_transaction_session_timeout = 0;
-SET client_encoding = 'UTF8';
+SET client_encoding = 'SQL_ASCII';
 SET standard_conforming_strings = on;
 SET check_function_bodies = false;
 SET client_min_messages = warning;
@@ -128,8 +127,8 @@ CREATE TABLE "KB_SNP_gene" (
     entrez_gene_id integer,
     gene_alternative_symbols character varying(50)[],
     gene_official_full_name character varying(100),
-    gene_summary text,
-    gene_type character varying(50)
+    gene_type character varying(50),
+    gene_summary text
 );
 
 
@@ -347,6 +346,45 @@ ALTER TABLE "KB_SNP_variant_id_seq" OWNER TO trpkb;
 --
 
 ALTER SEQUENCE "KB_SNP_variant_id_seq" OWNED BY "KB_SNP_variant".id;
+
+
+--
+-- Name: Submit_draft; Type: TABLE; Schema: public; Owner: trpkb
+--
+
+CREATE TABLE "Submit_draft" (
+    id integer NOT NULL,
+    status character varying(20) NOT NULL,
+    kb character varying(20) NOT NULL,
+    title character varying(500) NOT NULL,
+    pubmed_id integer,
+    content jsonb NOT NULL,
+    paper character varying(300),
+    user_id integer NOT NULL
+);
+
+
+ALTER TABLE "Submit_draft" OWNER TO trpkb;
+
+--
+-- Name: Submit_draft_id_seq; Type: SEQUENCE; Schema: public; Owner: trpkb
+--
+
+CREATE SEQUENCE "Submit_draft_id_seq"
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE "Submit_draft_id_seq" OWNER TO trpkb;
+
+--
+-- Name: Submit_draft_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: trpkb
+--
+
+ALTER SEQUENCE "Submit_draft_id_seq" OWNED BY "Submit_draft".id;
 
 
 --
@@ -936,168 +974,175 @@ ALTER SEQUENCE socialaccount_socialtoken_id_seq OWNED BY socialaccount_socialtok
 
 
 --
--- Name: KB_SNP_association id; Type: DEFAULT; Schema: public; Owner: trpkb
+-- Name: id; Type: DEFAULT; Schema: public; Owner: trpkb
 --
 
 ALTER TABLE ONLY "KB_SNP_association" ALTER COLUMN id SET DEFAULT nextval('"KB_SNP_association_id_seq"'::regclass);
 
 
 --
--- Name: KB_SNP_evidencebasedmedicinelevel id; Type: DEFAULT; Schema: public; Owner: trpkb
+-- Name: id; Type: DEFAULT; Schema: public; Owner: trpkb
 --
 
 ALTER TABLE ONLY "KB_SNP_evidencebasedmedicinelevel" ALTER COLUMN id SET DEFAULT nextval('"KB_SNP_evidencebasedmedicinelevel_id_seq"'::regclass);
 
 
 --
--- Name: KB_SNP_gene id; Type: DEFAULT; Schema: public; Owner: trpkb
+-- Name: id; Type: DEFAULT; Schema: public; Owner: trpkb
 --
 
 ALTER TABLE ONLY "KB_SNP_gene" ALTER COLUMN id SET DEFAULT nextval('"KB_SNP_gene_id_seq"'::regclass);
 
 
 --
--- Name: KB_SNP_prognosis id; Type: DEFAULT; Schema: public; Owner: trpkb
+-- Name: id; Type: DEFAULT; Schema: public; Owner: trpkb
 --
 
 ALTER TABLE ONLY "KB_SNP_prognosis" ALTER COLUMN id SET DEFAULT nextval('"KB_SNP_prognosis_id_seq"'::regclass);
 
 
 --
--- Name: KB_SNP_research id; Type: DEFAULT; Schema: public; Owner: trpkb
+-- Name: id; Type: DEFAULT; Schema: public; Owner: trpkb
 --
 
 ALTER TABLE ONLY "KB_SNP_research" ALTER COLUMN id SET DEFAULT nextval('"KB_SNP_research_id_seq"'::regclass);
 
 
 --
--- Name: KB_SNP_subgroup id; Type: DEFAULT; Schema: public; Owner: trpkb
+-- Name: id; Type: DEFAULT; Schema: public; Owner: trpkb
 --
 
 ALTER TABLE ONLY "KB_SNP_subgroup" ALTER COLUMN id SET DEFAULT nextval('"KB_SNP_subgroup_id_seq"'::regclass);
 
 
 --
--- Name: KB_SNP_tumor id; Type: DEFAULT; Schema: public; Owner: trpkb
+-- Name: id; Type: DEFAULT; Schema: public; Owner: trpkb
 --
 
 ALTER TABLE ONLY "KB_SNP_tumor" ALTER COLUMN id SET DEFAULT nextval('"KB_SNP_tumor_id_seq"'::regclass);
 
 
 --
--- Name: KB_SNP_variant id; Type: DEFAULT; Schema: public; Owner: trpkb
+-- Name: id; Type: DEFAULT; Schema: public; Owner: trpkb
 --
 
 ALTER TABLE ONLY "KB_SNP_variant" ALTER COLUMN id SET DEFAULT nextval('"KB_SNP_variant_id_seq"'::regclass);
 
 
 --
--- Name: account_emailaddress id; Type: DEFAULT; Schema: public; Owner: trpkb
+-- Name: id; Type: DEFAULT; Schema: public; Owner: trpkb
+--
+
+ALTER TABLE ONLY "Submit_draft" ALTER COLUMN id SET DEFAULT nextval('"Submit_draft_id_seq"'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: trpkb
 --
 
 ALTER TABLE ONLY account_emailaddress ALTER COLUMN id SET DEFAULT nextval('account_emailaddress_id_seq'::regclass);
 
 
 --
--- Name: account_emailconfirmation id; Type: DEFAULT; Schema: public; Owner: trpkb
+-- Name: id; Type: DEFAULT; Schema: public; Owner: trpkb
 --
 
 ALTER TABLE ONLY account_emailconfirmation ALTER COLUMN id SET DEFAULT nextval('account_emailconfirmation_id_seq'::regclass);
 
 
 --
--- Name: auth_group id; Type: DEFAULT; Schema: public; Owner: trpkb
+-- Name: id; Type: DEFAULT; Schema: public; Owner: trpkb
 --
 
 ALTER TABLE ONLY auth_group ALTER COLUMN id SET DEFAULT nextval('auth_group_id_seq'::regclass);
 
 
 --
--- Name: auth_group_permissions id; Type: DEFAULT; Schema: public; Owner: trpkb
+-- Name: id; Type: DEFAULT; Schema: public; Owner: trpkb
 --
 
 ALTER TABLE ONLY auth_group_permissions ALTER COLUMN id SET DEFAULT nextval('auth_group_permissions_id_seq'::regclass);
 
 
 --
--- Name: auth_permission id; Type: DEFAULT; Schema: public; Owner: trpkb
+-- Name: id; Type: DEFAULT; Schema: public; Owner: trpkb
 --
 
 ALTER TABLE ONLY auth_permission ALTER COLUMN id SET DEFAULT nextval('auth_permission_id_seq'::regclass);
 
 
 --
--- Name: auth_user id; Type: DEFAULT; Schema: public; Owner: trpkb
+-- Name: id; Type: DEFAULT; Schema: public; Owner: trpkb
 --
 
 ALTER TABLE ONLY auth_user ALTER COLUMN id SET DEFAULT nextval('auth_user_id_seq'::regclass);
 
 
 --
--- Name: auth_user_groups id; Type: DEFAULT; Schema: public; Owner: trpkb
+-- Name: id; Type: DEFAULT; Schema: public; Owner: trpkb
 --
 
 ALTER TABLE ONLY auth_user_groups ALTER COLUMN id SET DEFAULT nextval('auth_user_groups_id_seq'::regclass);
 
 
 --
--- Name: auth_user_user_permissions id; Type: DEFAULT; Schema: public; Owner: trpkb
+-- Name: id; Type: DEFAULT; Schema: public; Owner: trpkb
 --
 
 ALTER TABLE ONLY auth_user_user_permissions ALTER COLUMN id SET DEFAULT nextval('auth_user_user_permissions_id_seq'::regclass);
 
 
 --
--- Name: django_admin_log id; Type: DEFAULT; Schema: public; Owner: trpkb
+-- Name: id; Type: DEFAULT; Schema: public; Owner: trpkb
 --
 
 ALTER TABLE ONLY django_admin_log ALTER COLUMN id SET DEFAULT nextval('django_admin_log_id_seq'::regclass);
 
 
 --
--- Name: django_content_type id; Type: DEFAULT; Schema: public; Owner: trpkb
+-- Name: id; Type: DEFAULT; Schema: public; Owner: trpkb
 --
 
 ALTER TABLE ONLY django_content_type ALTER COLUMN id SET DEFAULT nextval('django_content_type_id_seq'::regclass);
 
 
 --
--- Name: django_migrations id; Type: DEFAULT; Schema: public; Owner: trpkb
+-- Name: id; Type: DEFAULT; Schema: public; Owner: trpkb
 --
 
 ALTER TABLE ONLY django_migrations ALTER COLUMN id SET DEFAULT nextval('django_migrations_id_seq'::regclass);
 
 
 --
--- Name: django_site id; Type: DEFAULT; Schema: public; Owner: trpkb
+-- Name: id; Type: DEFAULT; Schema: public; Owner: trpkb
 --
 
 ALTER TABLE ONLY django_site ALTER COLUMN id SET DEFAULT nextval('django_site_id_seq'::regclass);
 
 
 --
--- Name: socialaccount_socialaccount id; Type: DEFAULT; Schema: public; Owner: trpkb
+-- Name: id; Type: DEFAULT; Schema: public; Owner: trpkb
 --
 
 ALTER TABLE ONLY socialaccount_socialaccount ALTER COLUMN id SET DEFAULT nextval('socialaccount_socialaccount_id_seq'::regclass);
 
 
 --
--- Name: socialaccount_socialapp id; Type: DEFAULT; Schema: public; Owner: trpkb
+-- Name: id; Type: DEFAULT; Schema: public; Owner: trpkb
 --
 
 ALTER TABLE ONLY socialaccount_socialapp ALTER COLUMN id SET DEFAULT nextval('socialaccount_socialapp_id_seq'::regclass);
 
 
 --
--- Name: socialaccount_socialapp_sites id; Type: DEFAULT; Schema: public; Owner: trpkb
+-- Name: id; Type: DEFAULT; Schema: public; Owner: trpkb
 --
 
 ALTER TABLE ONLY socialaccount_socialapp_sites ALTER COLUMN id SET DEFAULT nextval('socialaccount_socialapp_sites_id_seq'::regclass);
 
 
 --
--- Name: socialaccount_socialtoken id; Type: DEFAULT; Schema: public; Owner: trpkb
+-- Name: id; Type: DEFAULT; Schema: public; Owner: trpkb
 --
 
 ALTER TABLE ONLY socialaccount_socialtoken ALTER COLUMN id SET DEFAULT nextval('socialaccount_socialtoken_id_seq'::regclass);
@@ -5369,7 +5414,7 @@ SELECT pg_catalog.setval('"KB_SNP_evidencebasedmedicinelevel_id_seq"', 3, true);
 -- Data for Name: KB_SNP_gene; Type: TABLE DATA; Schema: public; Owner: trpkb
 --
 
-COPY "KB_SNP_gene" (id, gene_official_symbol, entrez_gene_id, gene_alternative_symbols, gene_official_full_name, gene_summary, gene_type) FROM stdin;
+COPY "KB_SNP_gene" (id, gene_official_symbol, entrez_gene_id, gene_alternative_symbols, gene_official_full_name, gene_type, gene_summary) FROM stdin;
 1	RAD51	5888	\N	\N	\N	\N
 2	WRN	7486	\N	\N	\N	\N
 3	NEIL1	79661	\N	\N	\N	\N
@@ -5762,137 +5807,137 @@ SELECT pg_catalog.setval('"KB_SNP_prognosis_id_seq"', 226, true);
 --
 
 COPY "KB_SNP_research" (id, title, language, pub_year, pubmed_id, url, pub_type, ethnicity, patient_number, male, female, median_age, mean_age, age_range, treatment_desc, treatment_type, ebml_id) FROM stdin;
-1	Associations of Functional Single Nucleotide Polymorphisms in DNA Repair Genes with Susceptibility, Radiation-induced Injury and Survival in Esophageal Cancer Patients	Chinese	2013	\N	http://kns.cnki.net/KCMS/detail/detail.aspx?dbcode=CDFD&dbname=CDFDLAST2015&filename=1014446290.nh&uid=WEEvREcwSlJHSldRa1Fhb09jMjQxRGlXbldxdmxEMkszMG05OVgrTWhFWT0=$9A4hF_YAuvQ5obgVAqNKPCYcEjKensW4ggI8Fm4gTkoUKaID8j8gFw!!&v=MTMwMDRSTDJmWWVWdkZ5cmdWTHZLVkYyNkdyZThHTlBGcjVFYlBJUjhlWDFMdXhZUzdEaDFUM3FUcldNMUZyQ1U=	Ph. D thesis	Chinese Han	187	138	138	64	\N	[37.0,88.0)	\N		1
-2	Functional polymorphisms of base excision repair genes XRCC1 and APEX1 predict risk of radiationpneumonitis in patients with non-small cell lung cancer treated with definitive radiation therapy	English	2011	21420246	https://www.ncbi.nlm.nih.gov/pubmed/?term=21420246	Peer review	White; Black; Hispanic; Asian; Other	165	93	93	63	\N	[35.0,88.0)	\N		1
-3	Polymorphisms of homologous recombination genes and clinical outcomes of non-small cell lung cancer patients treated with definitive radiotherapy	English	2011	21647442	https://www.ncbi.nlm.nih.gov/pubmed/?term=21647442	Peer review	White; Black; Other	228	125	125	63	\N	[35.0,88.0)	\N		1
-4	Significant Effect of Homologous Recombination DNA Repair Gene Polymorphisms on Pancreatic Cancer Survival	English	2006	16540687	https://www.ncbi.nlm.nih.gov/pubmed/?term=16540687	Peer review	\N	244	\N	\N	\N	\N	\N	\N		1
-5	Association between CCND1 G870A polymorphism and radiotherapy response in high-risk humam papillomavirus-related cervical cancer	Chinese	2015	26643423	https://www.ncbi.nlm.nih.gov/pubmed/?term=26643423	Peer review	\N	273	\N	\N	\N	\N	\N	\N		1
-6	Cyclin D1 Gene G870A Polymorphism Predicts Response to Neoadjuvant Radiotherapy and Prognosis in Rectal Cancer	English	2007	17398034	https://www.ncbi.nlm.nih.gov/pubmed/?term=17398034	Peer review	Caucasian	70	44	44	64	\N	[39.0,81.0)	\N		1
-7	The Association between Single Nucleotide Polymorphisms of Epidermal Growth Factor Receptor and Short-Term Response to Radiochemotherpy in Cervical Cancer	Chinese	2014	\N	http://kns.cnki.net/KCMS/detail/detail.aspx?dbcode=CJFQ&dbname=CJFD2014&filename=SFCZ201401015&uid=WEEvREcwSlJHSldRa1Fhb09jMjQxRGlXbldxdmxEMkszMG05OVgrTWhFWT0=$9A4hF_YAuvQ5obgVAqNKPCYcEjKensW4ggI8Fm4gTkoUKaID8j8gFw!!&v=MTk1NjRkTEc0SDlYTXJvOUVZWVI4ZVgxTHV4WVM3RGgxVDNxVHJXTTFGckNVUkwyZlllVnZGeXJnVjczUE5pdkk=	Peer review	\N	196	\N	\N	\N	\N	\N	\N		1
-8	Association between Genetic Polymorphisms in DNA Double-strand Break Repair Genes Ku70 and Ku80 and Radiation-induced Acute Oral Mucositis in Patients with Nasopharyngeal Cancer	Chinese	2012	\N	http://kns.cnki.net/KCMS/detail/detail.aspx?dbcode=CMFD&dbname=CMFD201302&filename=1013012992.nh&uid=WEEvREcwSlJHSldRa1Fhb09jMjQxRGlXbldxdmxEMkszMG05OVgrTWhFWT0=$9A4hF_YAuvQ5obgVAqNKPCYcEjKensW4ggI8Fm4gTkoUKaID8j8gFw!!&v=MDQxNDhITmpGclpFYlBJUjhlWDFMdXhZUzdEaDFUM3FUcldNMUZyQ1VSTDJmWWVWdkZ5cmdWYnZMVkYyNkhiTzU=	Master's thesis	\N	120	88	88	\N	47.8299999999999983	[15.0,76.0)	\N		1
-9	Acute normal Tissue reactions in head-and-neck cancer patients treated with IMRT: influence of dose andassociation with genetic polymorphisms in DNA DSB repair genes	English	2009	19251090	https://www.ncbi.nlm.nih.gov/pubmed/?term=19251090	Peer review	\N	88	76	76	\N	60.2999999999999972	[40.0,86.0)	\N		1
-10	Research on the Association between Single Nucleotide Polymorphism of the Epidermal Growth Factor Receptor and Sensitivity of Radiotherapy for Esophageal Cancer	Chinese	2012	\N	http://kns.cnki.net/KCMS/detail/detail.aspx?dbcode=CJFQ&dbname=CJFD2012&filename=HCYX201204004&uid=WEEvREcwSlJHSldRa1Fhb09jMjQxRGlXbldxdmxEMkszMG05OVgrTWhFWT0=$9A4hF_YAuvQ5obgVAqNKPCYcEjKensW4ggI8Fm4gTkoUKaID8j8gFw!!&v=MTUxMjFTN1Nkckc0SDlQTXE0OUZZSVI4ZVgxTHV4WVM3RGgxVDNxVHJXTTFGckNVUkwyZlllVnZGeXJnVzcvQkw=	Peer review	\N	160	86	86	\N	49.5	[30.0,85.0)	\N		1
-11	The association between ERCC1 single nucleotide polymorphism and radiosensitivity in non-small cell lung cancer patients	Chinese	2014	\N	http://kns.cnki.net/KCMS/detail/detail.aspx?dbcode=CJFQ&dbname=CJFD2014&filename=ZLXZ201414032&uid=WEEvREcwSlJHSldRa1Fhb09jMjQxRGlXbldxdmxEMkszMG05OVgrTWhFWT0=$9A4hF_YAuvQ5obgVAqNKPCYcEjKensW4ggI8Fm4gTkoUKaID8j8gFw!!&v=MjEyNDVMRzRIOVhOcTQ5R1pvUjhlWDFMdXhZUzdEaDFUM3FUcldNMUZyQ1VSTDJmWWVWdkZ5cmhVcjdQUHlIVGQ=	Peer review	\N	44	32	32	\N	71.2000000000000028	[65.0,83.0)	\N		1
-12	Single nucleotide polymorphism of EＲCC5 rs2296147 is associated with incidence of acute radiation pneumonitis in lung cancer patients	Chinese	2016	\N	http://kns.cnki.net/KCMS/detail/detail.aspx?dbcode=CJFQ&dbname=CJFDLAST2016&filename=SYZZ201603013&uid=WEEvREcwSlJHSldRa1Fhb09jMjQxRGlXbldxdmxEMkszMG05OVgrTWhFWT0=$9A4hF_YAuvQ5obgVAqNKPCYcEjKensW4ggI8Fm4gTkoUKaID8j8gFw!!&v=MjU2NzRyaFU3N0JOalRSZExHNEg5Zk1ySTlFWjRSOGVYMUx1eFlTN0RoMVQzcVRyV00xRnJDVVJMMmZZZVZ2Rnk=	Peer review	\N	167	105	105	62	62.6000000000000014	[41.0,84.0)	\N		1
-13	Epidermal growth factor receptor (EGFR) polymorphisms and survival in head and neck cancer patients	English	2007	17112774	https://www.ncbi.nlm.nih.gov/pubmed/?term=17112774	Peer review	\N	78	60	60	59	\N	[39.0,82.0)	\N		1
-14	Association of Single Nucleotide Polymorphisms of GNAS1 T393C with Radiation Pneumonitis	Chinese	2016	\N	http://kns.cnki.net/KCMS/detail/detail.aspx?dbcode=CJFQ&dbname=CJFDLAST2016&filename=XHON201602004&uid=WEEvREcwSlJHSldRa1Fhb09jMjQxRGlXbldxdmxEMkszMG05OVgrTWhFWT0=$9A4hF_YAuvQ5obgVAqNKPCYcEjKensW4ggI8Fm4gTkoUKaID8j8gFw!!&v=MjAyOTk4ZVgxTHV4WVM3RGgxVDNxVHJXTTFGckNVUkwyZlllVnZGeXJoVUw3T1BTWEVZTEc0SDlmTXJZOUZZSVI=	Peer review	\N	67	51	51	\N	61	[31.0,80.0)	\N		1
-15	Association study on single nucleotide polymorphism in hOGG1, XRCC1, XRCC3 and radiosensitivity in esophageal cancer	Chinese	2010	\N	http://kns.cnki.net/KCMS/detail/detail.aspx?dbcode=CJFQ&dbname=CJFD2010&filename=XJYY201005002&uid=WEEvREcwSlJHSldRa1Fhb09jMjQxRGlXbldxdmxEMkszMG05OVgrTWhFWT0=$9A4hF_YAuvQ5obgVAqNKPCYcEjKensW4ggI8Fm4gTkoUKaID8j8gFw!!&v=MjMwNzJUM3FUcldNMUZyQ1VSTDJmWWVWdkZ5cmhVYjdJUFNmU2Q3RzRIOUhNcW85RlpvUjhlWDFMdXhZUzdEaDE=	Peer review	Chinese Han; Kazakh; Uygur	94	72	72	64	\N	[34.0,80.0)	\N		1
-16	Influence of MnSOD gene polymorphism on the curative effect of radiotherapy iin esophageal squamous cell carcinoma	Chinese	2010	\N	http://kns.cnki.net/KCMS/detail/detail.aspx?dbcode=CJFQ&dbname=CJFD2011&filename=ABJB201101004&uid=WEEvREcwSlJHSldRa1Fhb09jMjQxRGlXbldxdmxEMkszMG05OVgrTWhFWT0=$9A4hF_YAuvQ5obgVAqNKPCYcEjKensW4ggI8Fm4gTkoUKaID8j8gFw!!&v=MDU2MDlEaDFUM3FUcldNMUZyQ1VSTDJmWWVWdkZ5cmhVYnZOSkMvQmJMRzRIOURNcm85RllJUjhlWDFMdXhZUzc=	Peer review	\N	93	\N	\N	\N	\N	\N	\N		1
-17	MTHFR C677T and A1298C polymorphisms as predictors of radiotherapy response in head and neck squamous cell carcinoma	English	2015	26535623	https://www.ncbi.nlm.nih.gov/pubmed/?term=26535623	Peer review	\N	157	\N	\N	\N	\N	\N	\N		1
-18	Association between key genes of Non-homologous End Joining Pathway and response to concurrent chemoradiotherapy in squamous cell cervical carcinoma	Chinese	2015	\N	http://kns.cnki.net/KCMS/detail/detail.aspx?dbcode=CMFD&dbname=CMFD201502&filename=1015326412.nh&uid=WEEvREcwSlJHSldRa1Fhb09jMjQxRGlXbldxdmxEMkszMG05OVgrTWhFWT0=$9A4hF_YAuvQ5obgVAqNKPCYcEjKensW4ggI8Fm4gTkoUKaID8j8gFw!!&v=MjM2OTJGeXJoVnJyS1ZGMjZHN0M2R05YTnJaRWJQSVI4ZVgxTHV4WVM3RGgxVDNxVHJXTTFGckNVUkwyZlllVnY=	Master's thesis	\N	42	\N	\N	60	\N	[47.0,78.0)	\N		1
-19	Single nucleotide polymorphisms in NOS2A and NOS3 genes are not associated with treatment response of non-small cell lung cancer patients following the definitive radiochemotherapy	English	2012	22862164	https://www.ncbi.nlm.nih.gov/pubmed/?term=22862164	Peer review	\N	198	150	150	60	\N	[25.0,87.0)	\N		1
-20	Genetic variants in inducible nitric oxide synthase gene associated with the risk of radiation-induced lung injury in lung cancer patients receiving definitive thoracic radiation	English	2014	24746566	https://www.ncbi.nlm.nih.gov/pubmed/?term=24746566	Peer review	\N	301	232	232	60	\N	[25.0,87.0)	\N		1
-21	Correlation Between the Short-term Effect of NP Chemotherapy Regiment Combined with Radiotherapy in the Treatment of Stage III NSCLC and Single Nucleotide Polymorphism of XRCC1 Gene Codon399	Chinese	2012	\N	http://kns.cnki.net/KCMS/detail/detail.aspx?dbcode=CJFQ&dbname=CJFD2012&filename=SYAZ201205010&uid=WEEvREcwSlJHSldRa1Fhb09jMjQxRGlXbldxdmxEMkszMG05OVgrTWhFWT0=$9A4hF_YAuvQ5obgVAqNKPCYcEjKensW4ggI8Fm4gTkoUKaID8j8gFw!!&v=MzEzNDdTN0RoMVQzcVRyV00xRnJDVVJMMmZZZVZ2RnlyaFY3ckxOalRLZExHNEg5UE1xbzlFWklSOGVYMUx1eFk=	Peer review	\N	52	40	40	64	\N	[30.0,75.0)	\N		1
-22	Association of polymorphism of codon 72 in p53 gene with susceptibility and radiosensitivity of non small cell lung cancer in Chinese population	Chinese	2006	21144305	https://www.ncbi.nlm.nih.gov/pubmed/?term=21144305	Peer review	\N	50	25	25	\N	62.6000000000000014	\N	\N		2
-23	Association of Polymorphism of T29C in TGFβ1 Gene with Susceptibility and Radiosensitivity of Non-Small Cell Lung Cancer in Chinese Population	Chinese	2014	\N	http://kns.cnki.net/KCMS/detail/detail.aspx?dbcode=CJFQ&dbname=CJFD2014&filename=HNYG201401010&uid=WEEvREcwSlJHSldRa1Fhb09jMjQxRGlXbldxdmxEMkszMG05OVgrTWhFWT0=$9A4hF_YAuvQ5obgVAqNKPCYcEjKensW4ggI8Fm4gTkoUKaID8j8gFw!!&v=MzE5MzNvOUVaSVI4ZVgxTHV4WVM3RGgxVDNxVHJXTTFGckNVUkwyZlllVnZGeXJoV3IvSUxTUFNhYkc0SDlYTXI=	Peer review	Chinese Han	60	31	31	\N	65.5999999999999943	\N	\N		2
-24	Association between XRCC1 and APE1 single nucleotide polymorphism and radiosensitivity in esophageal cancer	Chinese	2014	\N	http://kns.cnki.net/KCMS/detail/detail.aspx?dbcode=CJFQ&dbname=CJFD2014&filename=SXYX201410003&uid=WEEvREcwSlJHSldRa1Fhb09jMjQxRGlXbldxdmxEMkszMG05OVgrTWhFWT0=$9A4hF_YAuvQ5obgVAqNKPCYcEjKensW4ggI8Fm4gTkoUKaID8j8gFw!!&v=MDg4NjJDVVJMMmZZZVZ2RnlyaFc3L0tOalhTZHJHNEg5WE5yNDlGWjRSOGVYMUx1eFlTN0RoMVQzcVRyV00xRnI=	Peer review	Chinese Han	150	115	115	\N	64	[32.0,82.0)	\N		1
-25	The Relevant Research Between Single Nucleotide Solymorphism XRCC1 Codon399 and Acute Radiation Reaction of Normal Tissue in Patients of Nasopharyngeal Carcinoma	Chinese	2011	\N	http://kns.cnki.net/KCMS/detail/detail.aspx?dbcode=CJFQ&dbname=CJFD2011&filename=SYAZ201104005&uid=WEEvREcwSlJHSldRa1Fhb09jMjQxRGlXbldxdmxEMkszMG05OVgrTWhFWT0=$9A4hF_YAuvQ5obgVAqNKPCYcEjKensW4ggI8Fm4gTkoUKaID8j8gFw!!&v=MTU3NTExVDNxVHJXTTFGckNVUkwyZlllVnZGeTNrVXI3UE5qVEtkTEc0SDlETXE0OUZZWVI4ZVgxTHV4WVM3RGg=	Peer review	\N	60	52	52	55	\N	[27.0,72.0)	\N		1
-26	The Clinical Relevance between Single Nucleotide Polymorphisms of XRCC1 Codon399 and Chronic Irradiation-induced Injury of Normal Tissue in Patients with Nasopharyngeal Carcinoma	Chinese	2011	\N	http://kns.cnki.net/KCMS/detail/detail.aspx?dbcode=CJFQ&dbname=CJFD2011&filename=SYAZ201106015&uid=WEEvREcwSlJHSldRa1Fhb09jMjQxRGlXbldxdmxEMkszMG05OVgrTWhFWT0=$9A4hF_YAuvQ5obgVAqNKPCYcEjKensW4ggI8Fm4gTkoUKaID8j8gFw!!&v=MDUxMDk5RE1xWTlFWVlSOGVYMUx1eFlTN0RoMVQzcVRyV00xRnJDVVJMMmZZZVZ2Rnkza1VydklOalRLZExHNEg=	Peer review	\N	60	52	52	\N	\N	\N	\N		1
-27	Effect of the XRCC1 single nucleotide polymorphisms of radiotherapy in patients locally advanced nasopharyngeal carcinoma	Chinese	2015	\N	http://kns.cnki.net/KCMS/detail/detail.aspx?dbcode=CMFD&dbname=CMFD201502&filename=1015330857.nh&uid=WEEvREcwSlJHSldRa1Fhb09jMjQxRGlXbldxdmxEMkszMG05OVgrTWhFWT0=$9A4hF_YAuvQ5obgVAqNKPCYcEjKensW4ggI8Fm4gTkoUKaID8j8gFw!!&v=MzI1OTNKRWJQSVI4ZVgxTHV4WVM3RGgxVDNxVHJXTTFGckNVUkwyZlllVnZGeTNrVUwvQVZGMjZHN0M3SHRuSnE=	Master's thesis	\N	114	86	86	46	\N	[18.0,71.0)	\N		1
-28	Correlation of XRCC1 Polymorphism with Radiotherapy Response in Squamous Cell Carcinoma of Cervix	Chinese	2014	\N	http://kns.cnki.net/KCMS/detail/detail.aspx?dbcode=CJFQ&dbname=CJFD2014&filename=TJYZ201406025&uid=WEEvREcwSlJHSldRa1Fhb09jMjQxRGlXbldxdmxEMkszMG05OVgrTWhFWT0=$9A4hF_YAuvQ5obgVAqNKPCYcEjKensW4ggI8Fm4gTkoUKaID8j8gFw!!&v=MDU5NTBYTXFZOUhZWVI4ZVgxTHV4WVM3RGgxVDNxVHJXTTFGckNVUkwyZlllVnZGeTNrVWI3TU1TZlNkTEc0SDk=	Peer review	\N	73	\N	\N	\N	\N	[34.0,78.0)	\N		1
-29	Association between XRCC3 single nucleotide polymorphism and short-term treatment response to radiotherapy in lung cancer patients	Chinese	2006	\N	http://kns.cnki.net/KCMS/detail/detail.aspx?dbcode=CJFQ&dbname=CJFD2006&filename=ZHFZ200605028&uid=WEEvREcwSlJHSldRa1Fhb09jMjQxRGlXbldxdmxEMkszMG05OVgrTWhFWT0=$9A4hF_YAuvQ5obgVAqNKPCYcEjKensW4ggI8Fm4gTkoUKaID8j8gFw!!&v=MTE4MTlJUHlYTmRMRzRIdGZNcW85SGJJUjhlWDFMdXhZUzdEaDFUM3FUcldNMUZyQ1VSTDJmWWVWdkZ5M2tVYnY=	Peer review	\N	123	102	102	60	\N	[28.0,80.0)	\N		1
-30	Correlation of XRCC1 Arg399Gln polymorphism with acute irradiation injury of cervical cancer: report of 152 cases	Chinese	2016	\N	http://kns.cnki.net/KCMS/detail/detail.aspx?dbcode=CJFQ&dbname=CJFDLAST2016&filename=DSDX201609019&uid=WEEvREcwSlJHSldRa1Fhb09jMjQxRGlXbldxdmxEMkszMG05OVgrTWhFWT0=$9A4hF_YAuvQ5obgVAqNKPCYcEjKensW4ggI8Fm4gTkoUKaID8j8gFw!!&v=MjY2MTkxRnJDVVJMMmZZZVZ2Rnkza1Y3dkpJVDdQZHJHNEg5Zk1wbzlFYllSOGVYMUx1eFlTN0RoMVQzcVRyV00=	Peer review	\N	152	\N	\N	\N	48	[28.0,78.0)	\N		1
-31	The relevance between single nucleotide polymorphisms of XRCC1 and late irradiation-induced injury of patients with non-small cell lung cancer	Chinese	2015	\N	http://kns.cnki.net/KCMS/detail/detail.aspx?dbcode=CJFQ&dbname=CJFDLAST2015&filename=ZGZK201506010&uid=WEEvREcwSlJHSldRa1Fhb09jMjQxRGlXbldxdmxEMkszMG05OVgrTWhFWT0=$9A4hF_YAuvQ5obgVAqNKPCYcEjKensW4ggI8Fm4gTkoUKaID8j8gFw!!&v=MTg3ODRaYkc0SDlUTXFZOUVaSVI4ZVgxTHV4WVM3RGgxVDNxVHJXTTFGckNVUkwyZlllVnZGeTNrVkx2TlB5clI=	Peer review	\N	60	34	34	\N	\N	\N	\N		1
-32	Association of single nucleotide polymorphisms with radiation-induced esophagitis	Chinese	2008	\N	http://new.wanfangdata.com.cn/details/detail.do?_type=perio&id=zhfszl200803004	Peer review	\N	170	143	143	\N	\N	\N	\N		1
-33	Relationship between radiosensitivity of nasopharyngeal carcinoma and MDR1 gene polymorphism	Chinese	2007	17545060	https://www.ncbi.nlm.nih.gov/pubmed/?term=17545060	Peer review	\N	59	38	38	\N	31.6000000000000014	[22.0,64.0)	\N		1
-34	Relationships between polymorphisms of ERCC1 and efficacy of non-small cell lung cancer receiving radiation therapy	Chinese	2013	\N	http://kns.cnki.net/KCMS/detail/detail.aspx?dbcode=CJFQ&dbname=CJFD2013&filename=ZSZD201305020&uid=WEEvREcwSlJHSldRa1Fhb09jMjQxRGlXbldxdmxEMkszMG05OVgrTWhFWT0=$9A4hF_YAuvQ5obgVAqNKPCYcEjKensW4ggI8Fm4gTkoUKaID8j8gFw!!&v=Mjg1NTZVcnpKUHo3UmFyRzRIOUxNcW85SFpJUjhlWDFMdXhZUzdEaDFUM3FUcldNMUZyQ1VSTDJmWWVWdkZ5M2w=	Peer review	\N	119	97	97	66	\N	[35.0,82.0)	\N		1
-60	Association of genetic variants in VEGF-A with clinical recurrence in prostate cancer patients treated with definitive radiotherapy	English	2014	24435801	https://www.ncbi.nlm.nih.gov/pubmed/?term=24435801	Peer review	\N	496	496	496	\N	\N	\N	\N		1
-35	Single nucleotide polymorphisms involved in base excision repair and treatment response in the patients with advanced non-small cell lung cancer	Chinese	2007	\N	http://kns.cnki.net/KCMS/detail/detail.aspx?dbcode=CPFD&dbname=CPFD9908&filename=ZGKA200706001058&uid=WEEvREcwSlJHSldRa1Fhb09jMjQxRGlXbldxdmxEMkszMG05OVgrTWhFWT0=$9A4hF_YAuvQ5obgVAqNKPCYcEjKensW4ggI8Fm4gTkoUKaID8j8gFw!!&v=MDYyNTBPVUtyaWZadUZ2RUNya1U3cklJRnNVUHlyQWI3RzRIdGJNcVk5Rlplc0tCQk5LdWhkaG5qOThUbmpxcXhkRWVN	Peer review	\N	125	\N	\N	\N	\N	\N	\N		1
-36	Study on Correlation between the Polymorphism of Human mdm2 Gene and Non-Small Cell Lung Cancer	Chinese	2005	\N	http://kns.cnki.net/KCMS/detail/detail.aspx?dbcode=CMFD&dbname=CMFD0506&filename=2005105648.nh&uid=WEEvREcwSlJHSldRa1Fhb09jMjQxRGlXbldxdmxEMkszMG05OVgrTWhFWT0=$9A4hF_YAuvQ5obgVAqNKPCYcEjKensW4ggI8Fm4gTkoUKaID8j8gFw!!&v=MjQ0NjllVnZGeTNsVUxySVYxMjdHN0s0RzlmSXA1RWJQSVI4ZVgxTHV4WVM3RGgxVDNxVHJXTTFGckNVUkwyZlk=	Master's thesis	\N	88	\N	\N	\N	\N	\N	\N		2
-37	Genetic Variations in Radiation and Chemotherapy Drug Action Pathways Predict Clinical Outcome in Esophageal Cancer	English	2006	16785472	https://www.ncbi.nlm.nih.gov/pubmed/?term=16785472	Peer review	\N	210	182	182	61	\N	[32.0,79.0)	\N		1
-38	Association of DNA repair and steroid metabolism gene polymorphisms with clinical late toxicity in patients treated with conformal radiotherapy for prostate cancer	English	2006	16638864	https://www.ncbi.nlm.nih.gov/pubmed/?term=16638864	Peer review	Caucasian; Caucasian-French Canadian; Canadian; Pacific Asian; Afro-Caribbean	83	87	87	67	\N	[45.0,78.0)	\N		1
-39	Genetic polymorphisms in the DNA double-strand break repair genes XRCC3, XRCC2, and NBS1 are not associated with acute side effects of radiotherapy in breast cancer patients	English	2006	16702393	https://www.ncbi.nlm.nih.gov/pubmed/?term=16702393	Peer review	\N	446	\N	\N	\N	\N	\N	\N		1
-40	ATM haplotypes and cellular response to DNA damage: association with breast cancer risk and clinical radiosensitivity	English	2003	14695186	https://www.ncbi.nlm.nih.gov/pubmed/?term=14695186	Peer review	\N	254	\N	\N	\N	56.7999999999999972	[35.0,81.0)	\N		2
-41	Association of single nucleotide polymorphisms in ATM, GSTP1, SOD2, TGFB1, XPD and XRCC1 with clinical and cellular radiosensitivity	English	2010	20170971	https://www.ncbi.nlm.nih.gov/pubmed/?term=20170971	Peer review	\N	69	\N	\N	\N	54.1000000000000014	\N	\N		1
-42	SNPs in genes implicated in radiation response are associated with radiotoxicity and evoke roles as predictive and prognostic biomarkers	English	2013	23697595	https://www.ncbi.nlm.nih.gov/pubmed/?term=23697595	Peer review	\N	155	116	116	47	\N	[15.0,77.0)	\N		1
-43	Investigation of genetic polymorphisms related to the outcome of radiotherapy for prostate cancer patients	English	2013	24324286	https://www.ncbi.nlm.nih.gov/pubmed/?term=24324286	Peer review	\N	48	48	48	67.2999999999999972	\N	[52.0,82.0)	\N		1
-44	Glutathione S-transferase P1 single nucleotide polymorphism predicts permanent ototoxicity in children with medulloblastoma	English	2013	23065688	https://www.ncbi.nlm.nih.gov/pubmed/?term=23065688	Peer review	Non-Hispanic white; Hispanic; Other	106	74	74	7	6	[0.5,18.0)	\N		1
-45	A single nucleotide polymorphism in inflammatory gene RNASEL predicts outcome after radiation therapy for localized prostate cancer	English	2013	23382116	https://www.ncbi.nlm.nih.gov/pubmed/?term=23382116	Peer review	Caucasian	434	434	434	72	\N	[68.0,76.0)	\N		1
-46	Association between single nucleotide polymorphisms in the p53 pathway and response to radiotherapy in patients with nasopharyngeal carcinoma	English	2014	24173110	https://www.ncbi.nlm.nih.gov/pubmed/?term=24173110	Peer review	\N	75	57	57	45	\N	[22.0,72.0)	\N		1
-47	The SIPA1 -313A>G polymorphism is associated with prognosis in inoperable non-small cell lung cancer	English	2014	25352027	https://www.ncbi.nlm.nih.gov/pubmed/?term=25352027	Peer review	\N	351	238	238	\N	\N	\N	\N		1
-48	XRCC1 rs25487 polymorphism predicts the survival of patients after postoperative radiotherapy and adjuvant chemotherapy for breast cancer	English	2014	24922669	https://www.ncbi.nlm.nih.gov/pubmed/?term=24922669	Peer review	Finns	238	\N	\N	\N	\N	\N	\N		1
-49	A polymorphism in the DNA repair domain of APEX1 is associated with the radiation-induced pneumonitis risk among lung cancer patients after radiotherapy	English	2014	24884729	https://www.ncbi.nlm.nih.gov/pubmed/?term=24884729	Peer review	\N	126	103	103	\N	\N	\N	\N		1
-50	XRCC1 codon 399Gln polymorphism is associated with radiotherapy-induced acute dermatitis and mucositis in nasopharyngeal carcinoma patients	English	2013	23375119	https://www.ncbi.nlm.nih.gov/pubmed/?term=23375119	Peer review	\N	114	78	78	\N	49.6000000000000014	[19.0,76.0)	\N		1
-51	The hMLH1 −93G>A Promoter Polymorphism is Associates with Outcomes in Oral Squamous Cell Carcinoma Patients	English	2014	25047469	https://www.ncbi.nlm.nih.gov/pubmed/?term=25047469	Peer review	\N	114	\N	\N	\N	\N	\N	\N		1
-52	Prognostic significance of head and neck squamous cell carcinoma repair gene polymorphism	English	2015	26505394	https://www.ncbi.nlm.nih.gov/pubmed/?term=26505394	Peer review	\N	151	\N	\N	\N	\N	\N	\N		1
-53	Association between single nucleotide polymorphisms of the transforming growth factor-beta1 gene and overall survival in unresectable locally advanced non-small-cell lung cancer patients treated with radio(chemo)therapy in a Chinese population	English	2013	23435990	https://www.ncbi.nlm.nih.gov/pubmed/?term=23435990	Peer review	Chinese	109	87	87	63	\N	[35.0,79.0)	\N		1
-54	Impact of CCND1 A870G polymorphism on acute adverse events in postoperative rectal cancer patients treated with adjuvant concurrent chemoradiotherapy	Chinese	2013	23985254	https://www.ncbi.nlm.nih.gov/pubmed/?term=23985254	Peer review	\N	400	246	246	\N	\N	\N	\N		1
-55	Single nucleotide polymorphism at rs1982073:T869C of the TGFbeta 1 gene is associated with the risk of radiation pneumonitis in patients with non-small-cell lung cancer treated with definitive radiotherapy	English	2009	19380441	https://www.ncbi.nlm.nih.gov/pubmed/?term=19380441	Peer review	White; Black; Other	164	90	90	\N	63	[35.0,83.0)	\N		1
-56	XRCC1 gene polymorphism for prediction of response and prognosis in the multimodality therapy of patients with locally advanced rectal cancer	English	2010	20863523	https://www.ncbi.nlm.nih.gov/pubmed/?term=20863523	Peer review	\N	81	51	51	59	\N	\N	\N		1
-57	The VEGFR2, COX-2 and MMP-2 polymorphisms are associated with clinical outcome of patients with inoperable non-small cell lung cancer	English	2015	25975224	https://www.ncbi.nlm.nih.gov/pubmed/?term=25975224	Peer review	Caucasian	350	239	239	\N	\N	\N	\N		1
-58	Pharmacogenetic Analysis of INT 0144 Trial: Association of Polymorphisms with Survival and Toxicity in Rectal Cancer Patients Treated with 5-FU and Radiation	English	2015	25589620	https://www.ncbi.nlm.nih.gov/pubmed/?term=25589620	Peer review	White; Non-White	746	479	479	61	\N	[19.0,86.0)	\N		1
-59	Single nucleotide polymorphisms of RecQ1, RAD54L, and ATM genes are associated with reduced survival of pancreatic cancer	English	2006	16520463	https://www.ncbi.nlm.nih.gov/pubmed/?term=16520463	Peer review	White; Hispanic; Black; Other	92	52	52	65	\N	[38.0,83.0)	\N		1
-61	A study of ethnic differences in TGFβ1 gene polymorphisms and effects on the risk of radiation pneumonitis in non-small-cell lung cancer	English	2012	23059779	https://www.ncbi.nlm.nih.gov/pubmed/?term=23059779	Peer review	\N	167	125	125	\N	58	\N	\N		1
-62	Next-generation sequencing identifies germline MRE11A variants as markers of radiotherapy outcomes in muscle-invasive bladder cancer	English	2014	24623370	https://www.ncbi.nlm.nih.gov/pubmed/?term=24623370	Peer review	\N	186	139	139	79	\N	[55.0,93.0)	\N		1
-63	Associations of ATM Polymorphisms With Survival in Advanced Esophageal Squamous Cell Carcinoma Patients Receiving Radiation Therapy	English	2015	26094126	https://www.ncbi.nlm.nih.gov/pubmed/?term=26094126	Peer review	\N	412	303	303	\N	\N	\N	\N		1
-64	MDM2 309 polymorphism predicts outcome in platinum-treated locally advanced head and neck cancer	English	2012	22356895	https://www.ncbi.nlm.nih.gov/pubmed/?term=22356895	Peer review	\N	140	117	117	57.5	\N	[21.0,77.0)	\N		1
-65	Polymorphisms of insulin-like growth factor binding protein-3 as a predictor for risk and patient survival in esophageal squamous cell carcinoma	English	2015	26349977	https://www.ncbi.nlm.nih.gov/pubmed/?term=26349977	Peer review	\N	110	20	20	\N	58.3299999999999983	\N	\N		2
-66	Genetic variants in TNF-α promoter are predictors of recurrence in patients with squamous cell carcinoma of oropharynx after definitive radiotherapy	English	2013	24122460	https://www.ncbi.nlm.nih.gov/pubmed/?term=24122460	Peer review	Non-Hispanic white; Other	846	735	735	\N	\N	\N	\N		1
-67	Evaluation of miR-27a, miR-181a, and miR-570 genetic variants with gallbladder cancer susceptibility and treatment outcome in a North Indian population	English	2015	26288960	https://www.ncbi.nlm.nih.gov/pubmed/?term=26288960	Peer review	Indian	606	176	176	\N	52.6499999999999986	\N	\N		2
-68	A MDR1 (ABCB1) gene single nucleotide polymorphism predicts outcome of temozolomide treatment in glioblastoma patients	English	2009	18687982	https://www.ncbi.nlm.nih.gov/pubmed/?term=18687982	Peer review	\N	112	63	63	63	\N	[18.0,89.0)	\N		1
-69	Germline Variation in Superoxide Dismutase-2 (SOD2) and Survival Outcomes after Radiation Therapy for Prostate Cancer: Results from a Test and Validation Set Analysis	English	2015	25662905	https://www.ncbi.nlm.nih.gov/pubmed/?term=25662905	Peer review	\N	816	816	816	\N	\N	\N	\N		3
-70	IL12RB2 and ABCA1 genes are associated with susceptibility to radiation dermatitis	English	2008	18927311	https://www.ncbi.nlm.nih.gov/pubmed/?term=18927311	Peer review	\N	156	\N	\N	48	\N	[23.0,77.0)	\N		1
-71	Genetic Variations in the PI3K/PTEN/AKT/mTOR Pathway Are Associated With Clinical Outcomes in Esophageal Cancer Patients Treated With Chemoradiotherapy	English	2009	19164214	https://www.ncbi.nlm.nih.gov/pubmed/?term=19164214	Peer review	White	186	161	161	\N	60.7999999999999972	[32.0,79.0)	\N		1
-72	ERCC1 Cys8092Ala and XRCC1 Arg399Gln polymorphisms predict progression-free survival after curativeradiotherapy for nasopharyngeal carcinoma	English	2014	25025378	https://www.ncbi.nlm.nih.gov/pubmed/?term=25025378	Peer review	Chinese Han	75	57	57	45	\N	[22.0,72.0)	\N		1
-73	The genetic variations in DNA repair genes ERCC2 and XRCC1 were associated with the overall survival of advanced non-small-cell lung cancer patients	English	2016	27465648	https://www.ncbi.nlm.nih.gov/pubmed/?term=27465648	Peer review	\N	131	\N	\N	\N	\N	\N	\N		1
-74	Neoadjuvant radiochemotherapy in adenocarcinoma of the esophagus: ERCC1 gene polymorphisms for prediction of response and prognosis	English	2012	21956434	https://www.ncbi.nlm.nih.gov/pubmed/?term=21956434	Peer review	\N	153	\N	\N	\N	\N	\N	\N		1
-75	The role of microRNA-binding site polymorphisms in DNA repair genes as risk factors for bladder cancer and breast cancer and their impact on radiotherapy outcomes	English	2012	22166496	https://www.ncbi.nlm.nih.gov/pubmed/?term=22166496	Peer review	\N	202	\N	\N	\N	\N	\N	\N		2
-76	Genetic variants of the LIN28B gene predict severe radiation pneumonitis in patients with non-small cell lung cancer treated with definitive radiation therapy	English	2014	24780874	https://www.ncbi.nlm.nih.gov/pubmed/?term=24780874	Peer review	Black; White	362	200	200	65	\N	[35.0,88.0)	\N		1
-77	Use of germline polymorphisms in predicting concurrent chemoradiotherapy response in esophageal cancer	English	2011	21596488	https://www.ncbi.nlm.nih.gov/pubmed/?term=21596488	Peer review	\N	91	\N	\N	\N	\N	\N	\N		1
-78	Genetic Variation in BCL2 3′-UTR Was Associated with Lung Cancer Risk and Prognosis in Male Chinese Population	English	2013	23977251	https://www.ncbi.nlm.nih.gov/pubmed/?term=23977251	Peer review	Chinese	110	110	110	\N	\N	\N	\N		2
-79	The Tumoral A genotype of the MGMT rs34180180 single-nucleotide polymorphism in aggressive gliomas is associated with shorter patients' survival	English	2016	26717998	https://www.ncbi.nlm.nih.gov/pubmed/?term=26717998	Peer review	\N	87	51	51	\N	61.2999999999999972	[29.0,81.0)	\N		1
-80	HNF1B polymorphism influences the prognosis of endometrial cancer patients: a cohort study	English	2015	25885815	https://www.ncbi.nlm.nih.gov/pubmed/?term=25885815	Peer review	\N	72	\N	\N	\N	\N	\N	\N		3
-81	Expression of pAkt affects p53 codon 72 polymorphism-based prediction of response to radiotherapy in nasopharyngeal carcinoma	English	2013	23663243	https://www.ncbi.nlm.nih.gov/pubmed/?term=23663243	Peer review	Chinese Han	75	57	57	45	\N	[22.0,72.0)	\N		1
-82	ERCC1 and XRCC1 gene polymorphisms predict response to neoadjuvant radiochemotherapy in esophageal cancer	English	2009	19421825	https://www.ncbi.nlm.nih.gov/pubmed/?term=19421825	Peer review	\N	52	43	43	\N	\N	\N	\N		1
-83	A 3'-untranslated region polymorphism in IGF1 predicts survival of non-small cell lung cancer in a Chinese population	English	2010	20145156	https://www.ncbi.nlm.nih.gov/pubmed/?term=20145156	Peer review	Chinese	444	\N	\N	\N	\N	\N	\N		3
-84	Fuzzy clustering demonstrates that codon 72 SNP rs1042522 of TP53 gene associated with HNSCC but not with prognoses	English	2015	26099726	https://www.ncbi.nlm.nih.gov/pubmed/?term=26099726	Peer review	\N	62	\N	\N	\N	62.240000000000002	[40.0,92.0)	\N		2
-85	Transforming growth factor beta 1 genotype and p16 as prognostic factors in head and neck squamous cell carcinoma	English	2012	22667340	https://www.ncbi.nlm.nih.gov/pubmed/?term=22667340	Peer review	\N	37	32	32	\N	\N	[31.0,77.0)	\N		1
-86	Polymorphisms in folate-metabolizing enzymes and response to 5-fluorouracil among patients with stage II or III rectal cancer (INT-0144; SWOG 9304)	English	2014	25041994	https://www.ncbi.nlm.nih.gov/pubmed/?term=25041994	Peer review	White; Black; Asian; Pacific Islander; Native American; Unknown	754	482	482	61	\N	[19.0,86.0)	\N		1
-87	TGFβ1 genetic polymorphism is associated with survival in head and neck squamous cell carcinoma independent of the severity of chemoradiotherapy induced mucositis	English	2010	20308003	https://www.ncbi.nlm.nih.gov/pubmed/?term=20308003	Peer review	\N	34	27	27	\N	56	\N	\N		1
-88	TGF-beta1 gene polymorphisms for anticipating radiation-induced pneumonitis in non-small-cell lung cancer: different ethnic association	English	2010	20679624	https://www.ncbi.nlm.nih.gov/pubmed/?term=20679624	Peer review	Chinese; White	179	145	145	61	\N	[26.0,83.0)	\N		1
-89	Single nucleotide polymorphisms in DNA repair genes might be prognostic factors in muscle-invasive bladder cancer patients treated with chemoradiotherapy	English	2006	16880786	https://www.ncbi.nlm.nih.gov/pubmed/?term=16880786	Peer review	\N	78	59	59	68	\N	[29.0,89.0)	\N		1
-90	Genetic Effects and Modifiers of Radiotherapy and Chemotherapy on Survival in Pancreatic Cancer	English	2011	21487324	https://www.ncbi.nlm.nih.gov/pubmed/?term=21487324	Peer review	\N	145	\N	\N	\N	\N	\N	\N		1
-91	MDM2 SNP 309 and p53 codon 72 polymorphisms are associated with the outcome of oral carcinoma patients receiving postoperative irradiation	English	2008	18423915	https://www.ncbi.nlm.nih.gov/pubmed/?term=18423915	Peer review	\N	126	\N	\N	\N	\N	\N	\N		2
-92	Genetic polymorphisms of Wnt/β-catenin pathway genes are associated with the efficacy and toxicities of radiotherapy in patients with nasopharyngeal carcinoma	English	2016	27769064	https://www.ncbi.nlm.nih.gov/pubmed/?term=27769064	Peer review	\N	188	130	130	\N	50.7000000000000028	[14.0,81.0)	\N		1
-93	Genetic variants in PI3K/AKT pathway are associated with severe radiation pneumonitis in lung cancer patients treated with radiation therapy	English	2015	26645682	https://www.ncbi.nlm.nih.gov/pubmed/?term=26645682	Peer review	\N	261	198	198	\N	\N	\N	\N		1
-94	CXCL12 genetic variants as prognostic markers in nasopharyngeal carcinoma	English	2015	26504400	https://www.ncbi.nlm.nih.gov/pubmed/?term=26504400	Peer review	Chinese Han	222	175	175	\N	\N	\N	\N		1
-95	The prognostic significance of genetic polymorphisms (Methylenetetrahydrofolate Reductase C677T, Methionine SynthaseA2756G, Thymidilate Synthase tandem repeat polymorphism) in multimodally treated oesophageal squamous cell carcinoma	English	2006	16333305	https://www.ncbi.nlm.nih.gov/pubmed/?term=16333305	Peer review	\N	68	\N	\N	\N	\N	\N	\N		1
-96	Identification of a biomarker profile associated with resistance to neoadjuvant chemoradiation therapy in rectal cancer	English	2011	21865946	https://www.ncbi.nlm.nih.gov/pubmed/?term=21865946	Peer review	Asian/Pacific Islander; Black; White; Unknown	132	77	77	\N	\N	\N	\N		1
-97	Tumor response is predicted by patient genetic profile in rectal cancer patients treated with neo-adjuvant chemo-radiotherapy	English	2011	20368715	https://www.ncbi.nlm.nih.gov/pubmed/?term=20368715	Peer review	\N	238	159	159	61	\N	[20.0,79.0)	\N		1
-98	EGF61 polymorphism predicts complete pathologic response to cetuximab-based chemoradiation independent of KRAS status in locally advanced rectal cancer patients	English	2011	21673069	https://www.ncbi.nlm.nih.gov/pubmed/?term=21673069	Peer review	\N	130	74	74	61	\N	[33.0,83.0)	\N		1
-99	X-ray cross-complementing group 1 and thymidylate synthase polymorphisms might predict response to chemoradiotherapy in rectal cancer patients	English	2012	21167658	https://www.ncbi.nlm.nih.gov/pubmed/?term=21167658	Peer review	\N	93	68	68	67	\N	[39.0,86.0)	\N		1
-100	EGFR ligands and DNA repair genes: genomic predictors of complete response after capecitabine-based chemoradiotherapy in locally advanced rectal cancer	English	2015	25026457	https://www.ncbi.nlm.nih.gov/pubmed/?term=25026457	Peer review	\N	84	55	55	\N	67.5999999999999943	[42.0,80.0)	\N		1
-101	THRB genetic polymorphisms can predict severe myelotoxicity after definitive chemoradiotherapy in patients with esophageal squamous cell carcinoma	English	2012	23136537	https://www.ncbi.nlm.nih.gov/pubmed/?term=23136537	Peer review	Japanese	49	46	46	\N	64.5	[48.0,78.0)	\N		1
-102	The impact of GGH -401C>T polymorphism on cisplatin-based chemoradiotherapy response and survival in cervical cancer	English	2013	23107767	https://www.ncbi.nlm.nih.gov/pubmed/?term=23107767	Peer review	\N	167	\N	\N	47	48.5799999999999983	\N	\N		1
-103	Genetic polymorphisms and treatment response in advanced non-small cell lung cancer	English	2007	17222938	https://www.ncbi.nlm.nih.gov/pubmed/?term=17222938	Peer review	\N	154	\N	\N	\N	\N	\N	\N		1
-104	Genomic profiling associated with recurrence in patients with rectal cancer treated with chemoradiation	English	2006	16354126	https://www.ncbi.nlm.nih.gov/pubmed/?term=16354126	Peer review	\N	90	56	56	52	\N	[25.0,79.0)	\N		1
-105	Pharmacogenetic analysis in neoadjuvant chemoradiation for rectal cancer: high incidence of somaticmutations and their relation with response	English	2010	20504250	https://www.ncbi.nlm.nih.gov/pubmed/?term=20504250	Peer review	\N	65	50	50	64	\N	[37.0,85.0)	\N		1
-106	Xeroderma pigmentosum group D 751 polymorphism as a predictive factor in resected gastric cancertreated with chemo-radiotherapy	English	2006	17009404	https://www.ncbi.nlm.nih.gov/pubmed/?term=17009404	Peer review	\N	44	32	32	60	\N	[33.0,77.0)	\N		1
-107	The polymorphism and haplotypes of XRCC1 and survival of non-small-cell lung cancer after radiotherapy	English	2005	16199318	https://www.ncbi.nlm.nih.gov/pubmed/?term=16199318	Peer review	\N	229	191	191	62	\N	[26.0,88.0)	\N		1
-108	Single-nucleotide polymorphisms of DNA damage response genes are associated with overall survival in patients with pancreatic cancer	English	2008	18381943	https://www.ncbi.nlm.nih.gov/pubmed/?term=18381943	Peer review	\N	119	69	69	65	\N	[38.0,83.0)	\N		1
-109	Common polymorphisms in the MDM2 and TP53 genes and the relationship between TP53 mutations and patient outcomes in glioblastomas	English	2009	18462472	https://www.ncbi.nlm.nih.gov/pubmed/?term=18462472	Peer review	\N	319	\N	\N	\N	\N	\N	\N		1
-110	TGFbeta1 (Leu10Pro), p53 (Arg72Pro) can predict for increased risk for breast cancer in south Indianwomen and TGFbeta1 Pro (Leu10Pro) allele predicts response to neo-adjuvant chemo-radiotherapy	English	2008	18058229	https://www.ncbi.nlm.nih.gov/pubmed/?term=18058229	Peer review	Indian	250	\N	\N	46	\N	\N	\N		2
-111	Polymorphisms of p16, p27, p73, and MDM2 modulate response and survival of pancreatic cancerpatients treated with preoperative chemoradiation	English	2009	19020940	https://www.ncbi.nlm.nih.gov/pubmed/?term=19020940	Peer review	Caucasian; Hispanic; African American; Asian 	88	56	56	65	\N	[42.0,83.0)	\N		1
-112	Association of TP53 and MDM2 polymorphisms with survival in bladder cancer patients treated with chemoradiotherapy	English	2009	19764997	https://www.ncbi.nlm.nih.gov/pubmed/?term=19764997	Peer review	\N	96	74	74	69	\N	[29.0,89.0)	\N		1
-113	TNFRSF1B A1466G genotype is predictive of clinical efficacy after treatment with a definitive 5-fluorouracil/cisplatin-based chemoradiotherapy in Japanese patients with esophageal squamous cellcarcinoma	English	2010	20646319	https://www.ncbi.nlm.nih.gov/pubmed/?term=20646319	Peer review	Japanese	46	46	46	\N	64.5999999999999943	[48.0,78.0)	\N		1
-114	Association of Aurora-A (STK15) kinase polymorphisms with clinical outcome of esophageal cancertreated with preoperative chemoradiation	English	2012	22213102	https://www.ncbi.nlm.nih.gov/pubmed/?term=22213102	Peer review	\N	190	165	165	61	\N	[32.0,78.0)	\N		1
-115	Validation of genetic sequence variants as prognostic factors in early-stage head and neck squamous cell cancer survival	English	2012	22076708	https://www.ncbi.nlm.nih.gov/pubmed/?term=22076708	Peer review	\N	531	420	420	63	\N	[33.0,86.0)	\N		1
-116	Genetic sequence variants and the development of secondary primary cancers in patients with head and neck cancers	English	2012	22009713	https://www.ncbi.nlm.nih.gov/pubmed/?term=22009713	Peer review	\N	531	420	420	63	\N	[33.0,86.0)	\N		1
-117	Acute toxicity of radiochemotherapy in rectal cancer patients: a risk particularly for carriers of the TGFB1 Pro25 variant	English	2012	22000747	https://www.ncbi.nlm.nih.gov/pubmed/?term=22000747	Peer review	\N	163	110	110	63	\N	\N	\N		1
-118	Genetic variation in DNA-repair pathways and response to radiochemotherapy in esophageal adenocarcinoma: a retrospective cohort study of the Eastern Cooperative Oncology Group	English	2011	21586140	https://www.ncbi.nlm.nih.gov/pubmed/?term=21586140	Peer review	\N	60	\N	\N	57	\N	[38.0,76.0)	\N		1
-119	Glucose metabolism gene polymorphisms and clinical outcome in pancreatic cancer	English	2011	20845477	https://www.ncbi.nlm.nih.gov/pubmed/?term=20845477	Peer review	\N	154	\N	\N	\N	\N	\N	\N		1
-120	Genotypes and haplotypes of the VEGF gene and survival in locally advanced non-small cell lung cancer patients treated with chemoradiotherapy	English	2010	20712888	https://www.ncbi.nlm.nih.gov/pubmed/?term=20712888	Peer review	Caucasian	124	67	67	\N	\N	[35.0,88.0)	\N		1
-121	Association between normal tissue complications after radiotherapy and polymorphic variations in TGFB1 and XRCC1 genes	English	2010	20334523	https://www.ncbi.nlm.nih.gov/pubmed/?term=20334523	Peer review	\N	60	52	52	50	\N	[18.0,77.0)	\N		1
-122	Cyclooxygenase-2 genetic variants are associated with survival in unresectable locally advanced non-small cell lung cancer	English	2010	20332326	https://www.ncbi.nlm.nih.gov/pubmed/?term=20332326	Peer review	\N	136	115	115	60	\N	[26.0,83.0)	\N		1
-123	Single nucleotide polymorphisms of gemcitabine metabolic genes and pancreatic cancer survival and drug toxicity	English	2010	20028759	https://www.ncbi.nlm.nih.gov/pubmed/?term=20028759	Peer review	White; Hispanic; African American; Other	154	96	96	63	\N	[38.0,84.0)	\N		1
-124	MCP-1 Promoter Polymorphism at 2518 is associated with metastasis of nasopharyngeal carcinoma after treatment	English	2007	17975143	https://www.ncbi.nlm.nih.gov/pubmed/?term=17975143	Peer review	\N	411	308	308	47.6300000000000026	48.7000000000000028	\N	\N		1
-125	Association between polymorphisms in the DNA repair genes, XRCC1, APE1, and XPD and acute side effects of radiotherapy in breast cancer patients	English	2005	16000577	https://www.ncbi.nlm.nih.gov/pubmed/?term=16000577	Peer review	Caucasian	446	\N	\N	\N	60.2999999999999972	\N	\N		1
-126	Can an IL13 -1112 C/T (rs1800925) polymorphism predict responsiveness to neoadjuvant chemoradiotherapy and survival of Chinese Han patients with locally advanced rectal cancer	English	2016	27167201	https://www.ncbi.nlm.nih.gov/pubmed/?term=27167201	Peer review	Chinese Han	58	41	41	58.5	\N	[15.0,75.0)	\N		1
-127	A common variant in MTHFR influences response to chemoradiotherapy and recurrence of rectal cancer	English	2015	26693073	https://www.ncbi.nlm.nih.gov/pubmed/?term=26693073	Peer review	\N	108	\N	\N	\N	\N	\N	\N		1
-128	Association of CELF2 polymorphism and the prognosis of nasopharyngeal carcinoma in southern Chinese population	English	2015	26314850	https://www.ncbi.nlm.nih.gov/pubmed/?term=26314850	Peer review	Chinese	2237	1652	1652	50	\N	[6.0,98.0)	\N		1
-129	The MGMT promoter SNP rs16906252 is a risk factor for MGMT methylation in glioblastoma and is predictive of response to temozolomide	English	2015	25910840	https://www.ncbi.nlm.nih.gov/pubmed/?term=25910840	Peer review	Australian; American	322	\N	\N	\N	\N	[22.3,85.0)	\N		2
-130	Factors modifying the risk for developing acute skin toxicity after whole-breast intensity modulated radiotherapy	English	2014	25252713	https://www.ncbi.nlm.nih.gov/pubmed/?term=25252713	Peer review	\N	377	\N	\N	\N	\N	[30.0,82.0)	\N		1
-131	Association between genetic polymorphisms in the XRCC1, XRCC3, XPD, GSTM1, GSTT1, MSH2, MLH1, MSH3, and MGMT genes and radiosensitivity in breast cancer patients	English	2011	20708344	https://www.ncbi.nlm.nih.gov/pubmed/?term=20708344	Peer review	\N	87	\N	\N	\N	\N	\N	\N		1
+1	Associations of Functional Single Nucleotide Polymorphisms in DNA Repair Genes with Susceptibility, Radiation-induced Injury and Survival in Esophageal Cancer Patients	Chinese	2013	\N	http://kns.cnki.net/KCMS/detail/detail.aspx?dbcode=CDFD&dbname=CDFDLAST2015&filename=1014446290.nh&uid=WEEvREcwSlJHSldRa1Fhb09jMjQxRGlXbldxdmxEMkszMG05OVgrTWhFWT0=$9A4hF_YAuvQ5obgVAqNKPCYcEjKensW4ggI8Fm4gTkoUKaID8j8gFw!!&v=MTMwMDRSTDJmWWVWdkZ5cmdWTHZLVkYyNkdyZThHTlBGcjVFYlBJUjhlWDFMdXhZUzdEaDFUM3FUcldNMUZyQ1U=	Ph. D thesis	Chinese Han	187	138	138	64	\N	[37.0,88.0)	\N	\N	1
+2	Functional polymorphisms of base excision repair genes XRCC1 and APEX1 predict risk of radiationpneumonitis in patients with non-small cell lung cancer treated with definitive radiation therapy	English	2011	21420246	https://www.ncbi.nlm.nih.gov/pubmed/?term=21420246	Peer review	White; Black; Hispanic; Asian; Other	165	93	93	63	\N	[35.0,88.0)	\N	\N	1
+3	Polymorphisms of homologous recombination genes and clinical outcomes of non-small cell lung cancer patients treated with definitive radiotherapy	English	2011	21647442	https://www.ncbi.nlm.nih.gov/pubmed/?term=21647442	Peer review	White; Black; Other	228	125	125	63	\N	[35.0,88.0)	\N	\N	1
+4	Significant Effect of Homologous Recombination DNA Repair Gene Polymorphisms on Pancreatic Cancer Survival	English	2006	16540687	https://www.ncbi.nlm.nih.gov/pubmed/?term=16540687	Peer review	\N	244	\N	\N	\N	\N	\N	\N	\N	1
+5	Association between CCND1 G870A polymorphism and radiotherapy response in high-risk humam papillomavirus-related cervical cancer	Chinese	2015	26643423	https://www.ncbi.nlm.nih.gov/pubmed/?term=26643423	Peer review	\N	273	\N	\N	\N	\N	\N	\N	\N	1
+6	Cyclin D1 Gene G870A Polymorphism Predicts Response to Neoadjuvant Radiotherapy and Prognosis in Rectal Cancer	English	2007	17398034	https://www.ncbi.nlm.nih.gov/pubmed/?term=17398034	Peer review	Caucasian	70	44	44	64	\N	[39.0,81.0)	\N	\N	1
+7	The Association between Single Nucleotide Polymorphisms of Epidermal Growth Factor Receptor and Short-Term Response to Radiochemotherpy in Cervical Cancer	Chinese	2014	\N	http://kns.cnki.net/KCMS/detail/detail.aspx?dbcode=CJFQ&dbname=CJFD2014&filename=SFCZ201401015&uid=WEEvREcwSlJHSldRa1Fhb09jMjQxRGlXbldxdmxEMkszMG05OVgrTWhFWT0=$9A4hF_YAuvQ5obgVAqNKPCYcEjKensW4ggI8Fm4gTkoUKaID8j8gFw!!&v=MTk1NjRkTEc0SDlYTXJvOUVZWVI4ZVgxTHV4WVM3RGgxVDNxVHJXTTFGckNVUkwyZlllVnZGeXJnVjczUE5pdkk=	Peer review	\N	196	\N	\N	\N	\N	\N	\N	\N	1
+8	Association between Genetic Polymorphisms in DNA Double-strand Break Repair Genes Ku70 and Ku80 and Radiation-induced Acute Oral Mucositis in Patients with Nasopharyngeal Cancer	Chinese	2012	\N	http://kns.cnki.net/KCMS/detail/detail.aspx?dbcode=CMFD&dbname=CMFD201302&filename=1013012992.nh&uid=WEEvREcwSlJHSldRa1Fhb09jMjQxRGlXbldxdmxEMkszMG05OVgrTWhFWT0=$9A4hF_YAuvQ5obgVAqNKPCYcEjKensW4ggI8Fm4gTkoUKaID8j8gFw!!&v=MDQxNDhITmpGclpFYlBJUjhlWDFMdXhZUzdEaDFUM3FUcldNMUZyQ1VSTDJmWWVWdkZ5cmdWYnZMVkYyNkhiTzU=	Master's thesis	\N	120	88	88	\N	47.8299999999999983	[15.0,76.0)	\N	\N	1
+9	Acute normal Tissue reactions in head-and-neck cancer patients treated with IMRT: influence of dose andassociation with genetic polymorphisms in DNA DSB repair genes	English	2009	19251090	https://www.ncbi.nlm.nih.gov/pubmed/?term=19251090	Peer review	\N	88	76	76	\N	60.2999999999999972	[40.0,86.0)	\N	\N	1
+10	Research on the Association between Single Nucleotide Polymorphism of the Epidermal Growth Factor Receptor and Sensitivity of Radiotherapy for Esophageal Cancer	Chinese	2012	\N	http://kns.cnki.net/KCMS/detail/detail.aspx?dbcode=CJFQ&dbname=CJFD2012&filename=HCYX201204004&uid=WEEvREcwSlJHSldRa1Fhb09jMjQxRGlXbldxdmxEMkszMG05OVgrTWhFWT0=$9A4hF_YAuvQ5obgVAqNKPCYcEjKensW4ggI8Fm4gTkoUKaID8j8gFw!!&v=MTUxMjFTN1Nkckc0SDlQTXE0OUZZSVI4ZVgxTHV4WVM3RGgxVDNxVHJXTTFGckNVUkwyZlllVnZGeXJnVzcvQkw=	Peer review	\N	160	86	86	\N	49.5	[30.0,85.0)	\N	\N	1
+11	The association between ERCC1 single nucleotide polymorphism and radiosensitivity in non-small cell lung cancer patients	Chinese	2014	\N	http://kns.cnki.net/KCMS/detail/detail.aspx?dbcode=CJFQ&dbname=CJFD2014&filename=ZLXZ201414032&uid=WEEvREcwSlJHSldRa1Fhb09jMjQxRGlXbldxdmxEMkszMG05OVgrTWhFWT0=$9A4hF_YAuvQ5obgVAqNKPCYcEjKensW4ggI8Fm4gTkoUKaID8j8gFw!!&v=MjEyNDVMRzRIOVhOcTQ5R1pvUjhlWDFMdXhZUzdEaDFUM3FUcldNMUZyQ1VSTDJmWWVWdkZ5cmhVcjdQUHlIVGQ=	Peer review	\N	44	32	32	\N	71.2000000000000028	[65.0,83.0)	\N	\N	1
+12	Single nucleotide polymorphism of EＲCC5 rs2296147 is associated with incidence of acute radiation pneumonitis in lung cancer patients	Chinese	2016	\N	http://kns.cnki.net/KCMS/detail/detail.aspx?dbcode=CJFQ&dbname=CJFDLAST2016&filename=SYZZ201603013&uid=WEEvREcwSlJHSldRa1Fhb09jMjQxRGlXbldxdmxEMkszMG05OVgrTWhFWT0=$9A4hF_YAuvQ5obgVAqNKPCYcEjKensW4ggI8Fm4gTkoUKaID8j8gFw!!&v=MjU2NzRyaFU3N0JOalRSZExHNEg5Zk1ySTlFWjRSOGVYMUx1eFlTN0RoMVQzcVRyV00xRnJDVVJMMmZZZVZ2Rnk=	Peer review	\N	167	105	105	62	62.6000000000000014	[41.0,84.0)	\N	\N	1
+13	Epidermal growth factor receptor (EGFR) polymorphisms and survival in head and neck cancer patients	English	2007	17112774	https://www.ncbi.nlm.nih.gov/pubmed/?term=17112774	Peer review	\N	78	60	60	59	\N	[39.0,82.0)	\N	\N	1
+14	Association of Single Nucleotide Polymorphisms of GNAS1 T393C with Radiation Pneumonitis	Chinese	2016	\N	http://kns.cnki.net/KCMS/detail/detail.aspx?dbcode=CJFQ&dbname=CJFDLAST2016&filename=XHON201602004&uid=WEEvREcwSlJHSldRa1Fhb09jMjQxRGlXbldxdmxEMkszMG05OVgrTWhFWT0=$9A4hF_YAuvQ5obgVAqNKPCYcEjKensW4ggI8Fm4gTkoUKaID8j8gFw!!&v=MjAyOTk4ZVgxTHV4WVM3RGgxVDNxVHJXTTFGckNVUkwyZlllVnZGeXJoVUw3T1BTWEVZTEc0SDlmTXJZOUZZSVI=	Peer review	\N	67	51	51	\N	61	[31.0,80.0)	\N	\N	1
+15	Association study on single nucleotide polymorphism in hOGG1, XRCC1, XRCC3 and radiosensitivity in esophageal cancer	Chinese	2010	\N	http://kns.cnki.net/KCMS/detail/detail.aspx?dbcode=CJFQ&dbname=CJFD2010&filename=XJYY201005002&uid=WEEvREcwSlJHSldRa1Fhb09jMjQxRGlXbldxdmxEMkszMG05OVgrTWhFWT0=$9A4hF_YAuvQ5obgVAqNKPCYcEjKensW4ggI8Fm4gTkoUKaID8j8gFw!!&v=MjMwNzJUM3FUcldNMUZyQ1VSTDJmWWVWdkZ5cmhVYjdJUFNmU2Q3RzRIOUhNcW85RlpvUjhlWDFMdXhZUzdEaDE=	Peer review	Chinese Han; Kazakh; Uygur	94	72	72	64	\N	[34.0,80.0)	\N	\N	1
+16	Influence of MnSOD gene polymorphism on the curative effect of radiotherapy iin esophageal squamous cell carcinoma	Chinese	2010	\N	http://kns.cnki.net/KCMS/detail/detail.aspx?dbcode=CJFQ&dbname=CJFD2011&filename=ABJB201101004&uid=WEEvREcwSlJHSldRa1Fhb09jMjQxRGlXbldxdmxEMkszMG05OVgrTWhFWT0=$9A4hF_YAuvQ5obgVAqNKPCYcEjKensW4ggI8Fm4gTkoUKaID8j8gFw!!&v=MDU2MDlEaDFUM3FUcldNMUZyQ1VSTDJmWWVWdkZ5cmhVYnZOSkMvQmJMRzRIOURNcm85RllJUjhlWDFMdXhZUzc=	Peer review	\N	93	\N	\N	\N	\N	\N	\N	\N	1
+17	MTHFR C677T and A1298C polymorphisms as predictors of radiotherapy response in head and neck squamous cell carcinoma	English	2015	26535623	https://www.ncbi.nlm.nih.gov/pubmed/?term=26535623	Peer review	\N	157	\N	\N	\N	\N	\N	\N	\N	1
+18	Association between key genes of Non-homologous End Joining Pathway and response to concurrent chemoradiotherapy in squamous cell cervical carcinoma	Chinese	2015	\N	http://kns.cnki.net/KCMS/detail/detail.aspx?dbcode=CMFD&dbname=CMFD201502&filename=1015326412.nh&uid=WEEvREcwSlJHSldRa1Fhb09jMjQxRGlXbldxdmxEMkszMG05OVgrTWhFWT0=$9A4hF_YAuvQ5obgVAqNKPCYcEjKensW4ggI8Fm4gTkoUKaID8j8gFw!!&v=MjM2OTJGeXJoVnJyS1ZGMjZHN0M2R05YTnJaRWJQSVI4ZVgxTHV4WVM3RGgxVDNxVHJXTTFGckNVUkwyZlllVnY=	Master's thesis	\N	42	\N	\N	60	\N	[47.0,78.0)	\N	\N	1
+19	Single nucleotide polymorphisms in NOS2A and NOS3 genes are not associated with treatment response of non-small cell lung cancer patients following the definitive radiochemotherapy	English	2012	22862164	https://www.ncbi.nlm.nih.gov/pubmed/?term=22862164	Peer review	\N	198	150	150	60	\N	[25.0,87.0)	\N	\N	1
+20	Genetic variants in inducible nitric oxide synthase gene associated with the risk of radiation-induced lung injury in lung cancer patients receiving definitive thoracic radiation	English	2014	24746566	https://www.ncbi.nlm.nih.gov/pubmed/?term=24746566	Peer review	\N	301	232	232	60	\N	[25.0,87.0)	\N	\N	1
+21	Correlation Between the Short-term Effect of NP Chemotherapy Regiment Combined with Radiotherapy in the Treatment of Stage III NSCLC and Single Nucleotide Polymorphism of XRCC1 Gene Codon399	Chinese	2012	\N	http://kns.cnki.net/KCMS/detail/detail.aspx?dbcode=CJFQ&dbname=CJFD2012&filename=SYAZ201205010&uid=WEEvREcwSlJHSldRa1Fhb09jMjQxRGlXbldxdmxEMkszMG05OVgrTWhFWT0=$9A4hF_YAuvQ5obgVAqNKPCYcEjKensW4ggI8Fm4gTkoUKaID8j8gFw!!&v=MzEzNDdTN0RoMVQzcVRyV00xRnJDVVJMMmZZZVZ2RnlyaFY3ckxOalRLZExHNEg5UE1xbzlFWklSOGVYMUx1eFk=	Peer review	\N	52	40	40	64	\N	[30.0,75.0)	\N	\N	1
+22	Association of polymorphism of codon 72 in p53 gene with susceptibility and radiosensitivity of non small cell lung cancer in Chinese population	Chinese	2006	21144305	https://www.ncbi.nlm.nih.gov/pubmed/?term=21144305	Peer review	\N	50	25	25	\N	62.6000000000000014	\N	\N	\N	2
+23	Association of Polymorphism of T29C in TGFβ1 Gene with Susceptibility and Radiosensitivity of Non-Small Cell Lung Cancer in Chinese Population	Chinese	2014	\N	http://kns.cnki.net/KCMS/detail/detail.aspx?dbcode=CJFQ&dbname=CJFD2014&filename=HNYG201401010&uid=WEEvREcwSlJHSldRa1Fhb09jMjQxRGlXbldxdmxEMkszMG05OVgrTWhFWT0=$9A4hF_YAuvQ5obgVAqNKPCYcEjKensW4ggI8Fm4gTkoUKaID8j8gFw!!&v=MzE5MzNvOUVaSVI4ZVgxTHV4WVM3RGgxVDNxVHJXTTFGckNVUkwyZlllVnZGeXJoV3IvSUxTUFNhYkc0SDlYTXI=	Peer review	Chinese Han	60	31	31	\N	65.5999999999999943	\N	\N	\N	2
+24	Association between XRCC1 and APE1 single nucleotide polymorphism and radiosensitivity in esophageal cancer	Chinese	2014	\N	http://kns.cnki.net/KCMS/detail/detail.aspx?dbcode=CJFQ&dbname=CJFD2014&filename=SXYX201410003&uid=WEEvREcwSlJHSldRa1Fhb09jMjQxRGlXbldxdmxEMkszMG05OVgrTWhFWT0=$9A4hF_YAuvQ5obgVAqNKPCYcEjKensW4ggI8Fm4gTkoUKaID8j8gFw!!&v=MDg4NjJDVVJMMmZZZVZ2RnlyaFc3L0tOalhTZHJHNEg5WE5yNDlGWjRSOGVYMUx1eFlTN0RoMVQzcVRyV00xRnI=	Peer review	Chinese Han	150	115	115	\N	64	[32.0,82.0)	\N	\N	1
+25	The Relevant Research Between Single Nucleotide Solymorphism XRCC1 Codon399 and Acute Radiation Reaction of Normal Tissue in Patients of Nasopharyngeal Carcinoma	Chinese	2011	\N	http://kns.cnki.net/KCMS/detail/detail.aspx?dbcode=CJFQ&dbname=CJFD2011&filename=SYAZ201104005&uid=WEEvREcwSlJHSldRa1Fhb09jMjQxRGlXbldxdmxEMkszMG05OVgrTWhFWT0=$9A4hF_YAuvQ5obgVAqNKPCYcEjKensW4ggI8Fm4gTkoUKaID8j8gFw!!&v=MTU3NTExVDNxVHJXTTFGckNVUkwyZlllVnZGeTNrVXI3UE5qVEtkTEc0SDlETXE0OUZZWVI4ZVgxTHV4WVM3RGg=	Peer review	\N	60	52	52	55	\N	[27.0,72.0)	\N	\N	1
+26	The Clinical Relevance between Single Nucleotide Polymorphisms of XRCC1 Codon399 and Chronic Irradiation-induced Injury of Normal Tissue in Patients with Nasopharyngeal Carcinoma	Chinese	2011	\N	http://kns.cnki.net/KCMS/detail/detail.aspx?dbcode=CJFQ&dbname=CJFD2011&filename=SYAZ201106015&uid=WEEvREcwSlJHSldRa1Fhb09jMjQxRGlXbldxdmxEMkszMG05OVgrTWhFWT0=$9A4hF_YAuvQ5obgVAqNKPCYcEjKensW4ggI8Fm4gTkoUKaID8j8gFw!!&v=MDUxMDk5RE1xWTlFWVlSOGVYMUx1eFlTN0RoMVQzcVRyV00xRnJDVVJMMmZZZVZ2Rnkza1VydklOalRLZExHNEg=	Peer review	\N	60	52	52	\N	\N	\N	\N	\N	1
+27	Effect of the XRCC1 single nucleotide polymorphisms of radiotherapy in patients locally advanced nasopharyngeal carcinoma	Chinese	2015	\N	http://kns.cnki.net/KCMS/detail/detail.aspx?dbcode=CMFD&dbname=CMFD201502&filename=1015330857.nh&uid=WEEvREcwSlJHSldRa1Fhb09jMjQxRGlXbldxdmxEMkszMG05OVgrTWhFWT0=$9A4hF_YAuvQ5obgVAqNKPCYcEjKensW4ggI8Fm4gTkoUKaID8j8gFw!!&v=MzI1OTNKRWJQSVI4ZVgxTHV4WVM3RGgxVDNxVHJXTTFGckNVUkwyZlllVnZGeTNrVUwvQVZGMjZHN0M3SHRuSnE=	Master's thesis	\N	114	86	86	46	\N	[18.0,71.0)	\N	\N	1
+28	Correlation of XRCC1 Polymorphism with Radiotherapy Response in Squamous Cell Carcinoma of Cervix	Chinese	2014	\N	http://kns.cnki.net/KCMS/detail/detail.aspx?dbcode=CJFQ&dbname=CJFD2014&filename=TJYZ201406025&uid=WEEvREcwSlJHSldRa1Fhb09jMjQxRGlXbldxdmxEMkszMG05OVgrTWhFWT0=$9A4hF_YAuvQ5obgVAqNKPCYcEjKensW4ggI8Fm4gTkoUKaID8j8gFw!!&v=MDU5NTBYTXFZOUhZWVI4ZVgxTHV4WVM3RGgxVDNxVHJXTTFGckNVUkwyZlllVnZGeTNrVWI3TU1TZlNkTEc0SDk=	Peer review	\N	73	\N	\N	\N	\N	[34.0,78.0)	\N	\N	1
+29	Association between XRCC3 single nucleotide polymorphism and short-term treatment response to radiotherapy in lung cancer patients	Chinese	2006	\N	http://kns.cnki.net/KCMS/detail/detail.aspx?dbcode=CJFQ&dbname=CJFD2006&filename=ZHFZ200605028&uid=WEEvREcwSlJHSldRa1Fhb09jMjQxRGlXbldxdmxEMkszMG05OVgrTWhFWT0=$9A4hF_YAuvQ5obgVAqNKPCYcEjKensW4ggI8Fm4gTkoUKaID8j8gFw!!&v=MTE4MTlJUHlYTmRMRzRIdGZNcW85SGJJUjhlWDFMdXhZUzdEaDFUM3FUcldNMUZyQ1VSTDJmWWVWdkZ5M2tVYnY=	Peer review	\N	123	102	102	60	\N	[28.0,80.0)	\N	\N	1
+30	Correlation of XRCC1 Arg399Gln polymorphism with acute irradiation injury of cervical cancer: report of 152 cases	Chinese	2016	\N	http://kns.cnki.net/KCMS/detail/detail.aspx?dbcode=CJFQ&dbname=CJFDLAST2016&filename=DSDX201609019&uid=WEEvREcwSlJHSldRa1Fhb09jMjQxRGlXbldxdmxEMkszMG05OVgrTWhFWT0=$9A4hF_YAuvQ5obgVAqNKPCYcEjKensW4ggI8Fm4gTkoUKaID8j8gFw!!&v=MjY2MTkxRnJDVVJMMmZZZVZ2Rnkza1Y3dkpJVDdQZHJHNEg5Zk1wbzlFYllSOGVYMUx1eFlTN0RoMVQzcVRyV00=	Peer review	\N	152	\N	\N	\N	48	[28.0,78.0)	\N	\N	1
+31	The relevance between single nucleotide polymorphisms of XRCC1 and late irradiation-induced injury of patients with non-small cell lung cancer	Chinese	2015	\N	http://kns.cnki.net/KCMS/detail/detail.aspx?dbcode=CJFQ&dbname=CJFDLAST2015&filename=ZGZK201506010&uid=WEEvREcwSlJHSldRa1Fhb09jMjQxRGlXbldxdmxEMkszMG05OVgrTWhFWT0=$9A4hF_YAuvQ5obgVAqNKPCYcEjKensW4ggI8Fm4gTkoUKaID8j8gFw!!&v=MTg3ODRaYkc0SDlUTXFZOUVaSVI4ZVgxTHV4WVM3RGgxVDNxVHJXTTFGckNVUkwyZlllVnZGeTNrVkx2TlB5clI=	Peer review	\N	60	34	34	\N	\N	\N	\N	\N	1
+32	Association of single nucleotide polymorphisms with radiation-induced esophagitis	Chinese	2008	\N	http://new.wanfangdata.com.cn/details/detail.do?_type=perio&id=zhfszl200803004	Peer review	\N	170	143	143	\N	\N	\N	\N	\N	1
+33	Relationship between radiosensitivity of nasopharyngeal carcinoma and MDR1 gene polymorphism	Chinese	2007	17545060	https://www.ncbi.nlm.nih.gov/pubmed/?term=17545060	Peer review	\N	59	38	38	\N	31.6000000000000014	[22.0,64.0)	\N	\N	1
+34	Relationships between polymorphisms of ERCC1 and efficacy of non-small cell lung cancer receiving radiation therapy	Chinese	2013	\N	http://kns.cnki.net/KCMS/detail/detail.aspx?dbcode=CJFQ&dbname=CJFD2013&filename=ZSZD201305020&uid=WEEvREcwSlJHSldRa1Fhb09jMjQxRGlXbldxdmxEMkszMG05OVgrTWhFWT0=$9A4hF_YAuvQ5obgVAqNKPCYcEjKensW4ggI8Fm4gTkoUKaID8j8gFw!!&v=Mjg1NTZVcnpKUHo3UmFyRzRIOUxNcW85SFpJUjhlWDFMdXhZUzdEaDFUM3FUcldNMUZyQ1VSTDJmWWVWdkZ5M2w=	Peer review	\N	119	97	97	66	\N	[35.0,82.0)	\N	\N	1
+35	Single nucleotide polymorphisms involved in base excision repair and treatment response in the patients with advanced non-small cell lung cancer	Chinese	2007	\N	http://kns.cnki.net/KCMS/detail/detail.aspx?dbcode=CPFD&dbname=CPFD9908&filename=ZGKA200706001058&uid=WEEvREcwSlJHSldRa1Fhb09jMjQxRGlXbldxdmxEMkszMG05OVgrTWhFWT0=$9A4hF_YAuvQ5obgVAqNKPCYcEjKensW4ggI8Fm4gTkoUKaID8j8gFw!!&v=MDYyNTBPVUtyaWZadUZ2RUNya1U3cklJRnNVUHlyQWI3RzRIdGJNcVk5Rlplc0tCQk5LdWhkaG5qOThUbmpxcXhkRWVN	Peer review	\N	125	\N	\N	\N	\N	\N	\N	\N	1
+36	Study on Correlation between the Polymorphism of Human mdm2 Gene and Non-Small Cell Lung Cancer	Chinese	2005	\N	http://kns.cnki.net/KCMS/detail/detail.aspx?dbcode=CMFD&dbname=CMFD0506&filename=2005105648.nh&uid=WEEvREcwSlJHSldRa1Fhb09jMjQxRGlXbldxdmxEMkszMG05OVgrTWhFWT0=$9A4hF_YAuvQ5obgVAqNKPCYcEjKensW4ggI8Fm4gTkoUKaID8j8gFw!!&v=MjQ0NjllVnZGeTNsVUxySVYxMjdHN0s0RzlmSXA1RWJQSVI4ZVgxTHV4WVM3RGgxVDNxVHJXTTFGckNVUkwyZlk=	Master's thesis	\N	88	\N	\N	\N	\N	\N	\N	\N	2
+37	Genetic Variations in Radiation and Chemotherapy Drug Action Pathways Predict Clinical Outcome in Esophageal Cancer	English	2006	16785472	https://www.ncbi.nlm.nih.gov/pubmed/?term=16785472	Peer review	\N	210	182	182	61	\N	[32.0,79.0)	\N	\N	1
+38	Association of DNA repair and steroid metabolism gene polymorphisms with clinical late toxicity in patients treated with conformal radiotherapy for prostate cancer	English	2006	16638864	https://www.ncbi.nlm.nih.gov/pubmed/?term=16638864	Peer review	Caucasian; Caucasian-French Canadian; Canadian; Pacific Asian; Afro-Caribbean	83	87	87	67	\N	[45.0,78.0)	\N	\N	1
+39	Genetic polymorphisms in the DNA double-strand break repair genes XRCC3, XRCC2, and NBS1 are not associated with acute side effects of radiotherapy in breast cancer patients	English	2006	16702393	https://www.ncbi.nlm.nih.gov/pubmed/?term=16702393	Peer review	\N	446	\N	\N	\N	\N	\N	\N	\N	1
+40	ATM haplotypes and cellular response to DNA damage: association with breast cancer risk and clinical radiosensitivity	English	2003	14695186	https://www.ncbi.nlm.nih.gov/pubmed/?term=14695186	Peer review	\N	254	\N	\N	\N	56.7999999999999972	[35.0,81.0)	\N	\N	2
+41	Association of single nucleotide polymorphisms in ATM, GSTP1, SOD2, TGFB1, XPD and XRCC1 with clinical and cellular radiosensitivity	English	2010	20170971	https://www.ncbi.nlm.nih.gov/pubmed/?term=20170971	Peer review	\N	69	\N	\N	\N	54.1000000000000014	\N	\N	\N	1
+42	SNPs in genes implicated in radiation response are associated with radiotoxicity and evoke roles as predictive and prognostic biomarkers	English	2013	23697595	https://www.ncbi.nlm.nih.gov/pubmed/?term=23697595	Peer review	\N	155	116	116	47	\N	[15.0,77.0)	\N	\N	1
+43	Investigation of genetic polymorphisms related to the outcome of radiotherapy for prostate cancer patients	English	2013	24324286	https://www.ncbi.nlm.nih.gov/pubmed/?term=24324286	Peer review	\N	48	48	48	67.2999999999999972	\N	[52.0,82.0)	\N	\N	1
+44	Glutathione S-transferase P1 single nucleotide polymorphism predicts permanent ototoxicity in children with medulloblastoma	English	2013	23065688	https://www.ncbi.nlm.nih.gov/pubmed/?term=23065688	Peer review	Non-Hispanic white; Hispanic; Other	106	74	74	7	6	[0.5,18.0)	\N	\N	1
+45	A single nucleotide polymorphism in inflammatory gene RNASEL predicts outcome after radiation therapy for localized prostate cancer	English	2013	23382116	https://www.ncbi.nlm.nih.gov/pubmed/?term=23382116	Peer review	Caucasian	434	434	434	72	\N	[68.0,76.0)	\N	\N	1
+46	Association between single nucleotide polymorphisms in the p53 pathway and response to radiotherapy in patients with nasopharyngeal carcinoma	English	2014	24173110	https://www.ncbi.nlm.nih.gov/pubmed/?term=24173110	Peer review	\N	75	57	57	45	\N	[22.0,72.0)	\N	\N	1
+47	The SIPA1 -313A>G polymorphism is associated with prognosis in inoperable non-small cell lung cancer	English	2014	25352027	https://www.ncbi.nlm.nih.gov/pubmed/?term=25352027	Peer review	\N	351	238	238	\N	\N	\N	\N	\N	1
+48	XRCC1 rs25487 polymorphism predicts the survival of patients after postoperative radiotherapy and adjuvant chemotherapy for breast cancer	English	2014	24922669	https://www.ncbi.nlm.nih.gov/pubmed/?term=24922669	Peer review	Finns	238	\N	\N	\N	\N	\N	\N	\N	1
+49	A polymorphism in the DNA repair domain of APEX1 is associated with the radiation-induced pneumonitis risk among lung cancer patients after radiotherapy	English	2014	24884729	https://www.ncbi.nlm.nih.gov/pubmed/?term=24884729	Peer review	\N	126	103	103	\N	\N	\N	\N	\N	1
+50	XRCC1 codon 399Gln polymorphism is associated with radiotherapy-induced acute dermatitis and mucositis in nasopharyngeal carcinoma patients	English	2013	23375119	https://www.ncbi.nlm.nih.gov/pubmed/?term=23375119	Peer review	\N	114	78	78	\N	49.6000000000000014	[19.0,76.0)	\N	\N	1
+51	The hMLH1 −93G>A Promoter Polymorphism is Associates with Outcomes in Oral Squamous Cell Carcinoma Patients	English	2014	25047469	https://www.ncbi.nlm.nih.gov/pubmed/?term=25047469	Peer review	\N	114	\N	\N	\N	\N	\N	\N	\N	1
+52	Prognostic significance of head and neck squamous cell carcinoma repair gene polymorphism	English	2015	26505394	https://www.ncbi.nlm.nih.gov/pubmed/?term=26505394	Peer review	\N	151	\N	\N	\N	\N	\N	\N	\N	1
+53	Association between single nucleotide polymorphisms of the transforming growth factor-beta1 gene and overall survival in unresectable locally advanced non-small-cell lung cancer patients treated with radio(chemo)therapy in a Chinese population	English	2013	23435990	https://www.ncbi.nlm.nih.gov/pubmed/?term=23435990	Peer review	Chinese	109	87	87	63	\N	[35.0,79.0)	\N	\N	1
+54	Impact of CCND1 A870G polymorphism on acute adverse events in postoperative rectal cancer patients treated with adjuvant concurrent chemoradiotherapy	Chinese	2013	23985254	https://www.ncbi.nlm.nih.gov/pubmed/?term=23985254	Peer review	\N	400	246	246	\N	\N	\N	\N	\N	1
+55	Single nucleotide polymorphism at rs1982073:T869C of the TGFbeta 1 gene is associated with the risk of radiation pneumonitis in patients with non-small-cell lung cancer treated with definitive radiotherapy	English	2009	19380441	https://www.ncbi.nlm.nih.gov/pubmed/?term=19380441	Peer review	White; Black; Other	164	90	90	\N	63	[35.0,83.0)	\N	\N	1
+56	XRCC1 gene polymorphism for prediction of response and prognosis in the multimodality therapy of patients with locally advanced rectal cancer	English	2010	20863523	https://www.ncbi.nlm.nih.gov/pubmed/?term=20863523	Peer review	\N	81	51	51	59	\N	\N	\N	\N	1
+57	The VEGFR2, COX-2 and MMP-2 polymorphisms are associated with clinical outcome of patients with inoperable non-small cell lung cancer	English	2015	25975224	https://www.ncbi.nlm.nih.gov/pubmed/?term=25975224	Peer review	Caucasian	350	239	239	\N	\N	\N	\N	\N	1
+58	Pharmacogenetic Analysis of INT 0144 Trial: Association of Polymorphisms with Survival and Toxicity in Rectal Cancer Patients Treated with 5-FU and Radiation	English	2015	25589620	https://www.ncbi.nlm.nih.gov/pubmed/?term=25589620	Peer review	White; Non-White	746	479	479	61	\N	[19.0,86.0)	\N	\N	1
+59	Single nucleotide polymorphisms of RecQ1, RAD54L, and ATM genes are associated with reduced survival of pancreatic cancer	English	2006	16520463	https://www.ncbi.nlm.nih.gov/pubmed/?term=16520463	Peer review	White; Hispanic; Black; Other	92	52	52	65	\N	[38.0,83.0)	\N	\N	1
+60	Association of genetic variants in VEGF-A with clinical recurrence in prostate cancer patients treated with definitive radiotherapy	English	2014	24435801	https://www.ncbi.nlm.nih.gov/pubmed/?term=24435801	Peer review	\N	496	496	496	\N	\N	\N	\N	\N	1
+61	A study of ethnic differences in TGFβ1 gene polymorphisms and effects on the risk of radiation pneumonitis in non-small-cell lung cancer	English	2012	23059779	https://www.ncbi.nlm.nih.gov/pubmed/?term=23059779	Peer review	\N	167	125	125	\N	58	\N	\N	\N	1
+62	Next-generation sequencing identifies germline MRE11A variants as markers of radiotherapy outcomes in muscle-invasive bladder cancer	English	2014	24623370	https://www.ncbi.nlm.nih.gov/pubmed/?term=24623370	Peer review	\N	186	139	139	79	\N	[55.0,93.0)	\N	\N	1
+63	Associations of ATM Polymorphisms With Survival in Advanced Esophageal Squamous Cell Carcinoma Patients Receiving Radiation Therapy	English	2015	26094126	https://www.ncbi.nlm.nih.gov/pubmed/?term=26094126	Peer review	\N	412	303	303	\N	\N	\N	\N	\N	1
+64	MDM2 309 polymorphism predicts outcome in platinum-treated locally advanced head and neck cancer	English	2012	22356895	https://www.ncbi.nlm.nih.gov/pubmed/?term=22356895	Peer review	\N	140	117	117	57.5	\N	[21.0,77.0)	\N	\N	1
+65	Polymorphisms of insulin-like growth factor binding protein-3 as a predictor for risk and patient survival in esophageal squamous cell carcinoma	English	2015	26349977	https://www.ncbi.nlm.nih.gov/pubmed/?term=26349977	Peer review	\N	110	20	20	\N	58.3299999999999983	\N	\N	\N	2
+66	Genetic variants in TNF-α promoter are predictors of recurrence in patients with squamous cell carcinoma of oropharynx after definitive radiotherapy	English	2013	24122460	https://www.ncbi.nlm.nih.gov/pubmed/?term=24122460	Peer review	Non-Hispanic white; Other	846	735	735	\N	\N	\N	\N	\N	1
+67	Evaluation of miR-27a, miR-181a, and miR-570 genetic variants with gallbladder cancer susceptibility and treatment outcome in a North Indian population	English	2015	26288960	https://www.ncbi.nlm.nih.gov/pubmed/?term=26288960	Peer review	Indian	606	176	176	\N	52.6499999999999986	\N	\N	\N	2
+68	A MDR1 (ABCB1) gene single nucleotide polymorphism predicts outcome of temozolomide treatment in glioblastoma patients	English	2009	18687982	https://www.ncbi.nlm.nih.gov/pubmed/?term=18687982	Peer review	\N	112	63	63	63	\N	[18.0,89.0)	\N	\N	1
+69	Germline Variation in Superoxide Dismutase-2 (SOD2) and Survival Outcomes after Radiation Therapy for Prostate Cancer: Results from a Test and Validation Set Analysis	English	2015	25662905	https://www.ncbi.nlm.nih.gov/pubmed/?term=25662905	Peer review	\N	816	816	816	\N	\N	\N	\N	\N	3
+70	IL12RB2 and ABCA1 genes are associated with susceptibility to radiation dermatitis	English	2008	18927311	https://www.ncbi.nlm.nih.gov/pubmed/?term=18927311	Peer review	\N	156	\N	\N	48	\N	[23.0,77.0)	\N	\N	1
+71	Genetic Variations in the PI3K/PTEN/AKT/mTOR Pathway Are Associated With Clinical Outcomes in Esophageal Cancer Patients Treated With Chemoradiotherapy	English	2009	19164214	https://www.ncbi.nlm.nih.gov/pubmed/?term=19164214	Peer review	White	186	161	161	\N	60.7999999999999972	[32.0,79.0)	\N	\N	1
+72	ERCC1 Cys8092Ala and XRCC1 Arg399Gln polymorphisms predict progression-free survival after curativeradiotherapy for nasopharyngeal carcinoma	English	2014	25025378	https://www.ncbi.nlm.nih.gov/pubmed/?term=25025378	Peer review	Chinese Han	75	57	57	45	\N	[22.0,72.0)	\N	\N	1
+73	The genetic variations in DNA repair genes ERCC2 and XRCC1 were associated with the overall survival of advanced non-small-cell lung cancer patients	English	2016	27465648	https://www.ncbi.nlm.nih.gov/pubmed/?term=27465648	Peer review	\N	131	\N	\N	\N	\N	\N	\N	\N	1
+74	Neoadjuvant radiochemotherapy in adenocarcinoma of the esophagus: ERCC1 gene polymorphisms for prediction of response and prognosis	English	2012	21956434	https://www.ncbi.nlm.nih.gov/pubmed/?term=21956434	Peer review	\N	153	\N	\N	\N	\N	\N	\N	\N	1
+75	The role of microRNA-binding site polymorphisms in DNA repair genes as risk factors for bladder cancer and breast cancer and their impact on radiotherapy outcomes	English	2012	22166496	https://www.ncbi.nlm.nih.gov/pubmed/?term=22166496	Peer review	\N	202	\N	\N	\N	\N	\N	\N	\N	2
+76	Genetic variants of the LIN28B gene predict severe radiation pneumonitis in patients with non-small cell lung cancer treated with definitive radiation therapy	English	2014	24780874	https://www.ncbi.nlm.nih.gov/pubmed/?term=24780874	Peer review	Black; White	362	200	200	65	\N	[35.0,88.0)	\N	\N	1
+77	Use of germline polymorphisms in predicting concurrent chemoradiotherapy response in esophageal cancer	English	2011	21596488	https://www.ncbi.nlm.nih.gov/pubmed/?term=21596488	Peer review	\N	91	\N	\N	\N	\N	\N	\N	\N	1
+78	Genetic Variation in BCL2 3′-UTR Was Associated with Lung Cancer Risk and Prognosis in Male Chinese Population	English	2013	23977251	https://www.ncbi.nlm.nih.gov/pubmed/?term=23977251	Peer review	Chinese	110	110	110	\N	\N	\N	\N	\N	2
+79	The Tumoral A genotype of the MGMT rs34180180 single-nucleotide polymorphism in aggressive gliomas is associated with shorter patients' survival	English	2016	26717998	https://www.ncbi.nlm.nih.gov/pubmed/?term=26717998	Peer review	\N	87	51	51	\N	61.2999999999999972	[29.0,81.0)	\N	\N	1
+80	HNF1B polymorphism influences the prognosis of endometrial cancer patients: a cohort study	English	2015	25885815	https://www.ncbi.nlm.nih.gov/pubmed/?term=25885815	Peer review	\N	72	\N	\N	\N	\N	\N	\N	\N	3
+81	Expression of pAkt affects p53 codon 72 polymorphism-based prediction of response to radiotherapy in nasopharyngeal carcinoma	English	2013	23663243	https://www.ncbi.nlm.nih.gov/pubmed/?term=23663243	Peer review	Chinese Han	75	57	57	45	\N	[22.0,72.0)	\N	\N	1
+82	ERCC1 and XRCC1 gene polymorphisms predict response to neoadjuvant radiochemotherapy in esophageal cancer	English	2009	19421825	https://www.ncbi.nlm.nih.gov/pubmed/?term=19421825	Peer review	\N	52	43	43	\N	\N	\N	\N	\N	1
+83	A 3'-untranslated region polymorphism in IGF1 predicts survival of non-small cell lung cancer in a Chinese population	English	2010	20145156	https://www.ncbi.nlm.nih.gov/pubmed/?term=20145156	Peer review	Chinese	444	\N	\N	\N	\N	\N	\N	\N	3
+84	Fuzzy clustering demonstrates that codon 72 SNP rs1042522 of TP53 gene associated with HNSCC but not with prognoses	English	2015	26099726	https://www.ncbi.nlm.nih.gov/pubmed/?term=26099726	Peer review	\N	62	\N	\N	\N	62.240000000000002	[40.0,92.0)	\N	\N	2
+85	Transforming growth factor beta 1 genotype and p16 as prognostic factors in head and neck squamous cell carcinoma	English	2012	22667340	https://www.ncbi.nlm.nih.gov/pubmed/?term=22667340	Peer review	\N	37	32	32	\N	\N	[31.0,77.0)	\N	\N	1
+86	Polymorphisms in folate-metabolizing enzymes and response to 5-fluorouracil among patients with stage II or III rectal cancer (INT-0144; SWOG 9304)	English	2014	25041994	https://www.ncbi.nlm.nih.gov/pubmed/?term=25041994	Peer review	White; Black; Asian; Pacific Islander; Native American; Unknown	754	482	482	61	\N	[19.0,86.0)	\N	\N	1
+87	TGFβ1 genetic polymorphism is associated with survival in head and neck squamous cell carcinoma independent of the severity of chemoradiotherapy induced mucositis	English	2010	20308003	https://www.ncbi.nlm.nih.gov/pubmed/?term=20308003	Peer review	\N	34	27	27	\N	56	\N	\N	\N	1
+88	TGF-beta1 gene polymorphisms for anticipating radiation-induced pneumonitis in non-small-cell lung cancer: different ethnic association	English	2010	20679624	https://www.ncbi.nlm.nih.gov/pubmed/?term=20679624	Peer review	Chinese; White	179	145	145	61	\N	[26.0,83.0)	\N	\N	1
+115	Validation of genetic sequence variants as prognostic factors in early-stage head and neck squamous cell cancer survival	English	2012	22076708	https://www.ncbi.nlm.nih.gov/pubmed/?term=22076708	Peer review	\N	531	420	420	63	\N	[33.0,86.0)	\N	\N	1
+89	Single nucleotide polymorphisms in DNA repair genes might be prognostic factors in muscle-invasive bladder cancer patients treated with chemoradiotherapy	English	2006	16880786	https://www.ncbi.nlm.nih.gov/pubmed/?term=16880786	Peer review	\N	78	59	59	68	\N	[29.0,89.0)	\N	\N	1
+90	Genetic Effects and Modifiers of Radiotherapy and Chemotherapy on Survival in Pancreatic Cancer	English	2011	21487324	https://www.ncbi.nlm.nih.gov/pubmed/?term=21487324	Peer review	\N	145	\N	\N	\N	\N	\N	\N	\N	1
+91	MDM2 SNP 309 and p53 codon 72 polymorphisms are associated with the outcome of oral carcinoma patients receiving postoperative irradiation	English	2008	18423915	https://www.ncbi.nlm.nih.gov/pubmed/?term=18423915	Peer review	\N	126	\N	\N	\N	\N	\N	\N	\N	2
+92	Genetic polymorphisms of Wnt/β-catenin pathway genes are associated with the efficacy and toxicities of radiotherapy in patients with nasopharyngeal carcinoma	English	2016	27769064	https://www.ncbi.nlm.nih.gov/pubmed/?term=27769064	Peer review	\N	188	130	130	\N	50.7000000000000028	[14.0,81.0)	\N	\N	1
+93	Genetic variants in PI3K/AKT pathway are associated with severe radiation pneumonitis in lung cancer patients treated with radiation therapy	English	2015	26645682	https://www.ncbi.nlm.nih.gov/pubmed/?term=26645682	Peer review	\N	261	198	198	\N	\N	\N	\N	\N	1
+94	CXCL12 genetic variants as prognostic markers in nasopharyngeal carcinoma	English	2015	26504400	https://www.ncbi.nlm.nih.gov/pubmed/?term=26504400	Peer review	Chinese Han	222	175	175	\N	\N	\N	\N	\N	1
+95	The prognostic significance of genetic polymorphisms (Methylenetetrahydrofolate Reductase C677T, Methionine SynthaseA2756G, Thymidilate Synthase tandem repeat polymorphism) in multimodally treated oesophageal squamous cell carcinoma	English	2006	16333305	https://www.ncbi.nlm.nih.gov/pubmed/?term=16333305	Peer review	\N	68	\N	\N	\N	\N	\N	\N	\N	1
+96	Identification of a biomarker profile associated with resistance to neoadjuvant chemoradiation therapy in rectal cancer	English	2011	21865946	https://www.ncbi.nlm.nih.gov/pubmed/?term=21865946	Peer review	Asian/Pacific Islander; Black; White; Unknown	132	77	77	\N	\N	\N	\N	\N	1
+97	Tumor response is predicted by patient genetic profile in rectal cancer patients treated with neo-adjuvant chemo-radiotherapy	English	2011	20368715	https://www.ncbi.nlm.nih.gov/pubmed/?term=20368715	Peer review	\N	238	159	159	61	\N	[20.0,79.0)	\N	\N	1
+98	EGF61 polymorphism predicts complete pathologic response to cetuximab-based chemoradiation independent of KRAS status in locally advanced rectal cancer patients	English	2011	21673069	https://www.ncbi.nlm.nih.gov/pubmed/?term=21673069	Peer review	\N	130	74	74	61	\N	[33.0,83.0)	\N	\N	1
+99	X-ray cross-complementing group 1 and thymidylate synthase polymorphisms might predict response to chemoradiotherapy in rectal cancer patients	English	2012	21167658	https://www.ncbi.nlm.nih.gov/pubmed/?term=21167658	Peer review	\N	93	68	68	67	\N	[39.0,86.0)	\N	\N	1
+100	EGFR ligands and DNA repair genes: genomic predictors of complete response after capecitabine-based chemoradiotherapy in locally advanced rectal cancer	English	2015	25026457	https://www.ncbi.nlm.nih.gov/pubmed/?term=25026457	Peer review	\N	84	55	55	\N	67.5999999999999943	[42.0,80.0)	\N	\N	1
+101	THRB genetic polymorphisms can predict severe myelotoxicity after definitive chemoradiotherapy in patients with esophageal squamous cell carcinoma	English	2012	23136537	https://www.ncbi.nlm.nih.gov/pubmed/?term=23136537	Peer review	Japanese	49	46	46	\N	64.5	[48.0,78.0)	\N	\N	1
+102	The impact of GGH -401C>T polymorphism on cisplatin-based chemoradiotherapy response and survival in cervical cancer	English	2013	23107767	https://www.ncbi.nlm.nih.gov/pubmed/?term=23107767	Peer review	\N	167	\N	\N	47	48.5799999999999983	\N	\N	\N	1
+103	Genetic polymorphisms and treatment response in advanced non-small cell lung cancer	English	2007	17222938	https://www.ncbi.nlm.nih.gov/pubmed/?term=17222938	Peer review	\N	154	\N	\N	\N	\N	\N	\N	\N	1
+104	Genomic profiling associated with recurrence in patients with rectal cancer treated with chemoradiation	English	2006	16354126	https://www.ncbi.nlm.nih.gov/pubmed/?term=16354126	Peer review	\N	90	56	56	52	\N	[25.0,79.0)	\N	\N	1
+105	Pharmacogenetic analysis in neoadjuvant chemoradiation for rectal cancer: high incidence of somaticmutations and their relation with response	English	2010	20504250	https://www.ncbi.nlm.nih.gov/pubmed/?term=20504250	Peer review	\N	65	50	50	64	\N	[37.0,85.0)	\N	\N	1
+106	Xeroderma pigmentosum group D 751 polymorphism as a predictive factor in resected gastric cancertreated with chemo-radiotherapy	English	2006	17009404	https://www.ncbi.nlm.nih.gov/pubmed/?term=17009404	Peer review	\N	44	32	32	60	\N	[33.0,77.0)	\N	\N	1
+107	The polymorphism and haplotypes of XRCC1 and survival of non-small-cell lung cancer after radiotherapy	English	2005	16199318	https://www.ncbi.nlm.nih.gov/pubmed/?term=16199318	Peer review	\N	229	191	191	62	\N	[26.0,88.0)	\N	\N	1
+108	Single-nucleotide polymorphisms of DNA damage response genes are associated with overall survival in patients with pancreatic cancer	English	2008	18381943	https://www.ncbi.nlm.nih.gov/pubmed/?term=18381943	Peer review	\N	119	69	69	65	\N	[38.0,83.0)	\N	\N	1
+109	Common polymorphisms in the MDM2 and TP53 genes and the relationship between TP53 mutations and patient outcomes in glioblastomas	English	2009	18462472	https://www.ncbi.nlm.nih.gov/pubmed/?term=18462472	Peer review	\N	319	\N	\N	\N	\N	\N	\N	\N	1
+110	TGFbeta1 (Leu10Pro), p53 (Arg72Pro) can predict for increased risk for breast cancer in south Indianwomen and TGFbeta1 Pro (Leu10Pro) allele predicts response to neo-adjuvant chemo-radiotherapy	English	2008	18058229	https://www.ncbi.nlm.nih.gov/pubmed/?term=18058229	Peer review	Indian	250	\N	\N	46	\N	\N	\N	\N	2
+111	Polymorphisms of p16, p27, p73, and MDM2 modulate response and survival of pancreatic cancerpatients treated with preoperative chemoradiation	English	2009	19020940	https://www.ncbi.nlm.nih.gov/pubmed/?term=19020940	Peer review	Caucasian; Hispanic; African American; Asian 	88	56	56	65	\N	[42.0,83.0)	\N	\N	1
+112	Association of TP53 and MDM2 polymorphisms with survival in bladder cancer patients treated with chemoradiotherapy	English	2009	19764997	https://www.ncbi.nlm.nih.gov/pubmed/?term=19764997	Peer review	\N	96	74	74	69	\N	[29.0,89.0)	\N	\N	1
+113	TNFRSF1B A1466G genotype is predictive of clinical efficacy after treatment with a definitive 5-fluorouracil/cisplatin-based chemoradiotherapy in Japanese patients with esophageal squamous cellcarcinoma	English	2010	20646319	https://www.ncbi.nlm.nih.gov/pubmed/?term=20646319	Peer review	Japanese	46	46	46	\N	64.5999999999999943	[48.0,78.0)	\N	\N	1
+114	Association of Aurora-A (STK15) kinase polymorphisms with clinical outcome of esophageal cancertreated with preoperative chemoradiation	English	2012	22213102	https://www.ncbi.nlm.nih.gov/pubmed/?term=22213102	Peer review	\N	190	165	165	61	\N	[32.0,78.0)	\N	\N	1
+116	Genetic sequence variants and the development of secondary primary cancers in patients with head and neck cancers	English	2012	22009713	https://www.ncbi.nlm.nih.gov/pubmed/?term=22009713	Peer review	\N	531	420	420	63	\N	[33.0,86.0)	\N	\N	1
+117	Acute toxicity of radiochemotherapy in rectal cancer patients: a risk particularly for carriers of the TGFB1 Pro25 variant	English	2012	22000747	https://www.ncbi.nlm.nih.gov/pubmed/?term=22000747	Peer review	\N	163	110	110	63	\N	\N	\N	\N	1
+118	Genetic variation in DNA-repair pathways and response to radiochemotherapy in esophageal adenocarcinoma: a retrospective cohort study of the Eastern Cooperative Oncology Group	English	2011	21586140	https://www.ncbi.nlm.nih.gov/pubmed/?term=21586140	Peer review	\N	60	\N	\N	57	\N	[38.0,76.0)	\N	\N	1
+119	Glucose metabolism gene polymorphisms and clinical outcome in pancreatic cancer	English	2011	20845477	https://www.ncbi.nlm.nih.gov/pubmed/?term=20845477	Peer review	\N	154	\N	\N	\N	\N	\N	\N	\N	1
+120	Genotypes and haplotypes of the VEGF gene and survival in locally advanced non-small cell lung cancer patients treated with chemoradiotherapy	English	2010	20712888	https://www.ncbi.nlm.nih.gov/pubmed/?term=20712888	Peer review	Caucasian	124	67	67	\N	\N	[35.0,88.0)	\N	\N	1
+121	Association between normal tissue complications after radiotherapy and polymorphic variations in TGFB1 and XRCC1 genes	English	2010	20334523	https://www.ncbi.nlm.nih.gov/pubmed/?term=20334523	Peer review	\N	60	52	52	50	\N	[18.0,77.0)	\N	\N	1
+122	Cyclooxygenase-2 genetic variants are associated with survival in unresectable locally advanced non-small cell lung cancer	English	2010	20332326	https://www.ncbi.nlm.nih.gov/pubmed/?term=20332326	Peer review	\N	136	115	115	60	\N	[26.0,83.0)	\N	\N	1
+123	Single nucleotide polymorphisms of gemcitabine metabolic genes and pancreatic cancer survival and drug toxicity	English	2010	20028759	https://www.ncbi.nlm.nih.gov/pubmed/?term=20028759	Peer review	White; Hispanic; African American; Other	154	96	96	63	\N	[38.0,84.0)	\N	\N	1
+124	MCP-1 Promoter Polymorphism at 2518 is associated with metastasis of nasopharyngeal carcinoma after treatment	English	2007	17975143	https://www.ncbi.nlm.nih.gov/pubmed/?term=17975143	Peer review	\N	411	308	308	47.6300000000000026	48.7000000000000028	\N	\N	\N	1
+125	Association between polymorphisms in the DNA repair genes, XRCC1, APE1, and XPD and acute side effects of radiotherapy in breast cancer patients	English	2005	16000577	https://www.ncbi.nlm.nih.gov/pubmed/?term=16000577	Peer review	Caucasian	446	\N	\N	\N	60.2999999999999972	\N	\N	\N	1
+126	Can an IL13 -1112 C/T (rs1800925) polymorphism predict responsiveness to neoadjuvant chemoradiotherapy and survival of Chinese Han patients with locally advanced rectal cancer	English	2016	27167201	https://www.ncbi.nlm.nih.gov/pubmed/?term=27167201	Peer review	Chinese Han	58	41	41	58.5	\N	[15.0,75.0)	\N	\N	1
+127	A common variant in MTHFR influences response to chemoradiotherapy and recurrence of rectal cancer	English	2015	26693073	https://www.ncbi.nlm.nih.gov/pubmed/?term=26693073	Peer review	\N	108	\N	\N	\N	\N	\N	\N	\N	1
+128	Association of CELF2 polymorphism and the prognosis of nasopharyngeal carcinoma in southern Chinese population	English	2015	26314850	https://www.ncbi.nlm.nih.gov/pubmed/?term=26314850	Peer review	Chinese	2237	1652	1652	50	\N	[6.0,98.0)	\N	\N	1
+129	The MGMT promoter SNP rs16906252 is a risk factor for MGMT methylation in glioblastoma and is predictive of response to temozolomide	English	2015	25910840	https://www.ncbi.nlm.nih.gov/pubmed/?term=25910840	Peer review	Australian; American	322	\N	\N	\N	\N	[22.3,85.0)	\N	\N	2
+130	Factors modifying the risk for developing acute skin toxicity after whole-breast intensity modulated radiotherapy	English	2014	25252713	https://www.ncbi.nlm.nih.gov/pubmed/?term=25252713	Peer review	\N	377	\N	\N	\N	\N	[30.0,82.0)	\N	\N	1
+131	Association between genetic polymorphisms in the XRCC1, XRCC3, XPD, GSTM1, GSTT1, MSH2, MLH1, MSH3, and MGMT genes and radiosensitivity in breast cancer patients	English	2011	20708344	https://www.ncbi.nlm.nih.gov/pubmed/?term=20708344	Peer review	\N	87	\N	\N	\N	\N	\N	\N	\N	1
 \.
 
 
@@ -6456,11 +6501,27 @@ SELECT pg_catalog.setval('"KB_SNP_variant_id_seq"', 389, true);
 
 
 --
+-- Data for Name: Submit_draft; Type: TABLE DATA; Schema: public; Owner: trpkb
+--
+
+COPY "Submit_draft" (id, status, kb, title, pubmed_id, content, paper, user_id) FROM stdin;
+\.
+
+
+--
+-- Name: Submit_draft_id_seq; Type: SEQUENCE SET; Schema: public; Owner: trpkb
+--
+
+SELECT pg_catalog.setval('"Submit_draft_id_seq"', 1, false);
+
+
+--
 -- Data for Name: account_emailaddress; Type: TABLE DATA; Schema: public; Owner: trpkb
 --
 
 COPY account_emailaddress (id, email, verified, "primary", user_id) FROM stdin;
-2	weicongchong@topgen.com.cn	t	t	2
+1	trpkb2017@163.com	t	t	1
+2	weicongchong@topgen.com.cn	t	t	3
 \.
 
 
@@ -6521,30 +6582,30 @@ SELECT pg_catalog.setval('auth_group_permissions_id_seq', 1, false);
 --
 
 COPY auth_permission (id, name, content_type_id, codename) FROM stdin;
-1	Can add tumor	1	add_tumor
-2	Can change tumor	1	change_tumor
-3	Can delete tumor	1	delete_tumor
-4	Can add prognosis	2	add_prognosis
-5	Can change prognosis	2	change_prognosis
-6	Can delete prognosis	2	delete_prognosis
-7	Can add evidence based medicine level	3	add_evidencebasedmedicinelevel
-8	Can change evidence based medicine level	3	change_evidencebasedmedicinelevel
-9	Can delete evidence based medicine level	3	delete_evidencebasedmedicinelevel
-10	Can add subgroup	4	add_subgroup
-11	Can change subgroup	4	change_subgroup
-12	Can delete subgroup	4	delete_subgroup
-13	Can add variant	5	add_variant
-14	Can change variant	5	change_variant
-15	Can delete variant	5	delete_variant
-16	Can add gene	6	add_gene
-17	Can change gene	6	change_gene
-18	Can delete gene	6	delete_gene
+1	Can add variant	1	add_variant
+2	Can change variant	1	change_variant
+3	Can delete variant	1	delete_variant
+4	Can add subgroup	2	add_subgroup
+5	Can change subgroup	2	change_subgroup
+6	Can delete subgroup	2	delete_subgroup
+7	Can add association	3	add_association
+8	Can change association	3	change_association
+9	Can delete association	3	delete_association
+10	Can add evidence based medicine level	4	add_evidencebasedmedicinelevel
+11	Can change evidence based medicine level	4	change_evidencebasedmedicinelevel
+12	Can delete evidence based medicine level	4	delete_evidencebasedmedicinelevel
+13	Can add prognosis	5	add_prognosis
+14	Can change prognosis	5	change_prognosis
+15	Can delete prognosis	5	delete_prognosis
+16	Can add tumor	6	add_tumor
+17	Can change tumor	6	change_tumor
+18	Can delete tumor	6	delete_tumor
 19	Can add research	7	add_research
 20	Can change research	7	change_research
 21	Can delete research	7	delete_research
-22	Can add association	8	add_association
-23	Can change association	8	change_association
-24	Can delete association	8	delete_association
+22	Can add gene	8	add_gene
+23	Can change gene	8	change_gene
+24	Can delete gene	8	delete_gene
 25	Can add log entry	9	add_logentry
 26	Can change log entry	9	change_logentry
 27	Can delete log entry	9	delete_logentry
@@ -6575,12 +6636,15 @@ COPY auth_permission (id, name, content_type_id, codename) FROM stdin;
 52	Can add social account	18	add_socialaccount
 53	Can change social account	18	change_socialaccount
 54	Can delete social account	18	delete_socialaccount
-55	Can add social application	19	add_socialapp
-56	Can change social application	19	change_socialapp
-57	Can delete social application	19	delete_socialapp
-58	Can add social application token	20	add_socialtoken
-59	Can change social application token	20	change_socialtoken
-60	Can delete social application token	20	delete_socialtoken
+55	Can add social application token	19	add_socialtoken
+56	Can change social application token	19	change_socialtoken
+57	Can delete social application token	19	delete_socialtoken
+58	Can add social application	20	add_socialapp
+59	Can change social application	20	change_socialapp
+60	Can delete social application	20	delete_socialapp
+61	Can add draft	21	add_draft
+62	Can change draft	21	change_draft
+63	Can delete draft	21	delete_draft
 \.
 
 
@@ -6588,7 +6652,7 @@ COPY auth_permission (id, name, content_type_id, codename) FROM stdin;
 -- Name: auth_permission_id_seq; Type: SEQUENCE SET; Schema: public; Owner: trpkb
 --
 
-SELECT pg_catalog.setval('auth_permission_id_seq', 42, true);
+SELECT pg_catalog.setval('auth_permission_id_seq', 63, true);
 
 
 --
@@ -6596,9 +6660,9 @@ SELECT pg_catalog.setval('auth_permission_id_seq', 42, true);
 --
 
 COPY auth_user (id, password, last_login, is_superuser, username, first_name, last_name, email, is_staff, is_active, date_joined) FROM stdin;
-2	pbkdf2_sha256$36000$I461C0LCQdqr$T4WHME24LqrXEcVq5/VD+OOeJ2uowWOsM1bTNJ06j2A=	2017-07-12 16:53:21.830636+08	f	wei			weicongchong@topgen.com.cn	f	t	2017-07-12 16:05:23.750827+08
-3	pbkdf2_sha256$36000$fwxVjfwx2AFZ$TA7W3iWy7SaDqY0JIV9gdWRyIQvGTvwqdqfbxrwlXog=	2017-07-13 13:54:35.927398+08	t	admin			trpkb2017@163.com	t	t	2017-07-12 15:57:42.722903+08
-1	pbkdf2_sha256$36000$kKZDr2bPvs4l$H/vWFYseGGfh4zlghNCl0dvqtw+4FTiKS+hUsXNydx4=	2017-07-13 13:58:07.651534+08	f	trpkb			trpkb2017@163.com	t	t	2017-07-08 19:43:00+08
+1	pbkdf2_sha256$36000$YZMSWvPPBwQJ$UFN+baPQdVhuhUgjuZTRwOJx2pg9F3sfZMtq/t0lpDw=	2017-07-19 09:36:40.294831+00	f	trpkb			trpkb2017@163.com	t	t	2017-07-19 09:32:00+00
+2	pbkdf2_sha256$36000$QKkLVgKriArF$v7FnmMca5+mxOlLlwqLuPuVNSuOSq32fis9sGNjyrg8=	2017-07-19 09:37:50.289499+00	t	admin				t	t	2017-07-19 09:34:05.999901+00
+3	pbkdf2_sha256$36000$AbeqeMuRmBLq$ehR+gaHKgeGCa821oVrquDDx8+3Ylvqonr6YIueRIj4=	2017-07-19 09:40:04.93026+00	f	wei			weicongchong@topgen.com.cn	f	t	2017-07-19 09:37:12.690414+00
 \.
 
 
@@ -6621,7 +6685,7 @@ SELECT pg_catalog.setval('auth_user_groups_id_seq', 1, false);
 -- Name: auth_user_id_seq; Type: SEQUENCE SET; Schema: public; Owner: trpkb
 --
 
-SELECT pg_catalog.setval('auth_user_id_seq', 2, true);
+SELECT pg_catalog.setval('auth_user_id_seq', 3, true);
 
 
 --
@@ -6644,8 +6708,9 @@ SELECT pg_catalog.setval('auth_user_user_permissions_id_seq', 1, false);
 --
 
 COPY django_admin_log (id, action_time, object_id, object_repr, action_flag, change_message, content_type_id, user_id) FROM stdin;
-3	2017-07-12 15:58:50.708328+08	1	trpkb.com	2	[{"changed": {"fields": ["domain", "name"]}}]	15	3
-1	2017-07-13 13:57:23.409138+08	1	trpkb	2	[{"changed": {"fields": ["email", "is_superuser", "last_login"]}}]	10	3
+1	2017-07-19 09:34:53.731751+00	1	trpkb	2	[{"changed": {"fields": ["email", "is_superuser", "last_login"]}}]	10	1
+2	2017-07-19 09:35:24.139761+00	1	trpkb	2	[]	10	2
+3	2017-07-19 09:38:07.345809+00	1	trpkb.com	2	[{"changed": {"fields": ["domain", "name"]}}]	15	2
 \.
 
 
@@ -6653,7 +6718,7 @@ COPY django_admin_log (id, action_time, object_id, object_repr, action_flag, cha
 -- Name: django_admin_log_id_seq; Type: SEQUENCE SET; Schema: public; Owner: trpkb
 --
 
-SELECT pg_catalog.setval('django_admin_log_id_seq', 1, true);
+SELECT pg_catalog.setval('django_admin_log_id_seq', 3, true);
 
 
 --
@@ -6661,14 +6726,14 @@ SELECT pg_catalog.setval('django_admin_log_id_seq', 1, true);
 --
 
 COPY django_content_type (id, app_label, model) FROM stdin;
-1	KB_SNP	tumor
-2	KB_SNP	prognosis
-3	KB_SNP	evidencebasedmedicinelevel
-4	KB_SNP	subgroup
-5	KB_SNP	variant
-6	KB_SNP	gene
+1	KB_SNP	variant
+2	KB_SNP	subgroup
+3	KB_SNP	association
+4	KB_SNP	evidencebasedmedicinelevel
+5	KB_SNP	prognosis
+6	KB_SNP	tumor
 7	KB_SNP	research
-8	KB_SNP	association
+8	KB_SNP	gene
 9	admin	logentry
 10	auth	user
 11	auth	permission
@@ -6679,8 +6744,9 @@ COPY django_content_type (id, app_label, model) FROM stdin;
 16	account	emailaddress
 17	account	emailconfirmation
 18	socialaccount	socialaccount
-19	socialaccount	socialapp
-20	socialaccount	socialtoken
+19	socialaccount	socialtoken
+20	socialaccount	socialapp
+21	Submit	draft
 \.
 
 
@@ -6688,7 +6754,7 @@ COPY django_content_type (id, app_label, model) FROM stdin;
 -- Name: django_content_type_id_seq; Type: SEQUENCE SET; Schema: public; Owner: trpkb
 --
 
-SELECT pg_catalog.setval('django_content_type_id_seq', 14, true);
+SELECT pg_catalog.setval('django_content_type_id_seq', 21, true);
 
 
 --
@@ -6696,30 +6762,28 @@ SELECT pg_catalog.setval('django_content_type_id_seq', 14, true);
 --
 
 COPY django_migrations (id, app, name, applied) FROM stdin;
-1	KB_SNP	0001_initial	2017-07-08 19:15:51.107523+08
-2	contenttypes	0001_initial	2017-07-08 19:15:51.291296+08
-3	auth	0001_initial	2017-07-08 19:15:52.833764+08
-4	admin	0001_initial	2017-07-08 19:15:53.134435+08
-5	admin	0002_logentry_remove_auto_add	2017-07-08 19:15:53.192042+08
-6	contenttypes	0002_remove_content_type_name	2017-07-08 19:15:53.260954+08
-7	auth	0002_alter_permission_name_max_length	2017-07-08 19:15:53.309207+08
-8	auth	0003_alter_user_email_max_length	2017-07-08 19:15:53.359196+08
-9	auth	0004_alter_user_username_opts	2017-07-08 19:15:53.383773+08
-10	auth	0005_alter_user_last_login_null	2017-07-08 19:15:53.433141+08
-11	auth	0006_require_contenttypes_0002	2017-07-08 19:15:53.459095+08
-12	auth	0007_alter_validators_add_error_messages	2017-07-08 19:15:53.480941+08
-13	auth	0008_alter_user_username_max_length	2017-07-08 19:15:53.534115+08
-14	sessions	0001_initial	2017-07-08 19:15:53.800335+08
-15	KB_SNP	0002_auto_20170708_1704	2017-07-09 01:04:41.924502+08
-16	KB_SNP	0003_auto_20170708_1708	2017-07-09 01:09:04.754931+08
-17	KB_SNP	0004_auto_20170709_1037	2017-07-09 18:37:32.493644+08
-18	account	0001_initial	2017-07-12 13:47:53.237599+08
-19	account	0002_email_max_length	2017-07-12 13:47:53.257702+08
-20	sites	0001_initial	2017-07-12 13:47:53.297874+08
-21	sites	0002_alter_domain_unique	2017-07-12 13:47:53.306673+08
-22	socialaccount	0001_initial	2017-07-12 13:47:53.394564+08
-23	socialaccount	0002_token_max_lengths	2017-07-12 13:47:53.432711+08
-24	socialaccount	0003_extra_data_default_dict	2017-07-12 13:47:53.446931+08
+1	KB_SNP	0001_initial	2017-07-19 09:21:18.519852+00
+2	contenttypes	0001_initial	2017-07-19 09:21:18.737983+00
+3	auth	0001_initial	2017-07-19 09:21:19.921155+00
+4	account	0001_initial	2017-07-19 09:21:20.404251+00
+5	account	0002_email_max_length	2017-07-19 09:21:20.45422+00
+6	admin	0001_initial	2017-07-19 09:21:20.733621+00
+7	admin	0002_logentry_remove_auto_add	2017-07-19 09:21:20.796458+00
+8	contenttypes	0002_remove_content_type_name	2017-07-19 09:21:20.862852+00
+9	auth	0002_alter_permission_name_max_length	2017-07-19 09:21:20.904758+00
+10	auth	0003_alter_user_email_max_length	2017-07-19 09:21:20.954503+00
+11	auth	0004_alter_user_username_opts	2017-07-19 09:21:20.985459+00
+12	auth	0005_alter_user_last_login_null	2017-07-19 09:21:21.046025+00
+13	auth	0006_require_contenttypes_0002	2017-07-19 09:21:21.067726+00
+14	auth	0007_alter_validators_add_error_messages	2017-07-19 09:21:21.09668+00
+15	auth	0008_alter_user_username_max_length	2017-07-19 09:21:21.146147+00
+16	sessions	0001_initial	2017-07-19 09:21:21.388023+00
+17	sites	0001_initial	2017-07-19 09:21:21.479676+00
+18	sites	0002_alter_domain_unique	2017-07-19 09:21:21.621337+00
+19	socialaccount	0001_initial	2017-07-19 09:21:22.643065+00
+20	socialaccount	0002_token_max_lengths	2017-07-19 09:21:22.705902+00
+21	socialaccount	0003_extra_data_default_dict	2017-07-19 09:21:22.755979+00
+22	Submit	0001_initial	2017-07-19 09:41:05.617407+00
 \.
 
 
@@ -6727,7 +6791,7 @@ COPY django_migrations (id, app, name, applied) FROM stdin;
 -- Name: django_migrations_id_seq; Type: SEQUENCE SET; Schema: public; Owner: trpkb
 --
 
-SELECT pg_catalog.setval('django_migrations_id_seq', 17, true);
+SELECT pg_catalog.setval('django_migrations_id_seq', 22, true);
 
 
 --
@@ -6735,9 +6799,7 @@ SELECT pg_catalog.setval('django_migrations_id_seq', 17, true);
 --
 
 COPY django_session (session_key, session_data, expire_date) FROM stdin;
-mf5zek4339fv2dakize19l74vpj8u2il	ZGNiNmMwY2JkZDE2M2NlNTY4YzY4MDc2YTg0MDcyMzNiNjQ4ZjVlZDp7Il9hdXRoX3VzZXJfYmFja2VuZCI6ImRqYW5nby5jb250cmliLmF1dGguYmFja2VuZHMuTW9kZWxCYWNrZW5kIiwiX2F1dGhfdXNlcl9oYXNoIjoiMDgyZTBkZDYyZjBmNWFjMmE0ZDAxNzg2MmMwZjUxODFlMzdmZGMzYSIsIl9hdXRoX3VzZXJfaWQiOiIxIn0=	2017-07-22 19:44:39.126877+08
-d61s0lwubkqspof0u2fob00j6s2rk224	NjdjZTY0Yzc0NDRjMGRmOGE5MWQ1MmM0Njg5ZGRlYTJiNjdmZTIxNjp7Il9hdXRoX3VzZXJfaWQiOiIzIiwiX2F1dGhfdXNlcl9oYXNoIjoiM2JlZGEwMDYyZGM4YzEzZGE1ODIwZWQwNGNmZTYwMDZlZjQ0ZWJjYiIsIl9hdXRoX3VzZXJfYmFja2VuZCI6ImRqYW5nby5jb250cmliLmF1dGguYmFja2VuZHMuTW9kZWxCYWNrZW5kIn0=	2017-07-26 15:58:01.701009+08
-3pv2viq1y1l7dka28dyus3h3cjjfssnn	OThkZTIyMDQyOTQ5MDQ0NDU1MWZmY2RmZDBmNDA1OGY0N2I0MjA2OTp7Il9hdXRoX3VzZXJfaWQiOiIxIiwiX2F1dGhfdXNlcl9iYWNrZW5kIjoiZGphbmdvLmNvbnRyaWIuYXV0aC5iYWNrZW5kcy5Nb2RlbEJhY2tlbmQiLCJfYXV0aF91c2VyX2hhc2giOiIxMzYwYTkyYTQ1YWRmOTczODVlNWUzMTg4MTM4MWVlNjJiMWEwY2E5In0=	2017-07-27 13:58:07.653619+08
+5yj1eowp89313jsket33pttflo61d848	ZTIyMmM2MTJhYmQ1YzM5MmZiYzUxNDdlN2U5MWEzZWJiYzUyYzVjNjp7Il9zZXNzaW9uX2V4cGlyeSI6MCwiX2F1dGhfdXNlcl9pZCI6IjMiLCJfYXV0aF91c2VyX2hhc2giOiI4Mzg4YWI1MDU4MWEyNTBiY2RiMDU3ZjAzOGU1NGUzMTk1YTk4YTQyIiwiX2F1dGhfdXNlcl9iYWNrZW5kIjoiZGphbmdvLmNvbnRyaWIuYXV0aC5iYWNrZW5kcy5Nb2RlbEJhY2tlbmQifQ==	2017-08-02 09:40:04.95876+00
 \.
 
 
@@ -6818,7 +6880,7 @@ SELECT pg_catalog.setval('socialaccount_socialtoken_id_seq', 1, false);
 
 
 --
--- Name: KB_SNP_association KB_SNP_association_pkey; Type: CONSTRAINT; Schema: public; Owner: trpkb
+-- Name: KB_SNP_association_pkey; Type: CONSTRAINT; Schema: public; Owner: trpkb
 --
 
 ALTER TABLE ONLY "KB_SNP_association"
@@ -6826,7 +6888,7 @@ ALTER TABLE ONLY "KB_SNP_association"
 
 
 --
--- Name: KB_SNP_evidencebasedmedicinelevel KB_SNP_evidencebasedmedicinelevel_ebml_key; Type: CONSTRAINT; Schema: public; Owner: trpkb
+-- Name: KB_SNP_evidencebasedmedicinelevel_ebml_key; Type: CONSTRAINT; Schema: public; Owner: trpkb
 --
 
 ALTER TABLE ONLY "KB_SNP_evidencebasedmedicinelevel"
@@ -6834,7 +6896,7 @@ ALTER TABLE ONLY "KB_SNP_evidencebasedmedicinelevel"
 
 
 --
--- Name: KB_SNP_evidencebasedmedicinelevel KB_SNP_evidencebasedmedicinelevel_pkey; Type: CONSTRAINT; Schema: public; Owner: trpkb
+-- Name: KB_SNP_evidencebasedmedicinelevel_pkey; Type: CONSTRAINT; Schema: public; Owner: trpkb
 --
 
 ALTER TABLE ONLY "KB_SNP_evidencebasedmedicinelevel"
@@ -6842,7 +6904,7 @@ ALTER TABLE ONLY "KB_SNP_evidencebasedmedicinelevel"
 
 
 --
--- Name: KB_SNP_gene KB_SNP_gene_entrez_gene_id_key; Type: CONSTRAINT; Schema: public; Owner: trpkb
+-- Name: KB_SNP_gene_entrez_gene_id_key; Type: CONSTRAINT; Schema: public; Owner: trpkb
 --
 
 ALTER TABLE ONLY "KB_SNP_gene"
@@ -6850,7 +6912,7 @@ ALTER TABLE ONLY "KB_SNP_gene"
 
 
 --
--- Name: KB_SNP_gene KB_SNP_gene_gene_official_symbol_key; Type: CONSTRAINT; Schema: public; Owner: trpkb
+-- Name: KB_SNP_gene_gene_official_symbol_key; Type: CONSTRAINT; Schema: public; Owner: trpkb
 --
 
 ALTER TABLE ONLY "KB_SNP_gene"
@@ -6858,7 +6920,7 @@ ALTER TABLE ONLY "KB_SNP_gene"
 
 
 --
--- Name: KB_SNP_gene KB_SNP_gene_pkey; Type: CONSTRAINT; Schema: public; Owner: trpkb
+-- Name: KB_SNP_gene_pkey; Type: CONSTRAINT; Schema: public; Owner: trpkb
 --
 
 ALTER TABLE ONLY "KB_SNP_gene"
@@ -6866,7 +6928,7 @@ ALTER TABLE ONLY "KB_SNP_gene"
 
 
 --
--- Name: KB_SNP_prognosis KB_SNP_prognosis_pkey; Type: CONSTRAINT; Schema: public; Owner: trpkb
+-- Name: KB_SNP_prognosis_pkey; Type: CONSTRAINT; Schema: public; Owner: trpkb
 --
 
 ALTER TABLE ONLY "KB_SNP_prognosis"
@@ -6874,7 +6936,7 @@ ALTER TABLE ONLY "KB_SNP_prognosis"
 
 
 --
--- Name: KB_SNP_research KB_SNP_research_pkey; Type: CONSTRAINT; Schema: public; Owner: trpkb
+-- Name: KB_SNP_research_pkey; Type: CONSTRAINT; Schema: public; Owner: trpkb
 --
 
 ALTER TABLE ONLY "KB_SNP_research"
@@ -6882,7 +6944,7 @@ ALTER TABLE ONLY "KB_SNP_research"
 
 
 --
--- Name: KB_SNP_research KB_SNP_research_title_key; Type: CONSTRAINT; Schema: public; Owner: trpkb
+-- Name: KB_SNP_research_title_key; Type: CONSTRAINT; Schema: public; Owner: trpkb
 --
 
 ALTER TABLE ONLY "KB_SNP_research"
@@ -6890,7 +6952,7 @@ ALTER TABLE ONLY "KB_SNP_research"
 
 
 --
--- Name: KB_SNP_subgroup KB_SNP_subgroup_pkey; Type: CONSTRAINT; Schema: public; Owner: trpkb
+-- Name: KB_SNP_subgroup_pkey; Type: CONSTRAINT; Schema: public; Owner: trpkb
 --
 
 ALTER TABLE ONLY "KB_SNP_subgroup"
@@ -6898,7 +6960,7 @@ ALTER TABLE ONLY "KB_SNP_subgroup"
 
 
 --
--- Name: KB_SNP_tumor KB_SNP_tumor_mesh_id_key; Type: CONSTRAINT; Schema: public; Owner: trpkb
+-- Name: KB_SNP_tumor_mesh_id_key; Type: CONSTRAINT; Schema: public; Owner: trpkb
 --
 
 ALTER TABLE ONLY "KB_SNP_tumor"
@@ -6906,7 +6968,7 @@ ALTER TABLE ONLY "KB_SNP_tumor"
 
 
 --
--- Name: KB_SNP_tumor KB_SNP_tumor_mesh_term_key; Type: CONSTRAINT; Schema: public; Owner: trpkb
+-- Name: KB_SNP_tumor_mesh_term_key; Type: CONSTRAINT; Schema: public; Owner: trpkb
 --
 
 ALTER TABLE ONLY "KB_SNP_tumor"
@@ -6914,7 +6976,7 @@ ALTER TABLE ONLY "KB_SNP_tumor"
 
 
 --
--- Name: KB_SNP_tumor KB_SNP_tumor_name_key; Type: CONSTRAINT; Schema: public; Owner: trpkb
+-- Name: KB_SNP_tumor_name_key; Type: CONSTRAINT; Schema: public; Owner: trpkb
 --
 
 ALTER TABLE ONLY "KB_SNP_tumor"
@@ -6922,7 +6984,7 @@ ALTER TABLE ONLY "KB_SNP_tumor"
 
 
 --
--- Name: KB_SNP_tumor KB_SNP_tumor_pkey; Type: CONSTRAINT; Schema: public; Owner: trpkb
+-- Name: KB_SNP_tumor_pkey; Type: CONSTRAINT; Schema: public; Owner: trpkb
 --
 
 ALTER TABLE ONLY "KB_SNP_tumor"
@@ -6930,7 +6992,7 @@ ALTER TABLE ONLY "KB_SNP_tumor"
 
 
 --
--- Name: KB_SNP_variant KB_SNP_variant_pkey; Type: CONSTRAINT; Schema: public; Owner: trpkb
+-- Name: KB_SNP_variant_pkey; Type: CONSTRAINT; Schema: public; Owner: trpkb
 --
 
 ALTER TABLE ONLY "KB_SNP_variant"
@@ -6938,7 +7000,15 @@ ALTER TABLE ONLY "KB_SNP_variant"
 
 
 --
--- Name: account_emailaddress account_emailaddress_email_key; Type: CONSTRAINT; Schema: public; Owner: trpkb
+-- Name: Submit_draft_pkey; Type: CONSTRAINT; Schema: public; Owner: trpkb
+--
+
+ALTER TABLE ONLY "Submit_draft"
+    ADD CONSTRAINT "Submit_draft_pkey" PRIMARY KEY (id);
+
+
+--
+-- Name: account_emailaddress_email_key; Type: CONSTRAINT; Schema: public; Owner: trpkb
 --
 
 ALTER TABLE ONLY account_emailaddress
@@ -6946,7 +7016,7 @@ ALTER TABLE ONLY account_emailaddress
 
 
 --
--- Name: account_emailaddress account_emailaddress_pkey; Type: CONSTRAINT; Schema: public; Owner: trpkb
+-- Name: account_emailaddress_pkey; Type: CONSTRAINT; Schema: public; Owner: trpkb
 --
 
 ALTER TABLE ONLY account_emailaddress
@@ -6954,7 +7024,7 @@ ALTER TABLE ONLY account_emailaddress
 
 
 --
--- Name: account_emailconfirmation account_emailconfirmation_key_key; Type: CONSTRAINT; Schema: public; Owner: trpkb
+-- Name: account_emailconfirmation_key_key; Type: CONSTRAINT; Schema: public; Owner: trpkb
 --
 
 ALTER TABLE ONLY account_emailconfirmation
@@ -6962,7 +7032,7 @@ ALTER TABLE ONLY account_emailconfirmation
 
 
 --
--- Name: account_emailconfirmation account_emailconfirmation_pkey; Type: CONSTRAINT; Schema: public; Owner: trpkb
+-- Name: account_emailconfirmation_pkey; Type: CONSTRAINT; Schema: public; Owner: trpkb
 --
 
 ALTER TABLE ONLY account_emailconfirmation
@@ -6970,7 +7040,7 @@ ALTER TABLE ONLY account_emailconfirmation
 
 
 --
--- Name: auth_group auth_group_name_key; Type: CONSTRAINT; Schema: public; Owner: trpkb
+-- Name: auth_group_name_key; Type: CONSTRAINT; Schema: public; Owner: trpkb
 --
 
 ALTER TABLE ONLY auth_group
@@ -6978,7 +7048,7 @@ ALTER TABLE ONLY auth_group
 
 
 --
--- Name: auth_group_permissions auth_group_permissions_group_id_permission_id_0cd325b0_uniq; Type: CONSTRAINT; Schema: public; Owner: trpkb
+-- Name: auth_group_permissions_group_id_permission_id_0cd325b0_uniq; Type: CONSTRAINT; Schema: public; Owner: trpkb
 --
 
 ALTER TABLE ONLY auth_group_permissions
@@ -6986,7 +7056,7 @@ ALTER TABLE ONLY auth_group_permissions
 
 
 --
--- Name: auth_group_permissions auth_group_permissions_pkey; Type: CONSTRAINT; Schema: public; Owner: trpkb
+-- Name: auth_group_permissions_pkey; Type: CONSTRAINT; Schema: public; Owner: trpkb
 --
 
 ALTER TABLE ONLY auth_group_permissions
@@ -6994,7 +7064,7 @@ ALTER TABLE ONLY auth_group_permissions
 
 
 --
--- Name: auth_group auth_group_pkey; Type: CONSTRAINT; Schema: public; Owner: trpkb
+-- Name: auth_group_pkey; Type: CONSTRAINT; Schema: public; Owner: trpkb
 --
 
 ALTER TABLE ONLY auth_group
@@ -7002,7 +7072,7 @@ ALTER TABLE ONLY auth_group
 
 
 --
--- Name: auth_permission auth_permission_content_type_id_codename_01ab375a_uniq; Type: CONSTRAINT; Schema: public; Owner: trpkb
+-- Name: auth_permission_content_type_id_codename_01ab375a_uniq; Type: CONSTRAINT; Schema: public; Owner: trpkb
 --
 
 ALTER TABLE ONLY auth_permission
@@ -7010,7 +7080,7 @@ ALTER TABLE ONLY auth_permission
 
 
 --
--- Name: auth_permission auth_permission_pkey; Type: CONSTRAINT; Schema: public; Owner: trpkb
+-- Name: auth_permission_pkey; Type: CONSTRAINT; Schema: public; Owner: trpkb
 --
 
 ALTER TABLE ONLY auth_permission
@@ -7018,7 +7088,7 @@ ALTER TABLE ONLY auth_permission
 
 
 --
--- Name: auth_user_groups auth_user_groups_pkey; Type: CONSTRAINT; Schema: public; Owner: trpkb
+-- Name: auth_user_groups_pkey; Type: CONSTRAINT; Schema: public; Owner: trpkb
 --
 
 ALTER TABLE ONLY auth_user_groups
@@ -7026,7 +7096,7 @@ ALTER TABLE ONLY auth_user_groups
 
 
 --
--- Name: auth_user_groups auth_user_groups_user_id_group_id_94350c0c_uniq; Type: CONSTRAINT; Schema: public; Owner: trpkb
+-- Name: auth_user_groups_user_id_group_id_94350c0c_uniq; Type: CONSTRAINT; Schema: public; Owner: trpkb
 --
 
 ALTER TABLE ONLY auth_user_groups
@@ -7034,7 +7104,7 @@ ALTER TABLE ONLY auth_user_groups
 
 
 --
--- Name: auth_user auth_user_pkey; Type: CONSTRAINT; Schema: public; Owner: trpkb
+-- Name: auth_user_pkey; Type: CONSTRAINT; Schema: public; Owner: trpkb
 --
 
 ALTER TABLE ONLY auth_user
@@ -7042,7 +7112,7 @@ ALTER TABLE ONLY auth_user
 
 
 --
--- Name: auth_user_user_permissions auth_user_user_permissions_pkey; Type: CONSTRAINT; Schema: public; Owner: trpkb
+-- Name: auth_user_user_permissions_pkey; Type: CONSTRAINT; Schema: public; Owner: trpkb
 --
 
 ALTER TABLE ONLY auth_user_user_permissions
@@ -7050,7 +7120,7 @@ ALTER TABLE ONLY auth_user_user_permissions
 
 
 --
--- Name: auth_user_user_permissions auth_user_user_permissions_user_id_permission_id_14a6b632_uniq; Type: CONSTRAINT; Schema: public; Owner: trpkb
+-- Name: auth_user_user_permissions_user_id_permission_id_14a6b632_uniq; Type: CONSTRAINT; Schema: public; Owner: trpkb
 --
 
 ALTER TABLE ONLY auth_user_user_permissions
@@ -7058,7 +7128,7 @@ ALTER TABLE ONLY auth_user_user_permissions
 
 
 --
--- Name: auth_user auth_user_username_key; Type: CONSTRAINT; Schema: public; Owner: trpkb
+-- Name: auth_user_username_key; Type: CONSTRAINT; Schema: public; Owner: trpkb
 --
 
 ALTER TABLE ONLY auth_user
@@ -7066,7 +7136,7 @@ ALTER TABLE ONLY auth_user
 
 
 --
--- Name: django_admin_log django_admin_log_pkey; Type: CONSTRAINT; Schema: public; Owner: trpkb
+-- Name: django_admin_log_pkey; Type: CONSTRAINT; Schema: public; Owner: trpkb
 --
 
 ALTER TABLE ONLY django_admin_log
@@ -7074,7 +7144,7 @@ ALTER TABLE ONLY django_admin_log
 
 
 --
--- Name: django_content_type django_content_type_app_label_model_76bd3d3b_uniq; Type: CONSTRAINT; Schema: public; Owner: trpkb
+-- Name: django_content_type_app_label_model_76bd3d3b_uniq; Type: CONSTRAINT; Schema: public; Owner: trpkb
 --
 
 ALTER TABLE ONLY django_content_type
@@ -7082,7 +7152,7 @@ ALTER TABLE ONLY django_content_type
 
 
 --
--- Name: django_content_type django_content_type_pkey; Type: CONSTRAINT; Schema: public; Owner: trpkb
+-- Name: django_content_type_pkey; Type: CONSTRAINT; Schema: public; Owner: trpkb
 --
 
 ALTER TABLE ONLY django_content_type
@@ -7090,7 +7160,7 @@ ALTER TABLE ONLY django_content_type
 
 
 --
--- Name: django_migrations django_migrations_pkey; Type: CONSTRAINT; Schema: public; Owner: trpkb
+-- Name: django_migrations_pkey; Type: CONSTRAINT; Schema: public; Owner: trpkb
 --
 
 ALTER TABLE ONLY django_migrations
@@ -7098,7 +7168,7 @@ ALTER TABLE ONLY django_migrations
 
 
 --
--- Name: django_session django_session_pkey; Type: CONSTRAINT; Schema: public; Owner: trpkb
+-- Name: django_session_pkey; Type: CONSTRAINT; Schema: public; Owner: trpkb
 --
 
 ALTER TABLE ONLY django_session
@@ -7106,7 +7176,7 @@ ALTER TABLE ONLY django_session
 
 
 --
--- Name: django_site django_site_domain_a2e37b91_uniq; Type: CONSTRAINT; Schema: public; Owner: trpkb
+-- Name: django_site_domain_a2e37b91_uniq; Type: CONSTRAINT; Schema: public; Owner: trpkb
 --
 
 ALTER TABLE ONLY django_site
@@ -7114,7 +7184,7 @@ ALTER TABLE ONLY django_site
 
 
 --
--- Name: django_site django_site_pkey; Type: CONSTRAINT; Schema: public; Owner: trpkb
+-- Name: django_site_pkey; Type: CONSTRAINT; Schema: public; Owner: trpkb
 --
 
 ALTER TABLE ONLY django_site
@@ -7122,7 +7192,7 @@ ALTER TABLE ONLY django_site
 
 
 --
--- Name: socialaccount_socialaccount socialaccount_socialaccount_pkey; Type: CONSTRAINT; Schema: public; Owner: trpkb
+-- Name: socialaccount_socialaccount_pkey; Type: CONSTRAINT; Schema: public; Owner: trpkb
 --
 
 ALTER TABLE ONLY socialaccount_socialaccount
@@ -7130,7 +7200,7 @@ ALTER TABLE ONLY socialaccount_socialaccount
 
 
 --
--- Name: socialaccount_socialaccount socialaccount_socialaccount_provider_uid_fc810c6e_uniq; Type: CONSTRAINT; Schema: public; Owner: trpkb
+-- Name: socialaccount_socialaccount_provider_uid_fc810c6e_uniq; Type: CONSTRAINT; Schema: public; Owner: trpkb
 --
 
 ALTER TABLE ONLY socialaccount_socialaccount
@@ -7138,7 +7208,7 @@ ALTER TABLE ONLY socialaccount_socialaccount
 
 
 --
--- Name: socialaccount_socialapp_sites socialaccount_socialapp__socialapp_id_site_id_71a9a768_uniq; Type: CONSTRAINT; Schema: public; Owner: trpkb
+-- Name: socialaccount_socialapp__socialapp_id_site_id_71a9a768_uniq; Type: CONSTRAINT; Schema: public; Owner: trpkb
 --
 
 ALTER TABLE ONLY socialaccount_socialapp_sites
@@ -7146,7 +7216,7 @@ ALTER TABLE ONLY socialaccount_socialapp_sites
 
 
 --
--- Name: socialaccount_socialapp socialaccount_socialapp_pkey; Type: CONSTRAINT; Schema: public; Owner: trpkb
+-- Name: socialaccount_socialapp_pkey; Type: CONSTRAINT; Schema: public; Owner: trpkb
 --
 
 ALTER TABLE ONLY socialaccount_socialapp
@@ -7154,7 +7224,7 @@ ALTER TABLE ONLY socialaccount_socialapp
 
 
 --
--- Name: socialaccount_socialapp_sites socialaccount_socialapp_sites_pkey; Type: CONSTRAINT; Schema: public; Owner: trpkb
+-- Name: socialaccount_socialapp_sites_pkey; Type: CONSTRAINT; Schema: public; Owner: trpkb
 --
 
 ALTER TABLE ONLY socialaccount_socialapp_sites
@@ -7162,7 +7232,7 @@ ALTER TABLE ONLY socialaccount_socialapp_sites
 
 
 --
--- Name: socialaccount_socialtoken socialaccount_socialtoken_app_id_account_id_fca4e0ac_uniq; Type: CONSTRAINT; Schema: public; Owner: trpkb
+-- Name: socialaccount_socialtoken_app_id_account_id_fca4e0ac_uniq; Type: CONSTRAINT; Schema: public; Owner: trpkb
 --
 
 ALTER TABLE ONLY socialaccount_socialtoken
@@ -7170,7 +7240,7 @@ ALTER TABLE ONLY socialaccount_socialtoken
 
 
 --
--- Name: socialaccount_socialtoken socialaccount_socialtoken_pkey; Type: CONSTRAINT; Schema: public; Owner: trpkb
+-- Name: socialaccount_socialtoken_pkey; Type: CONSTRAINT; Schema: public; Owner: trpkb
 --
 
 ALTER TABLE ONLY socialaccount_socialtoken
@@ -7266,6 +7336,13 @@ CREATE INDEX "KB_SNP_tumor_name_5dafdd5e_like" ON "KB_SNP_tumor" USING btree (na
 --
 
 CREATE INDEX "KB_SNP_variant_gene_id_b4449893" ON "KB_SNP_variant" USING btree (gene_id);
+
+
+--
+-- Name: Submit_draft_user_id_2b01e533; Type: INDEX; Schema: public; Owner: trpkb
+--
+
+CREATE INDEX "Submit_draft_user_id_2b01e533" ON "Submit_draft" USING btree (user_id);
 
 
 --
@@ -7430,7 +7507,7 @@ CREATE INDEX socialaccount_socialtoken_app_id_636a42d7 ON socialaccount_socialto
 
 
 --
--- Name: KB_SNP_association KB_SNP_association_prognosis_id_4759f347_fk_KB_SNP_prognosis_id; Type: FK CONSTRAINT; Schema: public; Owner: trpkb
+-- Name: KB_SNP_association_prognosis_id_4759f347_fk_KB_SNP_prognosis_id; Type: FK CONSTRAINT; Schema: public; Owner: trpkb
 --
 
 ALTER TABLE ONLY "KB_SNP_association"
@@ -7438,7 +7515,7 @@ ALTER TABLE ONLY "KB_SNP_association"
 
 
 --
--- Name: KB_SNP_association KB_SNP_association_research_id_52c939bf_fk_KB_SNP_research_id; Type: FK CONSTRAINT; Schema: public; Owner: trpkb
+-- Name: KB_SNP_association_research_id_52c939bf_fk_KB_SNP_research_id; Type: FK CONSTRAINT; Schema: public; Owner: trpkb
 --
 
 ALTER TABLE ONLY "KB_SNP_association"
@@ -7446,7 +7523,7 @@ ALTER TABLE ONLY "KB_SNP_association"
 
 
 --
--- Name: KB_SNP_association KB_SNP_association_subgroup_id_d8ad58ba_fk_KB_SNP_subgroup_id; Type: FK CONSTRAINT; Schema: public; Owner: trpkb
+-- Name: KB_SNP_association_subgroup_id_d8ad58ba_fk_KB_SNP_subgroup_id; Type: FK CONSTRAINT; Schema: public; Owner: trpkb
 --
 
 ALTER TABLE ONLY "KB_SNP_association"
@@ -7454,7 +7531,7 @@ ALTER TABLE ONLY "KB_SNP_association"
 
 
 --
--- Name: KB_SNP_association KB_SNP_association_tumor_id_77bcc162_fk_KB_SNP_tumor_id; Type: FK CONSTRAINT; Schema: public; Owner: trpkb
+-- Name: KB_SNP_association_tumor_id_77bcc162_fk_KB_SNP_tumor_id; Type: FK CONSTRAINT; Schema: public; Owner: trpkb
 --
 
 ALTER TABLE ONLY "KB_SNP_association"
@@ -7462,7 +7539,7 @@ ALTER TABLE ONLY "KB_SNP_association"
 
 
 --
--- Name: KB_SNP_association KB_SNP_association_variant_id_3f194d36_fk_KB_SNP_variant_id; Type: FK CONSTRAINT; Schema: public; Owner: trpkb
+-- Name: KB_SNP_association_variant_id_3f194d36_fk_KB_SNP_variant_id; Type: FK CONSTRAINT; Schema: public; Owner: trpkb
 --
 
 ALTER TABLE ONLY "KB_SNP_association"
@@ -7470,7 +7547,7 @@ ALTER TABLE ONLY "KB_SNP_association"
 
 
 --
--- Name: KB_SNP_research KB_SNP_research_ebml_id_653bc366_fk_KB_SNP_ev; Type: FK CONSTRAINT; Schema: public; Owner: trpkb
+-- Name: KB_SNP_research_ebml_id_653bc366_fk_KB_SNP_ev; Type: FK CONSTRAINT; Schema: public; Owner: trpkb
 --
 
 ALTER TABLE ONLY "KB_SNP_research"
@@ -7478,7 +7555,7 @@ ALTER TABLE ONLY "KB_SNP_research"
 
 
 --
--- Name: KB_SNP_subgroup KB_SNP_subgroup_prognosis_id_ead28cad_fk_KB_SNP_prognosis_id; Type: FK CONSTRAINT; Schema: public; Owner: trpkb
+-- Name: KB_SNP_subgroup_prognosis_id_ead28cad_fk_KB_SNP_prognosis_id; Type: FK CONSTRAINT; Schema: public; Owner: trpkb
 --
 
 ALTER TABLE ONLY "KB_SNP_subgroup"
@@ -7486,7 +7563,7 @@ ALTER TABLE ONLY "KB_SNP_subgroup"
 
 
 --
--- Name: KB_SNP_variant KB_SNP_variant_gene_id_b4449893_fk_KB_SNP_gene_id; Type: FK CONSTRAINT; Schema: public; Owner: trpkb
+-- Name: KB_SNP_variant_gene_id_b4449893_fk_KB_SNP_gene_id; Type: FK CONSTRAINT; Schema: public; Owner: trpkb
 --
 
 ALTER TABLE ONLY "KB_SNP_variant"
@@ -7494,7 +7571,15 @@ ALTER TABLE ONLY "KB_SNP_variant"
 
 
 --
--- Name: account_emailaddress account_emailaddress_user_id_2c513194_fk_auth_user_id; Type: FK CONSTRAINT; Schema: public; Owner: trpkb
+-- Name: Submit_draft_user_id_2b01e533_fk_auth_user_id; Type: FK CONSTRAINT; Schema: public; Owner: trpkb
+--
+
+ALTER TABLE ONLY "Submit_draft"
+    ADD CONSTRAINT "Submit_draft_user_id_2b01e533_fk_auth_user_id" FOREIGN KEY (user_id) REFERENCES auth_user(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: account_emailaddress_user_id_2c513194_fk_auth_user_id; Type: FK CONSTRAINT; Schema: public; Owner: trpkb
 --
 
 ALTER TABLE ONLY account_emailaddress
@@ -7502,7 +7587,7 @@ ALTER TABLE ONLY account_emailaddress
 
 
 --
--- Name: account_emailconfirmation account_emailconfirm_email_address_id_5b7f8c58_fk_account_e; Type: FK CONSTRAINT; Schema: public; Owner: trpkb
+-- Name: account_emailconfirm_email_address_id_5b7f8c58_fk_account_e; Type: FK CONSTRAINT; Schema: public; Owner: trpkb
 --
 
 ALTER TABLE ONLY account_emailconfirmation
@@ -7510,7 +7595,7 @@ ALTER TABLE ONLY account_emailconfirmation
 
 
 --
--- Name: auth_group_permissions auth_group_permissio_permission_id_84c5c92e_fk_auth_perm; Type: FK CONSTRAINT; Schema: public; Owner: trpkb
+-- Name: auth_group_permissio_permission_id_84c5c92e_fk_auth_perm; Type: FK CONSTRAINT; Schema: public; Owner: trpkb
 --
 
 ALTER TABLE ONLY auth_group_permissions
@@ -7518,7 +7603,7 @@ ALTER TABLE ONLY auth_group_permissions
 
 
 --
--- Name: auth_group_permissions auth_group_permissions_group_id_b120cbf9_fk_auth_group_id; Type: FK CONSTRAINT; Schema: public; Owner: trpkb
+-- Name: auth_group_permissions_group_id_b120cbf9_fk_auth_group_id; Type: FK CONSTRAINT; Schema: public; Owner: trpkb
 --
 
 ALTER TABLE ONLY auth_group_permissions
@@ -7526,7 +7611,7 @@ ALTER TABLE ONLY auth_group_permissions
 
 
 --
--- Name: auth_permission auth_permission_content_type_id_2f476e4b_fk_django_co; Type: FK CONSTRAINT; Schema: public; Owner: trpkb
+-- Name: auth_permission_content_type_id_2f476e4b_fk_django_co; Type: FK CONSTRAINT; Schema: public; Owner: trpkb
 --
 
 ALTER TABLE ONLY auth_permission
@@ -7534,7 +7619,7 @@ ALTER TABLE ONLY auth_permission
 
 
 --
--- Name: auth_user_groups auth_user_groups_group_id_97559544_fk_auth_group_id; Type: FK CONSTRAINT; Schema: public; Owner: trpkb
+-- Name: auth_user_groups_group_id_97559544_fk_auth_group_id; Type: FK CONSTRAINT; Schema: public; Owner: trpkb
 --
 
 ALTER TABLE ONLY auth_user_groups
@@ -7542,7 +7627,7 @@ ALTER TABLE ONLY auth_user_groups
 
 
 --
--- Name: auth_user_groups auth_user_groups_user_id_6a12ed8b_fk_auth_user_id; Type: FK CONSTRAINT; Schema: public; Owner: trpkb
+-- Name: auth_user_groups_user_id_6a12ed8b_fk_auth_user_id; Type: FK CONSTRAINT; Schema: public; Owner: trpkb
 --
 
 ALTER TABLE ONLY auth_user_groups
@@ -7550,7 +7635,7 @@ ALTER TABLE ONLY auth_user_groups
 
 
 --
--- Name: auth_user_user_permissions auth_user_user_permi_permission_id_1fbb5f2c_fk_auth_perm; Type: FK CONSTRAINT; Schema: public; Owner: trpkb
+-- Name: auth_user_user_permi_permission_id_1fbb5f2c_fk_auth_perm; Type: FK CONSTRAINT; Schema: public; Owner: trpkb
 --
 
 ALTER TABLE ONLY auth_user_user_permissions
@@ -7558,7 +7643,7 @@ ALTER TABLE ONLY auth_user_user_permissions
 
 
 --
--- Name: auth_user_user_permissions auth_user_user_permissions_user_id_a95ead1b_fk_auth_user_id; Type: FK CONSTRAINT; Schema: public; Owner: trpkb
+-- Name: auth_user_user_permissions_user_id_a95ead1b_fk_auth_user_id; Type: FK CONSTRAINT; Schema: public; Owner: trpkb
 --
 
 ALTER TABLE ONLY auth_user_user_permissions
@@ -7566,7 +7651,7 @@ ALTER TABLE ONLY auth_user_user_permissions
 
 
 --
--- Name: django_admin_log django_admin_log_content_type_id_c4bce8eb_fk_django_co; Type: FK CONSTRAINT; Schema: public; Owner: trpkb
+-- Name: django_admin_log_content_type_id_c4bce8eb_fk_django_co; Type: FK CONSTRAINT; Schema: public; Owner: trpkb
 --
 
 ALTER TABLE ONLY django_admin_log
@@ -7574,7 +7659,7 @@ ALTER TABLE ONLY django_admin_log
 
 
 --
--- Name: django_admin_log django_admin_log_user_id_c564eba6_fk_auth_user_id; Type: FK CONSTRAINT; Schema: public; Owner: trpkb
+-- Name: django_admin_log_user_id_c564eba6_fk_auth_user_id; Type: FK CONSTRAINT; Schema: public; Owner: trpkb
 --
 
 ALTER TABLE ONLY django_admin_log
@@ -7582,7 +7667,7 @@ ALTER TABLE ONLY django_admin_log
 
 
 --
--- Name: socialaccount_socialtoken socialaccount_social_account_id_951f210e_fk_socialacc; Type: FK CONSTRAINT; Schema: public; Owner: trpkb
+-- Name: socialaccount_social_account_id_951f210e_fk_socialacc; Type: FK CONSTRAINT; Schema: public; Owner: trpkb
 --
 
 ALTER TABLE ONLY socialaccount_socialtoken
@@ -7590,7 +7675,7 @@ ALTER TABLE ONLY socialaccount_socialtoken
 
 
 --
--- Name: socialaccount_socialtoken socialaccount_social_app_id_636a42d7_fk_socialacc; Type: FK CONSTRAINT; Schema: public; Owner: trpkb
+-- Name: socialaccount_social_app_id_636a42d7_fk_socialacc; Type: FK CONSTRAINT; Schema: public; Owner: trpkb
 --
 
 ALTER TABLE ONLY socialaccount_socialtoken
@@ -7598,7 +7683,7 @@ ALTER TABLE ONLY socialaccount_socialtoken
 
 
 --
--- Name: socialaccount_socialapp_sites socialaccount_social_site_id_2579dee5_fk_django_si; Type: FK CONSTRAINT; Schema: public; Owner: trpkb
+-- Name: socialaccount_social_site_id_2579dee5_fk_django_si; Type: FK CONSTRAINT; Schema: public; Owner: trpkb
 --
 
 ALTER TABLE ONLY socialaccount_socialapp_sites
@@ -7606,7 +7691,7 @@ ALTER TABLE ONLY socialaccount_socialapp_sites
 
 
 --
--- Name: socialaccount_socialapp_sites socialaccount_social_socialapp_id_97fb6e7d_fk_socialacc; Type: FK CONSTRAINT; Schema: public; Owner: trpkb
+-- Name: socialaccount_social_socialapp_id_97fb6e7d_fk_socialacc; Type: FK CONSTRAINT; Schema: public; Owner: trpkb
 --
 
 ALTER TABLE ONLY socialaccount_socialapp_sites
@@ -7614,11 +7699,21 @@ ALTER TABLE ONLY socialaccount_socialapp_sites
 
 
 --
--- Name: socialaccount_socialaccount socialaccount_socialaccount_user_id_8146e70c_fk_auth_user_id; Type: FK CONSTRAINT; Schema: public; Owner: trpkb
+-- Name: socialaccount_socialaccount_user_id_8146e70c_fk_auth_user_id; Type: FK CONSTRAINT; Schema: public; Owner: trpkb
 --
 
 ALTER TABLE ONLY socialaccount_socialaccount
     ADD CONSTRAINT socialaccount_socialaccount_user_id_8146e70c_fk_auth_user_id FOREIGN KEY (user_id) REFERENCES auth_user(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: public; Type: ACL; Schema: -; Owner: postgres
+--
+
+REVOKE ALL ON SCHEMA public FROM PUBLIC;
+REVOKE ALL ON SCHEMA public FROM postgres;
+GRANT ALL ON SCHEMA public TO postgres;
+GRANT ALL ON SCHEMA public TO PUBLIC;
 
 
 --

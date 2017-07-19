@@ -20,7 +20,21 @@
     {% endblock nav %}
 
       {% block container %}
-      <div class="row" style="margin-top:40px;">
+      <div class="row" style="margin-top:10px;">
+        <div class="col-md-1 col-sm-1 col-xs-1">
+        </div>
+        <div class="col-md-10 col-sm-10 col-xs-10">
+          <div id="review_alert" class="alert alert-warning alert-dismissible fade in" role="alert" style="display:none;text-align:center;">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+              <span aria-hidden="true">×</span>
+            </button>
+            <strong>- You are in review mode -</strong>
+          </div>
+        </div>
+        <div class="col-md-1 col-sm-1 col-xs-1">
+        </div>
+      </div>
+      <div class="row" style="margin-top:10px;">
         {% if user.is_authenticated %}
         <div class="col-md-3 col-sm-3 col-xs-3">
           <ul class="nav nav-pills nav-stacked">
@@ -554,7 +568,7 @@
                   <form id="STEP07_form">
                     <div class="jumbotron">
                       <h1>Almost done!</h1>
-                      <p>you can submit now after checking your material.</p>
+                      <p>you can submit after checking your material.</p>
                       <br>
                       <p><a id="STEP07_submit" class="btn btn-primary btn-lg">Submit</a></p>
                     </div>
@@ -587,7 +601,6 @@
     <!-- Submit SNP -->
     <script type="text/javascript">
       var review_mode = {{ review }};
-      var submit_id = {{ submit_id }};
       var step = {{ step }};
       var content = JSON.parse('{{ content|safe }}');
 
