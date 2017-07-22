@@ -66,8 +66,8 @@
       <div class="col-md-12 col-sm-12 col-xs-12">
         <div class="jumbotron" style="margin-bottom: 0px;">
           <div class="container">
-            <p>A database of Tumor Radiotherapy Prognosis Knowledgebase</p>
-            <p><span style="color: green;">{{ stats.research_num }}</span> Papers, <span style="color: green;">{{ stats.gene_num }}</span> Genes, <span style="color: green;">{{ stats.variant_num }}</span> Variants, <span style="color: green;">{{ stats.case_num }}</span> Cases.</p>
+            <p>Tumor Radiotherapy Prognosis Knowledgebase</p>
+            <p><span style="color: green;">{{ stats.research_num }}</span> Papers, <span style="color: green;">{{ stats.gene_num }}</span> Genes, <span style="color: green;">{{ stats.variant_num }}</span> Variants.</p>
           </div>
         </div>
       </div>
@@ -77,10 +77,9 @@
     <div class="container">
       {% block nav %}
       <ul class="nav nav-pills nav-justified" style="border-top: 1px solid black;border-bottom: 1px solid black;">
-        <li role="presentation"><a href="{% url 'about' %}">About the Knowledgebase</a></li>
-        <li role="presentation"><a href="{% url 'about_k' %}">About the Knowledge</a></li>
-        <li role="presentation"><a href="{% url 'access' %}">Access the Knowledge</a></li>
-        <li role="presentation"><a href="{% url 'submit' %}">Submit the Knowledge</a></li>
+        <li role="presentation"><a href="{% url 'about' %}">About</a></li>
+        <li role="presentation"><a href="{% url 'access' %}">Access</a></li>
+        <li role="presentation"><a href="{% url 'submit' %}">Submit</a></li>
         <li role="presentation"><a href="{% url 'news' %}">News</a></li>
       </ul>
       {% endblock nav %}

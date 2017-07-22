@@ -81,16 +81,7 @@ function addNew() {
         content[step_id] = {}; // reset
 
         if (checkForm(step_id)) {
-            if (id == 1) {
-                var title_ = $("#"+step_id+"_form").find('input[name=title_]').val();
-                var pubmed_id_ = $("#"+step_id+"_form").find('input[name=pubmed_id_]').val();
-
-                if (!(pubmed_id_.length == 0 || pubmed_id_.match(/^\s+$/g))) {
-                    content[step_id] = {'title': title_, 'pubmed_id': pubmed_id_};
-                } else {
-                    content[step_id] = {'title': title_};
-                }
-            } else if (id == 3) {
+            if (id == 3) {
                 content[step_id]['tumor'] = [];
                 $("#"+step_id+"_form .STEP03_tumor").each(function() {
                     var tumor_vals = {};
@@ -228,16 +219,9 @@ function addNew() {
         return valid;
     }
 
-    function freezeTitlePubmedId() {
-        if ('pubmed_id' in content.STEP01) {
-            $("input[name='pubmed_id']").val(content.STEP01.pubmed_id);
-            $("input[name='pubmed_id']").prop('disabled', true);
-        } else {
-            $("input[name='pubmed_id']").val('');
-            $("input[name='pubmed_id']").removeAttr("disabled");
-        }
-        $("input[name='title']").val(content.STEP01.title);
-        $("input[name='title']").prop('disabled', true);
+    function freezePubmedId() {
+        $("input[name='pubmed_id']").val(content.STEP01.pubmed_id);
+        $("input[name='pubmed_id']").prop('disabled', true);
     }
 
     function querySubmit(data, id, type) {
@@ -256,7 +240,7 @@ function addNew() {
                         if (id == 1) {
                             content['submit_id'] = data.submit_id; //important!
 
-                            freezeTitlePubmedId();
+                            freezePubmedId();
                         } else if (id == 3) {
                             genStep04();
                         } else if (id == 5) {
@@ -308,10 +292,12 @@ function addNew() {
         $tumor_html.find('#STEP03_tumor_no').text("Tumor No."+tumor_num.toString());
         $tumor_html.find('#STEP03_tumor_no').after(tumor_minus_html);
         $tumor_html.insertBefore('#tumor_above');
+        recur_step04 = 1;
     }
 
     function minusTumor() {
         $(this).parent().parent().remove();
+        recur_step04 = 1;
     }
 
     function genStep04() {
@@ -345,10 +331,12 @@ function addNew() {
 
         $variant_html.find('.STEP04_gene_existed').before(variant_minus_html);
         $(this).parent().parent().find('.variant_above').before($variant_html.prop('outerHTML'));
+        recur_step04 = 1;
     }
 
     function minusVariant() {
         $(this).parent().parent().parent().remove();
+        recur_step04 = 1;
     }
 
     function toggleGeneNew() {
@@ -380,20 +368,27 @@ function addNew() {
         $prognosis_html.find('#STEP05_prognosis_no').text("Prognosis No."+prognosis_num.toString());
         $prognosis_html.find('#STEP05_prognosis_no').after(prognosis_minus_html);
         $prognosis_html.insertBefore('#prognosis_above');
+        recur_step06 = 1;
     }
 
     function minusPrognosis () {
         $(this).parent().parent().remove();
+        recur_step06 = 1;
     }
 
     function addSubgroup() {
-        var subgroup_html = '<div class="input-group"><input name="subgroup" class="form-control" type="text"><span class="input-group-addon STEP05_subgroup_minus" style="cursor:pointer;"><strong style="color:red;">-</strong></span></div>';
+        var subgroup_html = '<div class="input-group">' +
+                            '<input name="subgroup" class="form-control" type="text" style="border-radius:0px;border-top-width:0px;">' +
+                            '<span class="input-group-addon STEP05_subgroup_minus" style="cursor:pointer;width:35px;"><strong style="color:red;">-</strong></span>' +
+                            '</div>';
 
         $(this).parent().parent().find('.subgroup_above').before(subgroup_html);
+        recur_step06 = 1;
     }
 
     function minusSubgroup() {
         $(this).parent().remove();
+        recur_step06 = 1;
     }
 
     function genStep06() {
@@ -504,18 +499,27 @@ function addNew() {
             var i_prognosis = parseInt($(":selected", this).attr('index_prognosis'));
             var subgroup_options_html = '<option value="" selected>- SELECT -</option>';
 
-            var subgroups = content.STEP05.prognosis[i_prognosis].subgroup;
+            var subgroups = [];
+            var subgroups_ = content.STEP05.prognosis[i_prognosis].subgroup;
             var $subgroup = $(this).parent().parent().parent().find('.STEP06_subgroup');
-            if (subgroups.length == 1 && subgroups[0] == "") {
+
+            // filter empty value
+            for (var i = 0; i < subgroups_.length; i++) {
+                if (subgroups_[i] != "") {
+                    subgroups.push(subgroups_[i]);
+                }
+            }
+
+            if (subgroups.length == 0) {
                 subgroup_options_html = '<option value="N/A" selected>- N/A -</option>';
                 $subgroup.html(subgroup_options_html);
                 $subgroup.prop('disabled', true);
             } else {
-                $subgroup.removeAttr("disabled");
                 for (var i = 0; i < subgroups.length; i++) {
                     subgroup_options_html += '<option value="'+subgroups[i]+'">'+subgroups[i]+'</option>';
                 }
                 $subgroup.html(subgroup_options_html);
+                $subgroup.removeAttr("disabled");
             }
         }
     }
@@ -578,18 +582,23 @@ function addNew() {
     function reviewSubmit() {
         $('#review_alert').show();
 
-        //disable STEP01 and jump to step now
+        //Jump to step now
         $("#STEP0"+(step).toString()+"_nav").trigger("click");
+        //disable STEP01
         $("#STEP01_nav").parent().addClass("disabled");
         $("#STEP01_nav").prop("data-toggle", null);
+        //remove STEP02's back
+        $("#STEP02_back").remove();
         //disable STEP02's title and pubmed_id
-        freezeTitlePubmedId();
+        freezePubmedId();
 
         //fill STEP02
         if ('STEP02' in content) {
             $("#STEP02_form :input").each(function() {
                 var name = $(this).attr("name");
-                $(this).val(content['STEP02'][name]);
+                if (name != 'paper') {
+                    $(this).val(content['STEP02'][name]);
+                }
             });
         } else { console.log('REVIEW:NO STEP02'); }
         //fill STEP03

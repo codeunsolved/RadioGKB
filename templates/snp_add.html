@@ -7,14 +7,17 @@
     {% block head_link %}
     <!-- jQuery-confirm -->
     <link href='{% static "vendors/jQuery-confirm/3.2.3/jquery-confirm.min.css" %}' rel="stylesheet">
+
+    <style type="text/css">
+      .input-group {width: 100%;}
+    </style>
     {% endblock head_link %}
 
     {% block nav %}
     <ul class="nav nav-pills nav-justified" style="border-top:1px solid black;border-bottom:1px solid black;">
-      <li role="presentation"><a href="{% url 'about' %}">About the Knowledgebase</a></li>
-      <li role="presentation"><a href="{% url 'about_k' %}">About the Knowledge</a></li>
-      <li role="presentation"><a href="{% url 'access' %}">Access the Knowledge</a></li>
-      <li role="presentation" class="active"><a href="{% url 'submit' %}">Submit the Knowledge</a></li>
+      <li role="presentation"><a href="{% url 'about' %}">About</a></li>
+      <li role="presentation"><a href="{% url 'access' %}">Access</a></li>
+      <li role="presentation" class="active"><a href="{% url 'submit' %}">Submit</a></li>
       <li role="presentation"><a href="{% url 'news' %}">News</a></li>
     </ul>
     {% endblock nav %}
@@ -36,7 +39,7 @@
       </div>
       <div class="row" style="margin-top:10px;">
         {% if user.is_authenticated %}
-        <div class="col-md-3 col-sm-3 col-xs-3">
+        <div class="col-md-2 col-sm-2 col-xs-2">
           <ul class="nav nav-pills nav-stacked">
             <li role="presentation" class="active"><a id="STEP01_nav" href="#STEP01" data-toggle="tab">Check duplication</a></li>
             <li role="presentation" class="disabled"><a id="STEP02_nav" href="#STEP02">Research</a></li>
@@ -47,7 +50,7 @@
             <li role="presentation" class="disabled"><a id="STEP07_nav" href="#STEP07">Confirm & Submit</a></li>
           </ul>
         </div>
-        <div class="col-md-9 col-sm-9 col-xs-9">
+        <div class="col-md-10 col-sm-10 col-xs-10">
           <div class="tab-content">
             <!-- STEP01 -->
             <div id="STEP01" class="tab-pane fade in active">
@@ -55,17 +58,12 @@
                 <div class="panel-body">
                   <form id="STEP01_form">
                     <div class="input-group">
-                      <span class="input-group-addon">Title<span style="color:red;">*</span></span>
-                      <input name="title_" class="form-control" type="text" required>
-                    </div>
-                    <br>
-                    <div class="input-group">
-                      <span class="input-group-addon">PMID</span>
-                      <input name="pubmed_id_" class="form-control" type="text">
+                      <span class="input-group-addon">PMID<span style="color:red;">*</span></span>
+                      <input name="pubmed_id" class="form-control" type="text" required>
                     </div>
                     <br>
                     <div class="well well-sm">
-                      Note: Please provide the Title or PMID to check for duplication. If you provide both, we use PMID first.
+                      Note: Please provide the PMID to check for duplication
                     </div>
 
                     <div id="STEP01_msg"></div>
@@ -86,17 +84,17 @@
                 <div class="panel-body">
                   <form id="STEP02_form">
                     <div class="input-group">
-                      <span class="input-group-addon">Title<span style="color:red;">*</span></span>
+                      <span class="input-group-addon" style="width:134px;">Title<span style="color:red;">*</span></span>
                       <input name="title" class="form-control" type="text" required>
                     </div>
                     <br>
                     <div class="input-group">
-                      <span class="input-group-addon">PMID</span>
-                      <input name="pubmed_id" class="form-control" type="text">
+                      <span class="input-group-addon" style="width:134px;">PMID<span style="color:red;">*</span></span>
+                      <input name="pubmed_id" class="form-control" type="text" required>
                     </div>
                     <br>
                     <div class="input-group">
-                      <span class="input-group-addon">Language<span style="color:red;">*</span></span>
+                      <span class="input-group-addon" style="width:134px;">Language<span style="color:red;">*</span></span>
                       <select name="language" class="form-control">
                         <option value="English" selected>English</option>
                         <option value="Chinese">Chinese</option>
@@ -104,84 +102,81 @@
                     </div>
                     <br>
                     <div class="input-group">
-                      <span class="input-group-addon">Publish Year<span style="color:red;">*</span></span>
+                      <span class="input-group-addon" style="width:134px;">Publish Year<span style="color:red;">*</span></span>
                       <input name="pub_year" class="form-control" type="number">
                     </div>
                     <br>
                     <div class="input-group">
-                      <span class="input-group-addon">Reference URL<span style="color:red;">*</span></span>
-                      <input name="url" class="form-control" type="text" required>
-                    </div>
-                    <br>
-                    <div class="input-group">
-                      <span class="input-group-addon">Publication Type<span style="color:red;">*</span></span>
+                      <span class="input-group-addon" style="width:134px;">Publication Type<span style="color:red;">*</span></span>
                       <select name="pub_type" class="form-control">
-                        <option value="" selected>- SELECT -</option>
-                        <option value="Ph.D. thesis">Ph.D. thesis</option>
+                        <option value="Ph.D. thesis">Ph.D thesis</option>
                         <option value="Master's thesis">Master's thesis</option>
-                        <option value="Peer Review">Peer Review</option>
+                        <option value="Peer Review" selected>Peer Review</option>
                         <option value="Proceeding's paper">Proceeding's paper</option>
                       </select>
                     </div>
                     <br>
                     <div class="input-group">
-                      <span class="input-group-addon">Evidence-base Medicine Level<span style="color:red;">*</span></span>
+                      <span class="input-group-addon">Evidence-based Medicine Level<span style="color:red;">*</span></span>
                       <select name="ebml" class="form-control">
-                        <option value="" selected>- SELECT -</option>
                         {% for x in forms.research.ebml %}
-                        <option value="{{ x }}">{{ x }}</option>
+                          {% if x == 'Case Series' %}
+                          <option value="{{ x }}" selected>{{ x }}</option>
+                          {% else %}
+                          <option value="{{ x }}">{{ x }}</option>
+                          {% endif %}
                         {% endfor %}
                       </select>
                     </div>
                     <br>
                     <div class="input-group">
-                      <span class="input-group-addon">Ethnicity</span>
+                      <span class="input-group-addon" style="width:134px;">Ethnicity</span>
                       <input name="ethnicity" class="form-control" type="text">
                     </div>
                     <br>
                     <div class="input-group">
-                      <span class="input-group-addon">Total Patients<span style="color:red;">*</span></span>
+                      <span class="input-group-addon" style="width:134px;">Total Patients<span style="color:red;">*</span></span>
                       <input name="patient_number" class="form-control" type="number" required>
                     </div>
                     <br>
                     <div class="input-group">
-                      <span class="input-group-addon">Male</span>
+                      <span class="input-group-addon" style="width:134px;">Male</span>
                       <input name="male" class="form-control" type="number">
                     </div>
                     <br>
                     <div class="input-group">
-                      <span class="input-group-addon">Female</span>
+                      <span class="input-group-addon" style="width:134px;">Female</span>
                       <input name="female" class="form-control" type="number">
                     </div>
                     <br>
                     <div class="input-group">
-                      <span class="input-group-addon">Median Age</span>
+                      <span class="input-group-addon" style="width:134px;">Median Age</span>
                       <input name="median_age" class="form-control" type="number">
                     </div>
                     <br>
                     <div class="input-group">
-                      <span class="input-group-addon">Mean Age</span>
+                      <span class="input-group-addon" style="width:134px;">Mean Age</span>
                       <input name="mean_age" class="form-control" type="number">
                     </div>
                     <br>
                     <div class="input-group">
-                      <span class="input-group-addon">Age Range</span>
-                      <input name="age_range_0" class="form-control" type="number" placeholder="Start">
-                      <input name="age_range_1" class="form-control" type="number" placeholder="End">
+                      <span class="input-group-addon" style="width:134px;">Age Range</span>
+                      <input name="age_range_0" class="form-control" type="number" placeholder="Start" style="border-radius:0px;">
+                      <input name="age_range_1" class="form-control" type="number" placeholder="End" style="border-radius:0px;border-top-width:0px;">
                     </div>
                     <br>
                     <div class="input-group">
-                      <span class="input-group-addon">Treatment Description</span>
+                      <span class="input-group-addon" style="width:134px;">Treatment<br>Description</span>
                       <textarea name="treatment_desc" class="form-control"></textarea>
                     </div>
                     <br>
                     <div class="input-group">
-                      <span class="input-group-addon">Treatment Type</span>
+                      <span class="input-group-addon" style="width:134px;">Treatment Type</span>
                       <input name="treatment_type" class="form-control" type="text">
                     </div>
                     <br>
                     <div class="input-group">
-                      <span class="input-group-addon">Paper Upload</span>
+                      <span class="input-group-addon" style="width:134px;">Paper Upload</span>
                       <input id="STEP02_paper_upload" name="paper" class="form-control" type="file">
                     </div>
                     <br>
@@ -190,7 +185,7 @@
 
                     <div class="text-center">
                       <div class="btn-group">
-                        <a class="btn btn-default back">« Back</a>
+                        <a id="STEP02_back" class="btn btn-default back">« Back</a>
                         <a class="btn btn-default save">Save</a>
                         <a class="btn btn-default next">Next »</a>
                       </div>
@@ -215,12 +210,12 @@
                           <input name="tumor" class="form-control" type="text" required>
                         </div>
                         <br>
-                        <div class="input-group">
+                        <div class="input-group" style="display:none;">
                           <span class="input-group-addon">MeSH term</span>
                           <input name="mesh_term" class="form-control" type="text">
                         </div>
                         <br>
-                        <div class="input-group">
+                        <div class="input-group" style="display:none;">
                           <span class="input-group-addon">MeSH id</span>
                           <input name="mesh_id" class="form-control" type="number">
                         </div>
@@ -265,7 +260,7 @@
                           <div class="panel panel-default">
                             <div class="panel-body STEP04_variant">
                               <div class="input-group STEP04_gene_existed">
-                                <span class="input-group-addon">Gene Symbol<span style="color:red;">*</span></span>
+                                <span class="input-group-addon" style="width:122px;">Gene Symbol<span style="color:red;">*</span></span>
                                 <input name="gene" class="form-control" type="text" list="genes" required>
                               </div>
                               <div class="input-group">
@@ -277,12 +272,12 @@
                               </div>
                               <br>
                               <div class="input-group">
-                                <span class="input-group-addon">Entrez Gene ID</span>
+                                <span class="input-group-addon" style="width:122px;">Entrez Gene ID</span>
                                 <input name="entrez_id" class="form-control" type="number">
                               </div>
                               <br>
                               <div class="input-group">
-                                <span class="input-group-addon">dbSNP RS ID<span style="color:red;">*</span></span>
+                                <span class="input-group-addon" style="width:122px;">dbSNP RS ID<span style="color:red;">*</span></span>
                                 <input name="dbsnp" class="form-control" type="text" required>
                               </div>
                             </div>
@@ -335,22 +330,22 @@
                       </div>
                       <div class="panel-body STEP05_prognosis">
                         <div class="input-group">
-                          <span class="input-group-addon">Prognosis<span style="color:red;">*</span></span>
+                          <span class="input-group-addon" style="width:128px;">Prognosis<span style="color:red;">*</span></span>
                           <input name="prognosis_name" class="form-control" type="text" required>
                         </div>
                         <br>
                         <div class="input-group">
-                          <span class="input-group-addon">Type</span>
+                          <span class="input-group-addon" style="width:128px;">Type</span>
                           <input name="prognosis_type" class="form-control" type="text">
                         </div>
                         <br>
                         <div class="input-group">
-                          <span class="input-group-addon">Endpoint<span style="color:red;">*</span></span>
+                          <span class="input-group-addon" style="width:128px;">Endpoint<span style="color:red;">*</span></span>
                           <input name="endpoint" class="form-control" type="text" required>
                         </div>
                         <br>
                         <div class="input-group">
-                          <span class="input-group-addon">Original<span style="color:red;">*</span></span>
+                          <span class="input-group-addon" style="width:128px;">Original<span style="color:red;">*</span></span>
                           <select name="original" class="form-control">
                             <option value="" selected>- SELECT -</option>
                             <option value="Yes">Yes</option>
@@ -359,31 +354,31 @@
                         </div>
                         <br>
                         <div class="input-group">
-                          <span class="input-group-addon">Case Meaning</span>
+                          <span class="input-group-addon" style="width:128px;">Case Meaning</span>
                           <input name="case_meaning" class="form-control" type="text">
                         </div>
                         <br>
                         <div class="input-group">
-                          <span class="input-group-addon">Control Meaning</span>
+                          <span class="input-group-addon" style="width:128px;">Control Meaning</span>
                           <input name="control_meaning" class="form-control" type="text">
                         </div>
                         <br>
                         <div class="input-group">
-                          <span class="input-group-addon">Total Meaning</span>
+                          <span class="input-group-addon" style="width:128px;">Total Meaning</span>
                           <input name="total_meaning" class="form-control" type="text">
                         </div>
                         <br>
                         <div class="input-group">
-                          <span class="input-group-addon">Subgroup</span>
+                          <span class="input-group-addon" style="width:128px;">Subgroup</span>
                           <div class="input-group">
-                            <input name="subgroup" class="form-control" type="text">
-                            <span class="input-group-addon STEP05_subgroup_add" style="cursor:pointer;"><strong style="color:limegreen;">+</strong></span>
+                            <input name="subgroup" class="form-control" type="text" style="border-radius:0px;">
+                            <span class="input-group-addon STEP05_subgroup_add" style="cursor:pointer;width:35px;"><strong style="color:limegreen;">+</strong></span>
                           </div>
                           <div class="subgroup_above"></div>
                         </div>
                         <br>
                         <div class="input-group">
-                          <span class="input-group-addon">Case Meaning</span>
+                          <span class="input-group-addon" style="width:128px;">Annotation</span>
                           <textarea name="annotation" class="form-control"></textarea>
                         </div>
                       </div>
@@ -425,7 +420,7 @@
                               <div class="row">
                                 <div class="col-md-4 col-sm-4 col-xs-4">
                                   <div class="input-group">
-                                    <span class="input-group-addon">Tumor<span style="color:red;">*</span></span>
+                                    <span class="input-group-addon" style="width:75px;">Tumor<span style="color:red;">*</span></span>
                                     <select name="tumor" class="form-control STEP06_tumor">
                                       <option value="" selected>- SELECT -</option>
                                     </select>
@@ -433,7 +428,7 @@
                                 </div>
                                 <div class="col-md-4 col-sm-4 col-xs-4">
                                   <div class="input-group">
-                                    <span class="input-group-addon">Gene<span style="color:red;">*</span></span>
+                                    <span class="input-group-addon" style="width:75px;">Gene<span style="color:red;">*</span></span>
                                     <select name="gene" class="form-control STEP06_gene">
                                       <option value="" selected>- SELECT -</option>
                                     </select>
@@ -441,7 +436,7 @@
                                 </div>
                                 <div class="col-md-4 col-sm-4 col-xs-4">
                                   <div class="input-group">
-                                    <span class="input-group-addon">Variant<span style="color:red;">*</span></span>
+                                    <span class="input-group-addon" style="width:75px;">Variant<span style="color:red;">*</span></span>
                                     <select name="variant" class="form-control STEP06_variant">
                                       <option value="" selected>- SELECT -</option>
                                     </select>
@@ -452,7 +447,7 @@
                               <div class="row">
                                 <div class="col-md-6 col-sm-6 col-xs-6">
                                   <div class="input-group">
-                                    <span class="input-group-addon">Prognosis<span style="color:red;">*</span></span>
+                                    <span class="input-group-addon" style="width:95px;">Prognosis<span style="color:red;">*</span></span>
                                     <select name="prognosis" class="form-control STEP06_prognosis">
                                       <option value="" selected>- SELECT -</option>
                                     </select>
@@ -460,7 +455,7 @@
                                 </div>
                                 <div class="col-md-6 col-sm-6 col-xs-6">
                                   <div class="input-group">
-                                    <span class="input-group-addon">Subgroup<span style="color:red;">*</span></span>
+                                    <span class="input-group-addon" style="width:95px;">Subgroup<span style="color:red;">*</span></span>
                                     <select name="subgroup" class="form-control STEP06_subgroup">
                                       <option value="" selected>- SELECT -</option>
                                     </select>
@@ -602,9 +597,9 @@
 
     {% block script %}
     <!-- jQuery-File-Upload -->
-    <script src='{% static "vendors/jQuery-File-Upload/9.18.0/jquery.ui.widget.js" %}'></script>
-    <script src='{% static "vendors/jQuery-File-Upload/9.18.0/jquery.iframe-transport.js" %}'></script>
-    <script src='{% static "vendors/jQuery-File-Upload/9.18.0/jquery.fileupload.js" %}'></script>
+    <script src='{% static "vendors/jQuery-File-Upload/9.18.0/js/jquery.ui.widget.js" %}'></script>
+    <script src='{% static "vendors/jQuery-File-Upload/9.18.0/js/jquery.iframe-transport.js" %}'></script>
+    <script src='{% static "vendors/jQuery-File-Upload/9.18.0/js/jquery.fileupload.js" %}'></script>
     <!-- jQuery-confirm -->
     <script src='{% static "vendors/jQuery-confirm/3.2.3/jquery-confirm.min.js" %}'></script>
     <!-- Submit SNP -->

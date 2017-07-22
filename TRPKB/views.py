@@ -1,3 +1,6 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
 import re
 import json
 import datetime
@@ -18,8 +21,7 @@ from .importData import read_xls
 def get_stats():
     return {'research_num': len(Research.objects.all()),
             'gene_num': len(Gene.objects.all()),
-            'variant_num': len(Variant.objects.all()),
-            'case_num': len(Association.objects.all()), }
+            'variant_num': len(Variant.objects.all())}
 
 
 def index(request):
@@ -28,11 +30,6 @@ def index(request):
 
 
 def about(request):
-    context = {'stats': get_stats()}
-    return render(request, 'index.html', context)
-
-
-def about_k(request):
     context = {'stats': get_stats()}
     return render(request, 'index.html', context)
 
@@ -134,29 +131,6 @@ def submit_query(request):
                        r.user.username,
                        get_last_change(content)]
                 response['data'].append(row)
-        elif tab == 'pending_action':
-            try:
-                action = request.POST['action']
-                submit_id = int(request.POST['submit_id'])
-                if action != 'delete':
-                    comments = request.POST['comments']
-
-                    record = Draft.objects.get(pk=submit_id)
-
-                    record.content['comments'] = comments
-
-                    record.status = action
-
-                    record.content['log'].append({'user': username, 'comments': comments,
-                                                  'action': action, 'time': str(datetime.datetime.now())})
-                    record.save()
-                    response['code'] = 1
-                else:
-                    Draft.objects.get(pk=submit_id).delete()
-                    response['code'] = 1
-            except Exception as e:
-                response['code'] = 0
-                response['msg'] = e
 
     except Exception as e:
         raise e
@@ -173,97 +147,96 @@ def submit_add(request):
 
     username = request.user.username
     try:
-        kb = request.POST['kb']
         step = int(request.POST['step'])
-        type_ = request.POST['type']
-        content = json.loads(request.POST['content'])
-        if kb == 'SNP':
-            if step == 1:
-                dup = 0
-                pubmed_id = None
-                title = content['STEP01']['title'].strip()
+        action_type = request.POST['type']
+        if step in range(8):
+            try:
+                kb = request.POST['kb']
+                content = json.loads(request.POST['content'])
 
-                if 'pubmed_id' in content['STEP01']:
-                    pubmed_id = int(content['STEP01']['pubmed_id'])
-                    if Research.objects.filter(pubmed_id=pubmed_id).first():
-                        dup = 1
-                    else:
-                        if Draft.objects.filter(
-                                pubmed_id=pubmed_id, user__username=username).first():
+                if kb == 'SNP':
+                    if step == 1:
+                        submitter = username
+                        pubmed_id = int(content['STEP01']['pubmed_id'])
+
+                        dup = 0
+                        if Research.objects.filter(pubmed_id=pubmed_id).first():
+                            dup = 1
+                        elif Draft.objects.filter(
+                                pubmed_id=pubmed_id, user__username=submitter).first():
                             dup = 2
                         elif Draft.objects.filter(
                                 pubmed_id=pubmed_id).exclude(status__in=['Draft', 'Rejected']).first():
                             dup = 3
-                else:
-                    if Research.objects.filter(title=title).first():
-                        dup = 1
-                    else:
-                        if Draft.objects.filter(
-                                title=title, user__username=username).first():
-                            dup = 2
-                        elif Draft.objects.filter(
-                                title=title).exclude(status__in=['Draft', 'Rejected']).first():
-                            dup = 3
 
-                if dup:
-                    response['code'] = 0
-                    response['msg'] = dup_msg[dup]
-                else:
-                    content_ = {'time': {}, 'log': [], 'step': step}
-
-                    content_['step'] = step
-                    content_['time']['create'] = str(datetime.datetime.now())
-                    content_['log'].append({'user': username, 'step': step,
-                                            'action': 'create', 'time': str(datetime.datetime.now())})
-
-                    content_['content'] = content
-                    user = User.objects.get(username=username)
-                    record = Draft.objects.create(user=user,
-                                                  status='Draft',
-                                                  kb='SNP',
-                                                  title=title,
-                                                  pubmed_id=pubmed_id,
-                                                  content=content_)
-                    response['code'] = 1
-                    response['submit_id'] = record.pk
-            else:
-                try:
-                    submit_id = int(content['submit_id'])
-                    record = Draft.objects.get(pk=submit_id)
-
-                    record.content['step'] = step
-                    record.content['log'].append({'user': username, 'step': step,
-                                                  'action': type_,
-                                                  'time': str(datetime.datetime.now())})
-                    record.content['content'] = content
-
-                    if step == 2 and content['STEP02']['pubmed_id'] != "":
-                        dup = 0
-                        pubmed_id = int(content['STEP02']['pubmed_id'])
-                        if Research.objects.filter(pubmed_id=pubmed_id).first():
-                            dup = 1
-                        else:
-                            if Draft.objects.filter(
-                                    pubmed_id=pubmed_id, user__username=username).exclude(pk=submit_id).first():
-                                dup = 2
-                            elif Draft.objects.filter(
-                                    pubmed_id=pubmed_id).exclude(status__in=['Draft', 'Rejected']).first():
-                                dup = 3
                         if dup:
                             response['code'] = 0
-                            response['msg'] = "PMID ERROR! " + dup_msg[dup]
+                            response['msg'] = dup_msg[dup]
                         else:
-                            record.save()
+                            content_ = {'time': {}, 'log': [], 'step': step}
+
+                            content_['step'] = step
+                            content_['time']['create'] = str(datetime.datetime.now())
+                            content_['log'].append({'user': username, 'step': step,
+                                                    'action': 'create', 'time': str(datetime.datetime.now())})
+
+                            content_['content'] = content
+                            user = User.objects.get(username=submitter)
+                            record = Draft.objects.create(user=user,
+                                                          status='Draft',
+                                                          kb='SNP',
+                                                          pubmed_id=pubmed_id,
+                                                          content=content_)
                             response['code'] = 1
+                            response['submit_id'] = record.pk
                     else:
-                        if step == 7:
+                        submit_id = int(content['submit_id'])
+                        record = Draft.objects.get(pk=submit_id)
+                        submitter = record.user.username
+
+                        if record.content['step'] < step:
+                            record.content['step'] = step
+                        record.content['log'].append({'user': username, 'step': step,
+                                                      'action': action_type,
+                                                      'time': str(datetime.datetime.now())})
+                        record.content['content'] = content
+
+                        if step == 2:
+                            title = content['STEP02']['title'].strip()
+                            record.title = title
+
+                        elif step == 7:
                             record.content['time']['submit'] = str(datetime.datetime.now())
                             record.status = 'Under Review'
+
                         record.save()
                         response['code'] = 1
-                except Exception as e:
-                    response['code'] = 0
-                    response['msg'] = e
+
+            except Exception as e:
+                response['code'] = 0
+                response['msg'] = e
+
+        elif step == 100:
+            try:
+                submit_id = int(request.POST['submit_id'])
+                if action_type != 'delete':
+                    comments = request.POST['comments']
+
+                    record = Draft.objects.get(pk=submit_id)
+
+                    record.content['comments'] = comments
+                    record.status = action_type
+                    record.content['log'].append({'user': username, 'comments': comments,
+                                                  'action': action_type, 'time': str(datetime.datetime.now())})
+
+                    record.save()
+                else:
+                    Draft.objects.get(pk=submit_id).delete()
+                response['code'] = 1
+
+            except Exception as e:
+                response['code'] = 0
+
 
     except Exception as e:
         raise e
@@ -301,7 +274,7 @@ def snp_add(request, submit_id):
                 context['step'] = 7
             if 'submit_id' not in content['content']:
                 content['content']['submit_id'] = submit_id
-            context['content'] = json.dumps(content['content']).replace("'", r"\'")
+            context['content'] = json.dumps(content['content']).replace("\\", r"\\").replace("'", r"\'")
         else:
             raise Http404
     return render(request, 'snp_add.html', context)

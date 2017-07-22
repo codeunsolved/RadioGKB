@@ -7,7 +7,7 @@
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
-SET client_encoding = 'SQL_ASCII';
+SET client_encoding = 'UTF8';
 SET standard_conforming_strings = on;
 SET check_function_bodies = false;
 SET client_min_messages = warning;
@@ -5397,9 +5397,14 @@ SELECT pg_catalog.setval('"KB_SNP_association_id_seq"', 4229, true);
 --
 
 COPY "KB_SNP_evidencebasedmedicinelevel" (id, ebml) FROM stdin;
-1	Case Series
-2	Case Control Study
+1	Systematic Review
+2	Randomized Controlled Trial
 3	Cohort Study
+4	Case Control Study
+5	Case Series
+6	Case Report
+7	Animal Assay,
+8	Cell Line Study
 \.
 
 

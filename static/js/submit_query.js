@@ -86,10 +86,10 @@ function querySubmit() {
                             $.alert('Please select an action!');
                             return false;
                         } else {
-                            $.post("/submit/query",
-                                {'tab': 'pending_action',
+                            $.post("/submit/add",
+                                {'step': 100,
                                  'submit_id': submit_id,
-                                 'action': action,
+                                 'type': action,
                                  'comments': comments},
                                 function(data) {
                                     var alert_msg = '';

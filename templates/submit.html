@@ -14,10 +14,9 @@
 
     {% block nav %}
     <ul class="nav nav-pills nav-justified" style="border-top: 1px solid black;border-bottom: 1px solid black;">
-      <li role="presentation"><a href="{% url 'about' %}">About the Knowledgebase</a></li>
-      <li role="presentation"><a href="{% url 'about_k' %}">About the Knowledge</a></li>
-      <li role="presentation"><a href="{% url 'access' %}">Access the Knowledge</a></li>
-      <li role="presentation" class="active"><a href="{% url 'submit' %}">Submit the Knowledge</a></li>
+      <li role="presentation"><a href="{% url 'about' %}">About</a></li>
+      <li role="presentation"><a href="{% url 'access' %}">Access</a></li>
+      <li role="presentation" class="active"><a href="{% url 'submit' %}">Submit</a></li>
       <li role="presentation"><a href="{% url 'news' %}">News</a></li>
     </ul>
     {% endblock nav %}

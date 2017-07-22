@@ -4,10 +4,9 @@
 
     {% block nav %}
     <ul class="nav nav-pills nav-justified" style="border-top: 1px solid black;border-bottom: 1px solid black;">
-      <li role="presentation"><a href="{% url 'about' %}">About the Knowledgebase</a></li>
-      <li role="presentation"><a href="{% url 'about_k' %}">About the Knowledge</a></li>
-      <li role="presentation" class="active"><a href="{% url 'access' %}">Access the Knowledge</a></li>
-      <li role="presentation"><a href="{% url 'submit' %}">Submit the Knowledge</a></li>
+      <li role="presentation"><a href="{% url 'about' %}">About</a></li>
+      <li role="presentation" class="active"><a href="{% url 'access' %}">Access</a></li>
+      <li role="presentation"><a href="{% url 'submit' %}">Submit</a></li>
       <li role="presentation"><a href="{% url 'news' %}">News</a></li>
     </ul>
     {% endblock nav %}
@@ -25,22 +24,22 @@
 
           <div class="tab-content">
             <div id="SNP" class="tab-pane fade in active">
-              <div class="panel panel-default" style="border-top: none;">
+              <div class="panel panel-default" style="border-top-left-radius:0px;border-top-right-radius:0px;border-top:none;">
                 <div class="panel-body">
                   <form class="form-horizontal" role="form" method="POST" action="{% url 'snp_search' %}">
                     {% csrf_token %}
-                    <div class="input-group">
-                      <span class="input-group-addon">Gene</span>
+                    <div class="input-group" style="width:100%;">
+                      <span class="input-group-addon" style="width:70px;">Gene</span>
                       <input name="gene" class="form-control" type="text">
                     </div>
                     <br>
-                    <div class="input-group">
-                      <span class="input-group-addon">Variant</span>
+                    <div class="input-group" style="width:100%;">
+                      <span class="input-group-addon" style="width:70px;">Variant</span>
                       <input name="variant" class="form-control" type="text">
                     </div>
                     <br>
-                    <div class="input-group">
-                      <span class="input-group-addon">Tumor</span>
+                    <div class="input-group" style="width:100%;">
+                      <span class="input-group-addon" style="width:70px;">Tumor</span>
                       <input name="tumor" class="form-control" type="text">
                     </div>
                     <br>
@@ -51,7 +50,7 @@
             </div>
 
             <div id="Expression" class="tab-pane fade">
-              <div class="panel panel-default">
+              <div class="panel panel-default" style="border-top-left-radius:0px;border-top-right-radius:0px;border-top:none;">
                 <div class="panel-body">
                   <p>Coming soon!</p>
                   <br><br><br><br><br><br><br><br><br>
