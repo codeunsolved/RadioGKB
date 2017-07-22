@@ -44,6 +44,7 @@ function addNew() {
     $('.save').click({'type': 'save'}, checkStep);
     $('.back').click(backStep);
 
+    uploadPaper();
     $('#STEP03_tumor_add').click(addTumor);
     $('#STEP03_form').on('click', '.STEP03_tumor_minus', minusTumor); //DOM changed, click() doesn't work
     $('#STEP04_form').on('click', '.STEP04_variant_add', addVariant);
@@ -238,6 +239,7 @@ function addNew() {
         $("input[name='title']").val(content.STEP01.title);
         $("input[name='title']").prop('disabled', true);
     }
+
     function querySubmit(data, id, type) {
         $.post("/submit/add",
             data,
@@ -285,6 +287,17 @@ function addNew() {
                        '<span aria-hidden="true">×</span></button><strong>' + msg + '</strong></div>';
 
         return msg_html;
+    }
+
+    function uploadPaper() {
+        $('#STEP02_upload_paper').fileupload({
+                dataType: 'json',
+                done: function (e, data) {
+                    $.each(data.result.files, function (index, file) {
+                        $('<p/>').text(file.name).appendTo(document.body);
+                    });
+                }
+        });
     }
 
     function addTumor() {

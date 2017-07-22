@@ -180,6 +180,11 @@
                       <input name="treatment_type" class="form-control" type="text">
                     </div>
                     <br>
+                    <div class="input-group">
+                      <span class="input-group-addon">Paper Upload</span>
+                      <input id="STEP02_paper_upload" name="paper" class="form-control" type="file">
+                    </div>
+                    <br>
 
                     <div id="STEP02_msg"></div>
 
@@ -596,10 +601,14 @@
       {% endblock container %}
 
     {% block script %}
+    <!-- jQuery-File-Upload -->
+    <script src='{% static "vendors/jQuery-File-Upload/9.18.0/jquery.ui.widget.js" %}'></script>
+    <script src='{% static "vendors/jQuery-File-Upload/9.18.0/jquery.iframe-transport.js" %}'></script>
+    <script src='{% static "vendors/jQuery-File-Upload/9.18.0/jquery.fileupload.js" %}'></script>
     <!-- jQuery-confirm -->
     <script src='{% static "vendors/jQuery-confirm/3.2.3/jquery-confirm.min.js" %}'></script>
     <!-- Submit SNP -->
-    <script type="text/javascript">
+    <script Charset="UTF-8" type="text/javascript">
       var review_mode = {{ review }};
       var step = {{ step }};
       var content = JSON.parse('{{ content|safe }}');

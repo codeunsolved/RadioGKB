@@ -285,7 +285,7 @@ def snp_add(request, submit_id):
         context['review'] = 'false'
         context['submit_id'] = 0
         context['step'] = 1
-        context['content'] = '{}'
+        context['content'] = json.dumps({})
     else:
         result = Draft.objects.get(pk=int(submit_id))
         username = result.user.username
@@ -301,7 +301,7 @@ def snp_add(request, submit_id):
                 context['step'] = 7
             if 'submit_id' not in content['content']:
                 content['content']['submit_id'] = submit_id
-            context['content'] = json.dumps(content['content'])
+            context['content'] = json.dumps(content['content']).replace("'", r"\'")
         else:
             raise Http404
     return render(request, 'snp_add.html', context)
