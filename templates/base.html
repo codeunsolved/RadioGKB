@@ -13,6 +13,9 @@
 
     <!-- Bootstrap core CSS -->
     <link href='{% static "vendors/bootstrap/3.3.7/css/bootstrap.min.css" %}' rel="stylesheet">
+
+    <!-- TRPKB CSS -->
+    <link href='{% static "css/trpkb.css" %}' rel="stylesheet">
     {% block head_link %}
     {% endblock head_link %}
 
@@ -41,6 +44,8 @@
           {% if user.is_authenticated %}
           <ul class="nav navbar-nav navbar-right">
             <li class="active"><a>Welcome, {{ user.username }}</a></li>
+            <li><a href="{% url 'index' %}">Home</a></li>
+            <li><a href="{% url 'profile' %}">Profile</a></li>
             <li><a href="{% url 'account_logout' %}">Log out</a></li>
           </ul>
           {% else %}
@@ -55,6 +60,9 @@
             <button id="login" type="submit" class="btn btn-success">Sign in</button>
             <a href="{% url 'account_signup' %}" class="btn btn-warning">Sign up</a>
           </form>
+          <ul class="nav navbar-nav navbar-right">
+            <li><a href="{% url 'index' %}">Home</a></li>
+          </ul>
           {% endif %}
         </div>
       </div>
@@ -64,7 +72,7 @@
     {% block banner %}
     <div class="row">
       <div class="col-md-12 col-sm-12 col-xs-12">
-        <div class="jumbotron" style="margin-bottom: 0px;">
+        <div class="jumbotron" style="margin-bottom:0px;">
           <div class="container">
             <p>Tumor Radiotherapy Prognosis Knowledgebase</p>
             <p><span style="color: green;">{{ stats.research_num }}</span> Papers, <span style="color: green;">{{ stats.gene_num }}</span> Genes, <span style="color: green;">{{ stats.variant_num }}</span> Variants.</p>
@@ -74,16 +82,16 @@
     </div>
     {% endblock banner %}
 
-    <div class="container">
-      {% block nav %}
-      <ul class="nav nav-pills nav-justified" style="border-top: 1px solid black;border-bottom: 1px solid black;">
+      <ul class="nav nav-justified nav_trpkb">
+        {% block nav %}
         <li role="presentation"><a href="{% url 'about' %}">About</a></li>
         <li role="presentation"><a href="{% url 'access' %}">Access</a></li>
         <li role="presentation"><a href="{% url 'submit' %}">Submit</a></li>
         <li role="presentation"><a href="{% url 'news' %}">News</a></li>
+        {% endblock nav %}
       </ul>
-      {% endblock nav %}
 
+    <div class="container">
       {% block container %}
       {% endblock container %}
 

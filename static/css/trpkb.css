@@ -1,0 +1,29 @@
+.nav_trpkb {
+  background-color: #f8f8f8;
+  border: 1px solid;
+  border-color: #e7e7e7;
+}
+.nav_trpkb > li > a {
+  color: #777;
+}
+.nav_trpkb > li > a:hover,
+.nav_trpkb > li > a:focus {
+  color: #333;
+  background-color: transparent;
+}
+.nav_trpkb > .active > a,
+.nav_trpkb > .active > a:hover,
+.nav_trpkb > .active > a:focus {
+  color: #555;
+  background-color: #e7e7e7;
+}
+
+.panel-tab {
+  border-top-left-radius: 0px;
+  border-top-right-radius: 0px;
+  border-top: none;
+}
+
+.input-group {
+  width: 100%;
+}

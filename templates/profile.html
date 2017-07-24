@@ -1,0 +1,195 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+    {% block head_title %}Profile{% endblock head_title %}
+
+    {% block head_link %}
+    <!-- DataTables -->
+    <link href='{% static "vendors/DataTables/1.10.15/media/css/dataTables.bootstrap.min.css" %}' rel="stylesheet">
+    <link href='{% static "vendors/DataTables/1.10.15/extensions/Buttons/css/buttons.bootstrap.min.css" %}' rel="stylesheet">
+    <!-- jQuery-confirm -->
+    <link href='{% static "vendors/jQuery-confirm/3.2.3/jquery-confirm.min.css" %}' rel="stylesheet">
+    {% endblock head_link %}
+
+    {% block banner %}
+    {% endblock banner %}
+
+    {% block nav %}
+    {% endblock nav %}
+
+      {% block container %}
+      <br>
+      <ol class="breadcrumb">
+        <li class="active"><a href="/profile">Profile</a></li>
+      </ol>
+
+      <div class="row" style="margin-top:10px;">
+        <div class="col-md-12 col-sm-12 col-xs-12">
+          <ul class="nav nav-tabs">
+            <li role="presentation" class="active"><a href="#submit" data-toggle="tab">Submit</a></li>
+            <li role="presentation"><a href="#setting" data-toggle="tab">Setting</a></li>
+          </ul>
+
+          <div class="tab-content">
+            <div id="submit" class="tab-pane fade in active">
+              <div class="panel panel-default panel-tab">
+                <div class="panel-body">
+                  <div class="row">
+                    <div class="col-md-2 col-sm-2 col-xs-2">
+                      <ul class="nav nav-pills nav-stacked">
+                        {% if user.is_staff %}
+                        <li role="presentation" class="active"><a id="pending" href="#Pending" data-toggle="tab">Pending approval<span id="pending_num" class="badge">?</span></a></li>
+                        <li role="presentation"><a id="approved" href="#Approved" data-toggle="tab">Approved</a></li>
+                        {% else %}
+                        <li role="presentation" class="active"><a id="draft" href="#Draft" data-toggle="tab">Draft<span id="draft_num" class="badge">?</span></a></li>
+                        <li role="presentation"><a id="accepted" href="#Accepted" data-toggle="tab">Accepted</a></li>
+                        {% endif %}
+                      </ul>
+                    </div>
+                    <div class="col-md-10 col-sm-10 col-xs-10">
+                      <div class="tab-content">
+                        {% if user.is_staff %}
+                        <div id="Pending" class="tab-pane fade in active">
+                          <div class="panel panel-default">
+                            <div class="panel-body">
+                              <table id="dt_pending" class="table table-striped" style="width:100%;">
+                                <thead>
+                                  <tr class="headings">
+                                    <th class="column-title">No.</th>
+                                    <th class="column-title">Type</th>
+                                    <th class="column-title">Title</th>
+                                    <th class="column-title">Submitter</th>
+                                    <th class="column-title">Status</th>
+                                    <th class="column-title">Last change</th>
+                                    <th class="column-title">Action</th>
+                                  </tr>
+                                </thead>
+                              </table>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div id="Approved" class="tab-pane fade">
+                          <div class="panel panel-default">
+                            <div class="panel-body">
+                              <table id="dt_approved" class="table table-striped" style="width:100%;">
+                                <thead>
+                                  <tr class="headings">
+                                    <th class="column-title">No.</th>
+                                    <th class="column-title">Type</th>
+                                    <th class="column-title">Title</th>
+                                    <th class="column-title">Submitter</th>
+                                    <th class="column-title">Last change</th>
+                                  </tr>
+                                </thead>
+                              </table>
+                            </div>
+                          </div>
+                        </div>
+
+                        {% else %}
+                        <div id="Draft" class="tab-pane fade in active">
+                          <div class="panel panel-default">
+                            <div class="panel-body">
+                              <div class="dropdown">
+                                <button class="btn btn-success dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                  Add new
+                                  <span class="caret"></span>
+                                </button>
+                                <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                                  <li><a href="{% url 'snp_add' submit_id='new' %}">SNP</a></li>
+                                  <li><a href="#">Expression</a></li>
+                                </ul>
+                              </div>
+                              <br>
+                              <div class="panel panel-default">
+                                <div class="panel-body">
+                                  <table id="dt_draft" class="table table-striped" style="width:100%;">
+                                    <thead>
+                                      <tr class="headings">
+                                        <th class="column-title">No.</th>
+                                        <th class="column-title">Type</th>
+                                        <th class="column-title">Title</th>
+                                        <th class="column-title">Status</th>
+                                        <th class="column-title">Last change</th>
+                                        <th class="column-title">Action</th>
+                                      </tr>
+                                    </thead>
+                                  </table>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div id="Accepted" class="tab-pane fade">
+                          <div class="panel panel-default">
+                            <div class="panel-body">
+                              <table id="dt_accepted" class="table table-striped" style="width:100%;">
+                                <thead>
+                                  <tr class="headings">
+                                    <th class="column-title">No.</th>
+                                    <th class="column-title">Type</th>
+                                    <th class="column-title">Title</th>
+                                    <th class="column-title">Status</th>
+                                    <th class="column-title">Last change</th>
+                                  </tr>
+                                </thead>
+                              </table>
+                            </div>
+                          </div>
+                        </div>
+                        {% endif %}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div id="setting" class="tab-pane fade">
+              <div class="panel panel-default panel-tab">
+                <div class="panel-body">
+                  <table>
+                    <tbody>
+                      <tr>
+                        <td><strong>Username</strong></td>
+                        <td>&nbsp;:&nbsp;</td>
+                        <td>{{ user.username }}</td>
+                      </tr>
+                      <tr>
+                        <td><strong>E-mail</strong></td>
+                        <td>&nbsp;:&nbsp;</td>
+                        <td>{{ user.email }}</td>
+                      </tr>
+                      <tr>
+                        <td><strong>Password</strong></td>
+                        <td>&nbsp;:&nbsp;</td>
+                        <td><a href="{% url 'account_change_password' %}">change</a></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endblock container %}
+
+    {% block script %}
+    <!-- DataTables -->
+    <script src='{% static "vendors/DataTables/1.10.15/media/js/jquery.dataTables.min.js" %}'></script>
+    <script src='{% static "vendors/DataTables/1.10.15/media/js/dataTables.bootstrap.min.js" %}'></script>
+    <script src='{% static "vendors/DataTables/1.10.15/extensions/Buttons/js/dataTables.buttons.min.js" %}'></script>
+    <script src='{% static "vendors/DataTables/1.10.15/extensions/Buttons/js/buttons.bootstrap.min.js" %}'></script>
+    <script src='{% static "vendors/DataTables/1.10.15/extensions/Buttons/js/buttons.flash.min.js" %}'></script>
+    <script src='{% static "vendors/jszip/3.1.3/jszip.min.js" %}'></script>
+    <script src='{% static "vendors/DataTables/1.10.15/extensions/Buttons/js/buttons.html5.min.js" %}'></script>
+    <script src='{% static "vendors/DataTables/1.10.15/extensions/Buttons/js/buttons.print.min.js" %}'></script>
+    <!-- jQuery-confirm -->
+    <script src='{% static "vendors/jQuery-confirm/3.2.3/jquery-confirm.min.js" %}'></script>
+
+    <script src='{% static "js/submit_query.js" %}'></script>
+    {% endblock script %}

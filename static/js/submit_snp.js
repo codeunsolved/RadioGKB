@@ -16,7 +16,8 @@ $.ajaxSetup({
 $(document).ready(addNew());
 
 function addNew() {
-    var step_now = 1;
+    var step_now = content['step_now'];
+    var step_max = content['step_max'];
     var tumor_num = 1;
     var prognosis_num = 1;
     var association_num = 1;
@@ -28,9 +29,10 @@ function addNew() {
     var tumor_variant_html = $('#STEP04_form .panel').first().prop('outerHTML');
     var prognosis_html = $('#STEP05_form .panel').first().prop('outerHTML');
     var association_html = $('#STEP06_form .panel').first().prop('outerHTML'); //reassigned in genStep06()
+    var association_row_html = $('.STEP06_row').first().prop('outerHTML');
     var step06_container_html = $('#STEP06_container').html();
 
-    activeTab(step, true);
+    activeTab(step_max, true);
 
     $('#STEP01_nav').click({'id': 1}, setStep);
     $('#STEP02_nav').click({'id': 2}, setStep);
@@ -57,8 +59,10 @@ function addNew() {
     $('#STEP05_form').on('click', '.STEP05_subgroup_minus', minusSubgroup);
     $('#STEP06_association_add').click(addAssociation);
     $('#STEP06_form').on('click', '.STEP06_association_minus', minusAssociation);
-    $('#STEP06_form').on('click', '.STEP06_column_add', addAssociationColumn);
-    $('#STEP06_form').on('click', '.STEP06_column_minus', minusAssociationColumn);
+    //$('#STEP06_form').on('click', '.STEP06_column_add', addAssociationColumn);
+    //$('#STEP06_form').on('click', '.STEP06_column_minus', minusAssociationColumn);
+    $('#STEP06_form').on('click', '.STEP06_row_add', addAssociationRow);
+    $('#STEP06_form').on('click', '.STEP06_row_minus', minusAssociationRow);
     $('#STEP06_form').on('change', '.STEP06_tumor', changeGene);
     $('#STEP06_form').on('change', '.STEP06_gene', changeVariant);
     $('#STEP06_form').on('change', '.STEP06_prognosis', changeSubgroup);
@@ -78,6 +82,7 @@ function addNew() {
         var type = event.data.type;
         var step_id = 'STEP0' + id.toString();
 
+        content['step_now'] = id;
         content[step_id] = {}; // reset
 
         if (checkForm(step_id)) {
@@ -136,25 +141,14 @@ function addNew() {
                         form_meta[name] = $(this).val();
                     });
 
-                    var form_genotype = {};
-                    var genotype_length = 0;
                     $(".STEP06_association_genotype tbody tr", this).each(function() {
-                        var $inputs = $(":input", this);
-                        var name = $inputs.first().attr("name");
-                        form_genotype[name] = [];
-                        $inputs.each(function() {
-                            form_genotype[name].push($(this).val());
+                        var form_genotype = {};
+                        $(":input", this).each(function() {
+                            var name = $(this).attr("name");
+                            form_genotype[name] = $(this).val();
                         });
-                        genotype_length = form_genotype[name].length;
+                        form.push(Object.assign(form_genotype, form_meta)); //merge two hash
                     });
-
-                    for (var i = 0; i < genotype_length; i++) {
-                        var form_ = {};
-                        for (var key in form_genotype) {
-                            form_[key] = form_genotype[key][i];
-                        }
-                        form.push(Object.assign(form_, form_meta)); //merge two hash
-                    }
 
                     content[step_id]['association'].push(form);
                 });
@@ -167,7 +161,6 @@ function addNew() {
 
             querySubmit({
                 'kb': 'SNP',
-                'step': id,
                 'type': type,
                 'content' : JSON.stringify(content)
             }, id, type);
@@ -252,7 +245,7 @@ function addNew() {
                             content: 'Submit successfully!',
                             buttons: {
                                 ok: function () {
-                                    window.location.replace("/submit");
+                                    window.location.replace("/profile#submit");
                                 },
                             },
                             theme: 'bootstrap',
@@ -559,15 +552,28 @@ function addNew() {
         });
     }
 
+    function addAssociationRow() {
+        var row_minus_html = '<span class="btn glyphicon glyphicon-minus STEP06_row_minus" style="cursor:pointer;color:red;"></span>';
+        var $table = $(this).parent().parent().parent().parent();
+        var $row_html = $(association_row_html);
+
+        $row_html.find('td').first().html(row_minus_html);
+        $table.find('tbody tr').last().after($row_html.prop('outerHTML'));
+    }
+
+    function minusAssociationRow() {
+        $(this).parent().parent().remove();
+    }
+
     function submit() {
         $.confirm({
             title: ' ',
             content: 'Submit now?',
             buttons: {
                 yes: function () {
+                    content['step_now'] = 7;
                     querySubmit({
                         'kb': 'SNP',
-                        'step': 7,
                         'type': 'submit',
                         'content' : JSON.stringify(content)
                     }, 7, 'submit');
@@ -583,7 +589,7 @@ function addNew() {
         $('#review_alert').show();
 
         //Jump to step now
-        $("#STEP0"+(step).toString()+"_nav").trigger("click");
+        $("#STEP0"+(step_now).toString()+"_nav").trigger("click");
         //disable STEP01
         $("#STEP01_nav").parent().addClass("disabled");
         $("#STEP01_nav").prop("data-toggle", null);
@@ -689,17 +695,16 @@ function addNew() {
                 }
 
                 for (var i = 1; i < associations_.length; i++) {
-                    $('.STEP06_column_add', this).trigger("click");
+                    $('.STEP06_row_add', this).trigger("click");
                 }
 
+                i_row = 0
                 $(".STEP06_association_genotype tbody tr", this).each(function() {
-                    var $inputs = $(":input", this);
-                    var name = $inputs.first().attr("name");
-                    var i_column = 0;
-                    $inputs.each(function() {
-                        $(this).val(associations_[i_column][name]);
-                        i_column += 1;
+                    $(":input", this).each(function() {
+                        var name = $(this).attr("name");
+                        $(this).val(associations_[i_row][name]);
                     });
+                    i_row += 1;
                 });
                 i_association += 1;
             });

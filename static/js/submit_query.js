@@ -24,6 +24,7 @@ function querySubmit() {
     $('#accepted').click({'table': 'accepted'}, queryDT);
 
     $('#dt_pending').on('click', '.pending_action', popupAction);
+    $('#dt_pending').on('click', '.pending_log', popupLog);
     $('#dt_draft').on('click', '.draft_delete', deleteDraft);
 
     $('#pending').trigger("click");
@@ -56,6 +57,7 @@ function querySubmit() {
 
     function popupAction() {
         var submit_id = $(this).attr('submit_id');
+
         $.confirm({
             title: 'Approval submissionn',
             content: '' +
@@ -87,9 +89,8 @@ function querySubmit() {
                             return false;
                         } else {
                             $.post("/submit/add",
-                                {'step': 100,
+                                {'type': action,
                                  'submit_id': submit_id,
-                                 'type': action,
                                  'comments': comments},
                                 function(data) {
                                     var alert_msg = '';
@@ -120,6 +121,46 @@ function querySubmit() {
         });
     }
 
+    function popupLog() {
+        var submit_id = $(this).attr('submit_id');
+
+        $.post("/submit/add",
+            {'type': 'Log',
+             'submit_id': submit_id},
+            function(data) {
+                var table_data = data.data;
+                var content = '<table class="table table-striped">' +
+                              '<thead>' +
+                              '<tr><th>Time</th><th>User</th><th>Action</th><th>Note</th></tr>' +
+                              '</thead>' +
+                              '<tbody>' +
+                              '</tbody>' +
+                              '</table>';
+                var $content = $(content);
+
+                for (var i = 0; i < table_data.length; i++) {
+                    var row = '<tr>';
+                    for (var j = 0; j < table_data[i].length; j++) {
+                        row += '<td>';
+                        row += table_data[i][j];
+                        row += '</td>';
+                    }
+                    row += '</tr>';
+                    $content.find('tbody').append(row);
+                }
+                $.confirm({
+                    title: "Log",
+                    content: $content.prop('outerHTML'),
+                    buttons: {
+                        ok: function () {
+                            
+                        },
+                    },
+                });
+            }
+        );
+    }
+
     function deleteDraft() {
         var submit_id = $(this).attr('submit_id');
         $.confirm({
@@ -130,12 +171,11 @@ function querySubmit() {
                     text: 'Yes',
                     btnClass: 'btn-blue',
                     action: function () {
-                        var action = 'delete';
+                        var action = 'Delete';
 
-                        $.post("/submit/query",
-                            {'tab': 'pending_action',
-                             'submit_id': submit_id,
-                             'action': action},
+                        $.post("/submit/add",
+                            {'type': action,
+                             'submit_id': submit_id},
                             function(data) {
                                 var alert_msg = '';
                                 if (data.code == 1) {

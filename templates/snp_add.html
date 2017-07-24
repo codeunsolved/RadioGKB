@@ -7,23 +7,23 @@
     {% block head_link %}
     <!-- jQuery-confirm -->
     <link href='{% static "vendors/jQuery-confirm/3.2.3/jquery-confirm.min.css" %}' rel="stylesheet">
-
-    <style type="text/css">
-      .input-group {width: 100%;}
-    </style>
     {% endblock head_link %}
 
-    {% block nav %}
-    <ul class="nav nav-pills nav-justified" style="border-top:1px solid black;border-bottom:1px solid black;">
-      <li role="presentation"><a href="{% url 'about' %}">About</a></li>
-      <li role="presentation"><a href="{% url 'access' %}">Access</a></li>
-      <li role="presentation" class="active"><a href="{% url 'submit' %}">Submit</a></li>
-      <li role="presentation"><a href="{% url 'news' %}">News</a></li>
-    </ul>
-    {% endblock nav %}
+    {% block banner %}
+    {% endblock banner %}
+
+      {% block nav %}
+      {% endblock nav %}
 
       {% block container %}
-      <div class="row" style="margin-top:10px;">
+      <br>
+      <ol class="breadcrumb">
+        <li><a href="/profile">Profile</a></li>
+        <li><a href="/profile#submit">Submit</a></li>
+        <li class="active">SNP</li>
+      </ol>
+
+      <div class="row">
         <div class="col-md-1 col-sm-1 col-xs-1">
         </div>
         <div class="col-md-10 col-sm-10 col-xs-10">
@@ -38,7 +38,6 @@
         </div>
       </div>
       <div class="row" style="margin-top:10px;">
-        {% if user.is_authenticated %}
         <div class="col-md-2 col-sm-2 col-xs-2">
           <ul class="nav nav-pills nav-stacked">
             <li role="presentation" class="active"><a id="STEP01_nav" href="#STEP01" data-toggle="tab">Check duplication</a></li>
@@ -177,7 +176,7 @@
                     <br>
                     <div class="input-group">
                       <span class="input-group-addon" style="width:134px;">Paper Upload</span>
-                      <input id="STEP02_paper_upload" name="paper" class="form-control" type="file">
+                      <input id="STEP02_upload_paper" name="paper" class="form-control" type="file">
                     </div>
                     <br>
 
@@ -466,71 +465,43 @@
                           </div>
                           <br>
                           <div class="panel panel-default">
-                            <div class="panel-body STEP06_association_genotype">
+                            <div class="panel-body STEP06_association_genotype table-responsive">
                               <table class="table table-striped">
                                 <thead>
                                   <tr>
                                     <th></th>
-                                    <th style="text-align:right;">
-                                      <span class="btn glyphicon glyphicon-plus-sign STEP06_column_add" style="cursor:pointer;color:limegreen;"></span>
-                                    </th>
+                                    <th style="min-width:100px;">Genotype<span style="color:red;">*</span></th>
+                                    <th style="min-width:80px;">Case Number</th>
+                                    <th style="min-width:80px;">Control Number</th>
+                                    <th style="min-width:80px;">Total Number</th>
+                                    <th style="min-width:80px;">OR(U)</th>
+                                    <th style="min-width:80px;">HR(U)</th>
+                                    <th style="min-width:80px;">RR(U)</th>
+                                    <th style="min-width:80px;">95%CI(U)</th>
+                                    <th style="min-width:80px;">P(U)</th>
+                                    <th style="min-width:80px;">OR(M)</th>
+                                    <th style="min-width:80px;">HR(M)</th>
+                                    <th style="min-width:80px;">RR(M)</th>
+                                    <th style="min-width:80px;">95%CI(M)</th>
+                                    <th style="min-width:80px;">P(M)</th>
                                   </tr>
                                 </thead>
                                 <tbody>
-                                  <tr>
-                                    <td>Genotype<span style="color:red;">*</span></td>
+                                  <tr class="STEP06_row">
+                                    <td style="text-align:right;"><span class="btn glyphicon glyphicon-plus-sign STEP06_row_add" style="cursor:pointer;color:limegreen;"></span></td>
                                     <td><input name="genotype" class="form-control" type="text"></td>
-                                  </tr>
-                                  <tr>
-                                    <td>Case Number</td>
                                     <td><input name="case_number" class="form-control" type="text"></td>
-                                  </tr>
-                                  <tr>
-                                    <td>Control Number</td>
                                     <td><input name="control_number" class="form-control" type="text"></td>
-                                  </tr>
-                                  <tr>
-                                    <td>Total Number</td>
                                     <td><input name="total_number" class="form-control" type="text"></td>
-                                  </tr>
-                                  <tr>
-                                    <td>OR(U)</td>
                                     <td><input name="or_u" class="form-control" type="text"></td>
-                                  </tr>
-                                  <tr>
-                                    <td>HR(U)</td>
                                     <td><input name="hr_u" class="form-control" type="text"></td>
-                                  </tr>
-                                  <tr>
-                                    <td>RR(U)</td>
                                     <td><input name="rr_u" class="form-control" type="text"></td>
-                                  </tr>
-                                  <tr>
-                                    <td>95%CI(U)</td>
                                     <td><input name="ci_u_95" class="form-control" type="text"></td>
-                                  </tr>
-                                  <tr>
-                                    <td>P(U)</td>
                                     <td><input name="p_u" class="form-control" type="text"></td>
-                                  </tr>
-                                  <tr>
-                                    <td>OR(M)</td>
                                     <td><input name="or_m" class="form-control" type="text"></td>
-                                  </tr>
-                                  <tr>
-                                    <td>HR(M)</td>
                                     <td><input name="hr_m" class="form-control" type="text"></td>
-                                  </tr>
-                                  <tr>
-                                    <td>RR(M)</td>
                                     <td><input name="rr_m" class="form-control" type="text"></td>
-                                  </tr>
-                                  <tr>
-                                    <td>95%CI(M)</td>
                                     <td><input name="ci_m_95" class="form-control" type="text"></td>
-                                  </tr>
-                                  <tr>
-                                    <td>P(M)</td>
                                     <td><input name="p_m" class="form-control" type="text"></td>
                                   </tr>
                                 </tbody>
@@ -587,11 +558,6 @@
             <!-- /STEP07 -->
           </div>
         </div>
-        {% else %}
-        <div class="col-md-12 col-sm-12 col-xs-12">
-          <p>Login Required to submit</p>
-        </div>
-        {% endif %}
       </div>
       {% endblock container %}
 
@@ -605,7 +571,6 @@
     <!-- Submit SNP -->
     <script Charset="UTF-8" type="text/javascript">
       var review_mode = {{ review }};
-      var step = {{ step }};
       var content = JSON.parse('{{ content|safe }}');
 
       var genes = [];

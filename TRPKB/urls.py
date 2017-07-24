@@ -20,13 +20,14 @@ from django.contrib import admin
 from . import views
 
 urlpatterns = [
-    url(r'^$', views.access, name='index'),
+    url(r'^$', views.index, name='index'),
     url(r'^about$', views.about, name='about'),
     url(r'^access$', views.access, name='access'),
     url(r'^submit$', views.submit, name='submit'),
     url(r'^submit/query', views.submit_query, name='submit_query'),
     url(r'^submit/add', views.submit_add, name='submit_add'),
     url(r'^news/', views.news, name='news'),
+    url(r'^profile', views.profile, name='profile'),
     url(r'^snp/add/(?P<submit_id>\w+)', views.snp_add, name='snp_add'),
     url(r'^snp/search', views.snp_search, name='snp_search'),
     url(r'^snp/details/(?P<research_id>\d+)/(?P<tumor_id>\d+)/(?P<variant_id>\d+)', views.snp_details, name='snp_details'),

@@ -5,6 +5,7 @@ import re
 import json
 import datetime
 
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.http import HttpResponse, Http404
 from django.shortcuts import render
@@ -12,8 +13,6 @@ from django.shortcuts import render
 from KB_SNP.models import Association
 from KB_SNP.models import Tumor, Gene, Variant, EvidenceBasedMedicineLevel, Research, Prognosis, Subgroup
 from Submit.models import Draft
-
-from Submit.forms_snp import *
 
 from .importData import read_xls
 
@@ -31,7 +30,7 @@ def index(request):
 
 def about(request):
     context = {'stats': get_stats()}
-    return render(request, 'index.html', context)
+    return render(request, 'about.html', context)
 
 
 def access(request):
@@ -46,17 +45,22 @@ def submit(request):
 
 def news(request):
     context = {'stats': get_stats()}
-    return render(request, 'index.html', context)
+    return render(request, 'news.html', context)
 
 
+def profile(request):
+    return render(request, 'profile.html')
+
+
+@login_required
 def submit_query(request):
     def get_status_html(status, content):
         if status in ['Revison', 'Rejected']:
             status_html = '<strong style="color: red;">{}</strong>'.format(status)
         elif status == 'Accepted':
-            status_html =  '<strong style="color: green;">{}</strong>'.format(status)
+            status_html = '<strong style="color: green;">{}</strong>'.format(status)
         else:
-            status_html =  '<strong>{}</strong>'.format(status)
+            status_html = '<strong>{}</strong>'.format(status)
 
         if 'comments' in content:
             status_html += '<br><span>{}</span>'.format(content['comments'])
@@ -111,7 +115,8 @@ def submit_query(request):
 
                 edit_link = '<a href="{}/add/{}">View</a></li>'.format(r.kb.lower(), r.pk)
                 approve_link = '<a class="pending_action" submit_id="{}">Approve</a></li>'.format(r.pk)
-                action = "{}&nbsp;&nbsp;{}".format(edit_link, approve_link)
+                log_link = '<a class="pending_log" submit_id="{}">Log</a></li>'.format(r.pk)
+                action = "{}&nbsp;&nbsp;{}&nbsp;&nbsp;{}".format(edit_link, approve_link, log_link)
                 row = [i + 1,
                        r.kb,
                        r.title,
@@ -138,6 +143,7 @@ def submit_query(request):
     return HttpResponse(json.dumps(response), content_type="application/json")
 
 
+@login_required
 def submit_add(request):
     dup_msg = {1: "We already had this paper in KB-SNP! Please choose another.",
                2: "You already submitted/saved this paper! Please check your Draft box.",
@@ -147,15 +153,15 @@ def submit_add(request):
 
     username = request.user.username
     try:
-        step = int(request.POST['step'])
         action_type = request.POST['type']
-        if step in range(8):
+        if action_type in ['save', 'next', 'submit']:
             try:
                 kb = request.POST['kb']
                 content = json.loads(request.POST['content'])
+                step_now = content['step_now']
 
                 if kb == 'SNP':
-                    if step == 1:
+                    if step_now == 1:
                         submitter = username
                         pubmed_id = int(content['STEP01']['pubmed_id'])
 
@@ -173,12 +179,12 @@ def submit_add(request):
                             response['code'] = 0
                             response['msg'] = dup_msg[dup]
                         else:
-                            content_ = {'time': {}, 'log': [], 'step': step}
+                            content_ = {'time': {}, 'log': []}
 
-                            content_['step'] = step
                             content_['time']['create'] = str(datetime.datetime.now())
-                            content_['log'].append({'user': username, 'step': step,
-                                                    'action': 'create', 'time': str(datetime.datetime.now())})
+                            content_['log'].append({'user': username, 'step_now': step_now,
+                                                    'action': 'create',
+                                                    'time': str(datetime.datetime.now())})
 
                             content_['content'] = content
                             user = User.objects.get(username=submitter)
@@ -194,18 +200,20 @@ def submit_add(request):
                         record = Draft.objects.get(pk=submit_id)
                         submitter = record.user.username
 
-                        if record.content['step'] < step:
-                            record.content['step'] = step
-                        record.content['log'].append({'user': username, 'step': step,
+                        if content['step_max'] < step_now:
+                            content['step_max'] = step_now
+
+                        record.content['log'].append({'user': username, 'step_now': step_now,
                                                       'action': action_type,
                                                       'time': str(datetime.datetime.now())})
+
                         record.content['content'] = content
 
-                        if step == 2:
+                        if step_now == 2:
                             title = content['STEP02']['title'].strip()
                             record.title = title
 
-                        elif step == 7:
+                        elif step_now == 7:
                             record.content['time']['submit'] = str(datetime.datetime.now())
                             record.status = 'Under Review'
 
@@ -216,27 +224,56 @@ def submit_add(request):
                 response['code'] = 0
                 response['msg'] = e
 
-        elif step == 100:
+        elif action_type in ['Revision', 'Accepted', 'Rejected']:
             try:
                 submit_id = int(request.POST['submit_id'])
-                if action_type != 'delete':
-                    comments = request.POST['comments']
+                comments = request.POST['comments']
 
-                    record = Draft.objects.get(pk=submit_id)
+                record = Draft.objects.get(pk=submit_id)
 
-                    record.content['comments'] = comments
-                    record.status = action_type
-                    record.content['log'].append({'user': username, 'comments': comments,
-                                                  'action': action_type, 'time': str(datetime.datetime.now())})
+                record.content['comments'] = comments
+                record.status = action_type
+                record.content['log'].append({'user': username, 'comments': comments,
+                                              'action': action_type,
+                                              'time': str(datetime.datetime.now())})
 
-                    record.save()
-                else:
-                    Draft.objects.get(pk=submit_id).delete()
+                record.save()
+
                 response['code'] = 1
 
             except Exception as e:
                 response['code'] = 0
 
+        elif action_type in ['Delete']:
+            try:
+                submit_id = int(request.POST['submit_id'])
+                Draft.objects.get(pk=submit_id).delete()
+                response['code'] = 1
+
+            except Exception as e:
+                response['code'] = 0
+
+        elif action_type in ['Log']:
+            try:
+                response = {'data': []}
+
+                submit_id = int(request.POST['submit_id'])
+                log = Draft.objects.get(pk=submit_id).content['log']
+
+                for row in log:
+                    time_ = row['time'][:19]
+                    user = row['user']
+                    action = row['action']
+                    note = ''
+
+                    if 'step_now' in row:
+                        note = "at STEP0{}".format(row['step_now'])
+                    elif 'comments' in row:
+                        note = "comments: {}".format(row['comments'])
+
+                    response['data'].append([time_, user, action, note])
+            except Exception as e:
+                raise e
 
     except Exception as e:
         raise e
@@ -244,8 +281,9 @@ def submit_add(request):
     return HttpResponse(json.dumps(response), content_type="application/json")
 
 
+@login_required
 def snp_add(request, submit_id):
-    context = {'stats': get_stats(), 'submit_id': None, 'step': None, 'content': {}}
+    context = {'stats': get_stats(), 'submit_id': None, 'content': {}}
     forms = {'research': {}}
 
     forms['research']['ebml'] = [x.ebml for x in EvidenceBasedMedicineLevel.objects.all()]
@@ -257,23 +295,20 @@ def snp_add(request, submit_id):
     if submit_id == 'new':
         context['review'] = 'false'
         context['submit_id'] = 0
-        context['step'] = 1
-        context['content'] = json.dumps({})
+        context['content'] = json.dumps({'step_now': 1, 'step_max': 1})
     else:
         result = Draft.objects.get(pk=int(submit_id))
         username = result.user.username
         content = result.content
         if request.user.is_staff or request.user.username == username:
             context['review'] = 'true'
-            if result.status == 'Draft':
-                if int(content['step']) == 1:
-                    context['step'] = 2
-                else:
-                    context['step'] = int(content['step'])
-            else:
-                context['step'] = 7
+
+            if content['content']['step_now'] == 1:
+                content['content']['step_now'] = 2
+
             if 'submit_id' not in content['content']:
                 content['content']['submit_id'] = submit_id
+
             context['content'] = json.dumps(content['content']).replace("\\", r"\\").replace("'", r"\'")
         else:
             raise Http404
@@ -316,7 +351,8 @@ def snp_search(request):
             for i, (k, v) in enumerate(row_data.items()):
                 research = ""
                 for title, pk in v['research']:
-                    research += "<p><a href=\"/snp/details/{}/{}/{}\">{}</a></p>".format(pk, v['tumor_id'], v['variant_id'], title)
+                    research += "<p><a href=\"/snp/details/{}/{}/{}\">{}</a></p>".format(
+                        pk, v['tumor_id'], v['variant_id'], title)
                 row = [i + 1,
                        v['gene'],
                        v['variant'],

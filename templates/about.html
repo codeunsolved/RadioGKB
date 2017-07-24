@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+    {% block head_title %}About{% endblock head_title %}
+
+      {% block nav %}
+      <li role="presentation" class="active"><a href="{% url 'about' %}">About</a></li>
+      <li role="presentation"><a href="{% url 'access' %}">Access</a></li>
+      <li role="presentation"><a href="{% url 'submit' %}">Submit</a></li>
+      <li role="presentation"><a href="{% url 'news' %}">News</a></li>
+      {% endblock nav %}
+
+    {% block container %}
+    <div class="row" style="margin-top: 10px; margin-bottom: 100px;">
+      <div class="col-md-2 col-sm-2 col-xs-2">
+        <ul class="nav nav-pills nav-stacked">
+          <li role="presentation" class="active"><a href="#about_trpkb" data-toggle="tab">About TRPKB</a></li>
+          <li role="presentation"><a href="#cite" data-toggle="tab">Cite</a></li>
+          <li role="presentation"><a href="#contact" data-toggle="tab">Contact</a></li>
+        </ul>
+      </div>
+      <div class="col-md-10 col-sm-10 col-xs-10">
+        <div class="tab-content">
+          <div id="about_trpkb" class="tab-pane fade in active">
+            <div class="panel panel-default">
+              <div class="panel-body">
+                <p>Coming soon!</p>
+                <br><br><br><br><br><br><br><br><br>
+              </div>
+            </div>
+          </div>
+
+          <div id="cite" class="tab-pane fade">
+            <div class="panel panel-default">
+              <div class="panel-body">
+                <p>Coming soon!</p>
+                <br><br><br><br><br><br><br><br><br>
+              </div>
+            </div>
+          </div>
+
+          <div id="contact" class="tab-pane fade">
+            <div class="panel panel-default">
+              <div class="panel-body">
+                <p>Coming soon!</p>
+                <br><br><br><br><br><br><br><br><br>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endblock container %}

@@ -1,3 +1,56 @@
 {% extends "base.html" %}
 
-    {% block head_title %}Home{% endblock head_title %}
+    {% block head_title %}Access the Knowledge{% endblock head_title %}
+
+      {% block container %}
+      <div class="row" style="margin-top: 80px; margin-bottom: 100px;">
+        <div class="col-md-3 col-sm-3 col-xs-3">
+        </div>
+        <div class="col-md-6 col-sm-6 col-xs-6">
+          <ul class="nav nav-tabs">
+            <li role="presentation" class="active"><a href="#SNP" data-toggle="tab">Search SNP</a></li>
+
+            <li role="presentation"><a href="#Expression" data-toggle="tab">Search Expression</a></li>
+          </ul>
+
+          <div class="tab-content">
+            <div id="SNP" class="tab-pane fade in active">
+              <div class="panel panel-default panel-tab">
+                <div class="panel-body">
+                  <form class="form-horizontal" role="form" method="POST" action="{% url 'snp_search' %}">
+                    {% csrf_token %}
+                    <div class="input-group">
+                      <span class="input-group-addon" style="width:70px;">Gene</span>
+                      <input name="gene" class="form-control" type="text">
+                    </div>
+                    <br>
+                    <div class="input-group">
+                      <span class="input-group-addon" style="width:70px;">Variant</span>
+                      <input name="variant" class="form-control" type="text">
+                    </div>
+                    <br>
+                    <div class="input-group">
+                      <span class="input-group-addon" style="width:70px;">Tumor</span>
+                      <input name="tumor" class="form-control" type="text">
+                    </div>
+                    <br>
+                    <button class="btn btn-info btn-block" type="submit">Search :: <span class="glyphicon glyphicon-search" aria-hidden="true"></span></button>
+                  </form>
+                </div>
+              </div>
+            </div>
+
+            <div id="Expression" class="tab-pane fade">
+              <div class="panel panel-default panel-tab">
+                <div class="panel-body">
+                  <p>Coming soon!</p>
+                  <br><br><br><br><br><br><br><br><br>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3 col-sm-3 col-xs-3">
+        </div>
+      </div>
+      {% endblock container %}

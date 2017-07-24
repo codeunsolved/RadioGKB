@@ -117,7 +117,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 # Login
 
-LOGIN_REDIRECT_URL = "/"
+LOGIN_REDIRECT_URL = "/profile"
 
 
 # Auth & django-allauth
