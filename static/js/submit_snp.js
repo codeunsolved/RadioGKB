@@ -42,8 +42,8 @@ function addNew() {
     $('#STEP06_nav').click({'id': 6}, setStep);
     $('#STEP07_nav').click({'id': 7}, setStep);
 
-    $('.next').click({'type': 'next'}, checkStep);
-    $('.save').click({'type': 'save'}, checkStep);
+    $('.next').click({'action': 'next'}, checkStep);
+    $('.save').click({'action': 'save'}, checkStep);
     $('.back').click(backStep);
 
     uploadPaper();
@@ -79,7 +79,7 @@ function addNew() {
 
     function checkStep(event) {
         var id = step_now;
-        var type = event.data.type;
+        var action = event.data.action;
         var step_id = 'STEP0' + id.toString();
 
         content['step_now'] = id;
@@ -161,9 +161,9 @@ function addNew() {
 
             querySubmit({
                 'kb': 'SNP',
-                'type': type,
+                'action': action,
                 'content' : JSON.stringify(content)
-            }, id, type);
+            }, id, action);
         }
     }
 
@@ -217,14 +217,14 @@ function addNew() {
         $("input[name='pubmed_id']").prop('disabled', true);
     }
 
-    function querySubmit(data, id, type) {
+    function querySubmit(data, id, action) {
         $.post("/submit/add",
             data,
             function(data) {
                 if (data.code == 1) {
-                    if (type == 'save') {
+                    if (action == 'save') {
                         $("#STEP0"+id.toString()+"_msg").html(formatMsg('Save successful!', 'success'));
-                    } else if (type == 'next') {
+                    } else if (action == 'next') {
                         if (id < 7) {
                             activeTab(id+1, false);
                             $("#STEP0"+(id+1).toString()+"_nav").trigger("click");
@@ -239,7 +239,7 @@ function addNew() {
                         } else if (id == 5) {
                             genStep06();
                         }
-                    } else if (type == 'submit') {
+                    } else if (action == 'submit') {
                         $.confirm({
                             title: ' ',
                             content: 'Submit successfully!',
@@ -267,13 +267,40 @@ function addNew() {
     }
 
     function uploadPaper() {
-        $('#STEP02_upload_paper').fileupload({
-                dataType: 'json',
-                done: function (e, data) {
-                    $.each(data.result.files, function (index, file) {
-                        $('<p/>').text(file.name).appendTo(document.body);
-                    });
+        $('#STEP02_upload_progress .progress-bar').css('width', '0%');
+        $('#STEP02_paper_upload').fileupload({
+            url: '/submit/add',
+            dataType: 'json',
+            formData: {action: 'upload', submit_id: content['submit_id']},
+            submit: function (e, data) {
+                var error = false;
+
+                $('#STEP02_paper_table').css('opacity',1);
+                $.each(data.files, function (index, file) {
+                    var file_size = (file.size/1000/1000).toFixed(3);
+                    $('#STEP02_paper_filename').text(file.name);
+                    $('#STEP02_paper_size').text(file_size.toString()+" MB");
+
+                    if (file_size >= 20) {
+                        $("#STEP02_msg").html(formatMsg("Uploading paper exceeds the maximum upload size: 20MB", 'danger'));
+                        error = true;
+                    }
+                });
+
+                if (error) {
+                    return false;
                 }
+            },
+            done: function (e, data) {
+                $.each(data.files, function (index, file) {
+                    $('#STEP02_paper_download').show();
+                    $('#STEP02_paper_download').attr('href', data.result.url);
+                });
+            },
+            progressall: function (e, data) {
+                var progress = parseInt(data.loaded / data.total * 100, 10);
+                $('#STEP02_upload_progress .progress-bar').css('width', progress + '%');
+            },
         });
     }
 
@@ -574,7 +601,7 @@ function addNew() {
                     content['step_now'] = 7;
                     querySubmit({
                         'kb': 'SNP',
-                        'type': 'submit',
+                        'action': 'submit',
                         'content' : JSON.stringify(content)
                     }, 7, 'submit');
                 },

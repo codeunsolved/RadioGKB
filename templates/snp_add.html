@@ -174,10 +174,33 @@
                       <input name="treatment_type" class="form-control" type="text">
                     </div>
                     <br>
-                    <div class="input-group">
-                      <span class="input-group-addon" style="width:134px;">Paper Upload</span>
-                      <input id="STEP02_upload_paper" name="paper" class="form-control" type="file">
-                    </div>
+
+                    <span class="btn btn-success fileinput-button">
+                      <i class="glyphicon glyphicon-upload"></i>
+                      <span>Paper upload</span>
+                      <input id="STEP02_paper_upload" name="paper" type="file">
+                    </span>
+                    <br>
+                    <br>
+                    <table id="STEP02_paper_table" class="table table-striped" style="opacity:0;">
+                      <tbody>
+                        <tr>
+                          <td id="STEP02_paper_filename"></td>
+                          <td id="STEP02_paper_size"></td>
+                          <td>
+                            <a id="STEP02_paper_download" href="" style="display:none;">Download</a>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td colspan="3">
+                            <div id="STEP02_upload_progress" class="progress">
+                              <div class="progress-bar progress-bar-success" role="progressbar" style="width:0%">
+                              </div>
+                            </div>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
                     <br>
 
                     <div id="STEP02_msg"></div>

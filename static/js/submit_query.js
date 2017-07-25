@@ -89,7 +89,7 @@ function querySubmit() {
                             return false;
                         } else {
                             $.post("/submit/add",
-                                {'type': action,
+                                {'action': action,
                                  'submit_id': submit_id,
                                  'comments': comments},
                                 function(data) {
@@ -125,7 +125,7 @@ function querySubmit() {
         var submit_id = $(this).attr('submit_id');
 
         $.post("/submit/add",
-            {'type': 'Log',
+            {'action': 'Log',
              'submit_id': submit_id},
             function(data) {
                 var table_data = data.data;
@@ -174,7 +174,7 @@ function querySubmit() {
                         var action = 'Delete';
 
                         $.post("/submit/add",
-                            {'type': action,
+                            {'action': action,
                              'submit_id': submit_id},
                             function(data) {
                                 var alert_msg = '';

@@ -89,7 +89,10 @@ def submit_query(request):
 
                 delete_link = '<a class="draft_delete" submit_id="{}">Delete</a></li>'.format(r.pk)
 
-                action = "{}&nbsp;&nbsp;{}".format(edit_link, delete_link)
+                log_link = '<a class="pending_log" submit_id="{}">Log</a></li>'.format(r.pk)
+
+                action = "{}&nbsp;&nbsp;{}&nbsp;&nbsp;{}".format(edit_link, delete_link, log_link)
+
                 row = [i + 1,
                        r.kb,
                        r.title,
@@ -114,9 +117,13 @@ def submit_query(request):
                 content = r.content
 
                 edit_link = '<a href="{}/add/{}">View</a></li>'.format(r.kb.lower(), r.pk)
+
                 approve_link = '<a class="pending_action" submit_id="{}">Approve</a></li>'.format(r.pk)
+
                 log_link = '<a class="pending_log" submit_id="{}">Log</a></li>'.format(r.pk)
+
                 action = "{}&nbsp;&nbsp;{}&nbsp;&nbsp;{}".format(edit_link, approve_link, log_link)
+
                 row = [i + 1,
                        r.kb,
                        r.title,
@@ -153,8 +160,8 @@ def submit_add(request):
 
     username = request.user.username
     try:
-        action_type = request.POST['type']
-        if action_type in ['save', 'next', 'submit']:
+        action = request.POST['action']
+        if action in ['save', 'next', 'submit']:
             try:
                 kb = request.POST['kb']
                 content = json.loads(request.POST['content'])
@@ -204,7 +211,7 @@ def submit_add(request):
                             content['step_max'] = step_now
 
                         record.content['log'].append({'user': username, 'step_now': step_now,
-                                                      'action': action_type,
+                                                      'action': action,
                                                       'time': str(datetime.datetime.now())})
 
                         record.content['content'] = content
@@ -224,7 +231,21 @@ def submit_add(request):
                 response['code'] = 0
                 response['msg'] = e
 
-        elif action_type in ['Revision', 'Accepted', 'Rejected']:
+        elif action in ['upload']:
+            try:
+                submit_id = int(request.POST['submit_id'])
+
+                record = Draft.objects.get(pk=submit_id)
+                if record.paper:
+                    record.paper.delete()
+                record.paper = request.FILES['paper']
+
+                record.save()
+                response['url'] = record.paper.url
+            except Exception as e:
+                raise e
+
+        elif action in ['Revision', 'Accepted', 'Rejected']:
             try:
                 submit_id = int(request.POST['submit_id'])
                 comments = request.POST['comments']
@@ -232,32 +253,32 @@ def submit_add(request):
                 record = Draft.objects.get(pk=submit_id)
 
                 record.content['comments'] = comments
-                record.status = action_type
+                record.status = action
                 record.content['log'].append({'user': username, 'comments': comments,
-                                              'action': action_type,
+                                              'action': action,
                                               'time': str(datetime.datetime.now())})
 
                 record.save()
-
                 response['code'] = 1
-
             except Exception as e:
                 response['code'] = 0
 
-        elif action_type in ['Delete']:
+        elif action in ['Delete']:
             try:
                 submit_id = int(request.POST['submit_id'])
-                Draft.objects.get(pk=submit_id).delete()
-                response['code'] = 1
 
+                Draft.objects.get(pk=submit_id).delete()
+
+                response['code'] = 1
             except Exception as e:
                 response['code'] = 0
 
-        elif action_type in ['Log']:
+        elif action in ['Log']:
             try:
+                submit_id = int(request.POST['submit_id'])
+
                 response = {'data': []}
 
-                submit_id = int(request.POST['submit_id'])
                 log = Draft.objects.get(pk=submit_id).content['log']
 
                 for row in log:
@@ -389,9 +410,12 @@ def snp_details(request, research_id, tumor_id, variant_id):
     gene = variant.gene
     context['gene']['name'] = gene.gene_official_symbol if gene else ''
     context['gene']['full_name'] = gene.gene_official_full_name if gene else ''
-    context['gene']['alias'] = ', '.join(gene.gene_alternative_symbols) if (gene and gene.gene_alternative_symbols) else ''
     context['gene']['type'] = gene.gene_type if gene else ''
     context['gene']['summary'] = gene.gene_summary if gene else ''
+    if (gene and gene.gene_alternative_symbols):
+        context['gene']['alias'] = ', '.join(gene.gene_alternative_symbols)
+    else:
+        context['gene']['alias'] = ''
 
     association = Association.objects.filter(research__pk=research_id,
                                              tumor__pk=tumor_id,
