@@ -213,8 +213,8 @@ function addNew() {
     }
 
     function freezePubmedId() {
-        $("input[name='pubmed_id']").val(content.STEP01.pubmed_id);
-        $("input[name='pubmed_id']").prop('disabled', true);
+        $("#STEP02_form input[name='pubmed_id']").val(content.STEP01.pubmed_id);
+        $("#STEP02_form input[name='pubmed_id']").prop('disabled', true);
     }
 
     function querySubmit(data, id, action) {
@@ -231,7 +231,7 @@ function addNew() {
                         }
 
                         if (id == 1) {
-                            content['submit_id'] = data.submit_id; //important!
+                            window.location.replace("/snp/add/"+data.submit_id.toString());
 
                             freezePubmedId();
                         } else if (id == 3) {
@@ -276,7 +276,7 @@ function addNew() {
 
                 $('#STEP02_upload_progress .progress-bar').attr('class', "progress-bar progress-bar-warning");
                 $('#STEP02_upload_progress .progress-bar').css('width', '0%');
-                $('#STEP02_paper_table').css('opacity',1);
+                $('#STEP02_paper_table').css('opacity', 1);
                 $.each(data.files, function (index, file) {
                     var paper_name = file.name;
                     var paper_size = (file.size/1000/1000).toFixed(3);
@@ -635,7 +635,9 @@ function addNew() {
     }
 
     function reviewSubmit() {
-        $('#review_alert').show();
+        if (!content['no_flag']) {
+            $('#review_alert').show();
+        }
 
         //Jump to step now
         $("#STEP0"+(step_now).toString()+"_nav").trigger("click");
@@ -644,7 +646,7 @@ function addNew() {
         $("#STEP01_nav").prop("data-toggle", null);
         //remove STEP02's back
         $("#STEP02_back").remove();
-        //disable STEP02's title and pubmed_id
+        //disable STEP02's pubmed_id
         freezePubmedId();
 
         //fill STEP02
@@ -659,7 +661,7 @@ function addNew() {
                 var paper_link = content['STEP02']['paper_link'];
                 console.log(paper_link);
 
-                $('#STEP02_paper_table').css('opacity',1);
+                $('#STEP02_paper_table').css('opacity', ß1);
                 $('#STEP02_paper_filename').text(paper_name);
                 $('#STEP02_paper_size').text(paper_size.toString()+" MB");
                 $('#STEP02_paper_download').show();

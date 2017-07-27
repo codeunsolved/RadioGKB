@@ -192,14 +192,17 @@ def submit_add(request):
                             content_['log'].append({'user': username, 'step_now': step_now,
                                                     'action': 'create',
                                                     'time': str(datetime.datetime.now())})
-
                             content_['content'] = content
+
                             user = User.objects.get(username=submitter)
                             record = Draft.objects.create(user=user,
                                                           status='Draft',
                                                           kb='SNP',
                                                           pubmed_id=pubmed_id,
                                                           content=content_)
+                            record.content['content']['submit_id'] = record.pk
+                            record.save()
+
                             response['code'] = 1
                             response['submit_id'] = record.pk
                     else:
@@ -260,6 +263,8 @@ def submit_add(request):
                     record.paper = paper_file
                     record.save()  # then record.paper.url will update
 
+                    if 'STEP02' not in record.content['content']:
+                        record.content['content'] = {}
                     record.content['content']['STEP02']['paper_uploaded'] = True
                     record.content['content']['STEP02']['paper_name'] = paper_name
                     record.content['content']['STEP02']['paper_size'] = paper_size
@@ -358,8 +363,10 @@ def snp_add(request, submit_id):
         if request.user.is_staff or request.user.username == username:
             context['review'] = 'true'
 
-            if content['content']['step_now'] == 1:
+            if content['content']['step_max'] == 1:
+                content['content']['no_flag'] = 'true'
                 content['content']['step_now'] = 2
+                content['content']['step_max'] = 2
 
             if 'submit_id' not in content['content']:
                 content['content']['submit_id'] = submit_id

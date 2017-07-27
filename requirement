@@ -1,5 +1,9 @@
 # Django
 django>=1.11
 django-allauth
+# Postgresql
+psycopg2
 # Web
 uwsgi
+# other
+xlrd

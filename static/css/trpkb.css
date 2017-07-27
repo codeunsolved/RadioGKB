@@ -1,6 +1,7 @@
-.nav_trpkb {
+.container_trpkb {
   background-color: #f8f8f8;
-  border: 1px solid;
+  border-top: 1px solid;
+  border-bottom: 1px solid;
   border-color: #e7e7e7;
 }
 .nav_trpkb > li > a {

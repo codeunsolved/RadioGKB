@@ -82,14 +82,22 @@
     </div>
     {% endblock banner %}
 
-      <ul class="nav nav-justified nav_trpkb">
-        {% block nav %}
-        <li role="presentation"><a href="{% url 'about' %}">About</a></li>
-        <li role="presentation"><a href="{% url 'access' %}">Access</a></li>
-        <li role="presentation"><a href="{% url 'submit' %}">Submit</a></li>
-        <li role="presentation"><a href="{% url 'news' %}">News</a></li>
-        {% endblock nav %}
-      </ul>
+    <div class="row container_trpkb">
+      <div class="col-md-2 col-sm-2 col-xs-2">
+      </div>
+      <div class="col-md-8 col-sm-8 col-xs-8">
+        <ul class="nav nav-justified nav_trpkb">
+          {% block nav %}
+          <li role="presentation"><a href="{% url 'about' %}">About</a></li>
+          <li role="presentation"><a href="{% url 'access' %}">Access</a></li>
+          <li role="presentation"><a href="{% url 'submit' %}">Submit</a></li>
+          <li role="presentation"><a href="{% url 'news' %}">News</a></li>
+          {% endblock nav %}
+        </ul>
+      </div>
+      <div class="col-md-2 col-sm-2 col-xs-2">
+      </div>
+    </div>
 
     <div class="container">
       {% block container %}
