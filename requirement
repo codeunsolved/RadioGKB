@@ -1,0 +1,5 @@
+# Django
+django>=1.11
+django-allauth
+# Web
+uwsgi

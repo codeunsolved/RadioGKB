@@ -267,7 +267,6 @@ function addNew() {
     }
 
     function uploadPaper() {
-        $('#STEP02_upload_progress .progress-bar').css('width', '0%');
         $('#STEP02_paper_upload').fileupload({
             url: '/submit/add',
             dataType: 'json',
@@ -275,15 +274,28 @@ function addNew() {
             submit: function (e, data) {
                 var error = false;
 
+                $('#STEP02_upload_progress .progress-bar').attr('class', "progress-bar progress-bar-warning");
+                $('#STEP02_upload_progress .progress-bar').css('width', '0%');
                 $('#STEP02_paper_table').css('opacity',1);
                 $.each(data.files, function (index, file) {
-                    var file_size = (file.size/1000/1000).toFixed(3);
-                    $('#STEP02_paper_filename').text(file.name);
-                    $('#STEP02_paper_size').text(file_size.toString()+" MB");
+                    var paper_name = file.name;
+                    var paper_size = (file.size/1000/1000).toFixed(3);
+                    var error_msg = [];
 
-                    if (file_size >= 20) {
-                        $("#STEP02_msg").html(formatMsg("Uploading paper exceeds the maximum upload size: 20MB", 'danger'));
+                    $('#STEP02_paper_filename').text(paper_name);
+                    $('#STEP02_paper_size').text(paper_size.toString()+" MB");
+
+                    if (paper_size >= 20) {
+                        error_msg.push("Uploading paper exceeds the maximum upload size: 20MB");
                         error = true;
+                    }
+                    if (paper_name.search(/\.(pdf|zip)$/i) == -1) {
+                        error_msg.push("Uploading paper only accepts pdf/zip format");
+                        error = true;
+                    }
+
+                    if (error_msg.length > 0) {
+                        $("#STEP02_msg").html(formatMsg(error_msg.join('<br>'), 'danger'));
                     }
                 });
 
@@ -292,10 +304,20 @@ function addNew() {
                 }
             },
             done: function (e, data) {
-                $.each(data.files, function (index, file) {
-                    $('#STEP02_paper_download').show();
-                    $('#STEP02_paper_download').attr('href', data.result.url);
-                });
+                if (data.result.error) {
+                    $('#STEP02_upload_progress .progress-bar').attr('class', "progress-bar progress-bar-danger");
+                    $("#STEP02_msg").html(formatMsg(data.result.error, 'danger'));
+                } else {
+                    $.each(data.files, function (index, file) {
+                        var paper_name = file.name;
+                        var paper_size = (file.size/1000/1000).toFixed(3);
+                        var paper_link = data.result.url
+
+                        $('#STEP02_upload_progress .progress-bar').attr('class', "progress-bar progress-bar-success");
+                        $('#STEP02_paper_download').show();
+                        $('#STEP02_paper_download').attr('href', paper_link);
+                    });
+                }
             },
             progressall: function (e, data) {
                 var progress = parseInt(data.loaded / data.total * 100, 10);
@@ -629,10 +651,20 @@ function addNew() {
         if ('STEP02' in content) {
             $("#STEP02_form :input").each(function() {
                 var name = $(this).attr("name");
-                if (name != 'paper') {
-                    $(this).val(content['STEP02'][name]);
-                }
+                $(this).val(content['STEP02'][name]);
             });
+            if (content['STEP02']['paper_uploaded']) {
+                var paper_name = content['STEP02']['paper_name'];
+                var paper_size = content['STEP02']['paper_size'];
+                var paper_link = content['STEP02']['paper_link'];
+                console.log(paper_link);
+
+                $('#STEP02_paper_table').css('opacity',1);
+                $('#STEP02_paper_filename').text(paper_name);
+                $('#STEP02_paper_size').text(paper_size.toString()+" MB");
+                $('#STEP02_paper_download').show();
+                $('#STEP02_paper_download').attr('href', paper_link);
+            }
         } else { console.log('REVIEW:NO STEP02'); }
         //fill STEP03
         if ('STEP03' in content) {

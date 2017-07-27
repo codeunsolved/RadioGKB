@@ -234,14 +234,46 @@ def submit_add(request):
         elif action in ['upload']:
             try:
                 submit_id = int(request.POST['submit_id'])
+                paper_file = request.FILES['paper']
 
-                record = Draft.objects.get(pk=submit_id)
-                if record.paper:
-                    record.paper.delete()
-                record.paper = request.FILES['paper']
+                paper_name = paper_file.name
+                paper_size = round(paper_file.size / 1000 / 1000, 3)
 
-                record.save()
-                response['url'] = record.paper.url
+                error_msg = []
+                if paper_size > 20:
+                    error_msg.append("Uploading paper exceeds the maximum upload size: 20MB")
+                if not re.search('\.(pdf|zip)$', paper_name):
+                    error_msg.append("Uploading paper only accepts pdf/zip format")
+
+                if len(error_msg) > 0:
+                    record.content['log'].append({'user': username,
+                                                  'msg': "ERROR: {}<br>{} | {}MB".format(
+                                                      '<br>'.join(error_msg), paper_name, paper_size),
+                                                  'action': 'paper upload',
+                                                  'time': str(datetime.datetime.now())})
+
+                    response['error'] = '<br>'.join(error_msg)
+                else:
+                    record = Draft.objects.get(pk=submit_id)
+                    if record.paper:
+                        record.paper.delete()
+                    record.paper = paper_file
+                    record.save()  # then record.paper.url will update
+
+                    record.content['content']['STEP02']['paper_uploaded'] = True
+                    record.content['content']['STEP02']['paper_name'] = paper_name
+                    record.content['content']['STEP02']['paper_size'] = paper_size
+                    record.content['content']['STEP02']['paper_link'] = record.paper.url
+
+                    print(record.content['content']['STEP02']['paper_link'])
+
+                    record.content['log'].append({'user': username,
+                                                  'msg': "{} | {}MB".format(paper_name, paper_size),
+                                                  'action': 'paper upload',
+                                                  'time': str(datetime.datetime.now())})
+
+                    record.save()
+                    response['url'] = record.paper.url
             except Exception as e:
                 raise e
 
@@ -291,6 +323,8 @@ def submit_add(request):
                         note = "at STEP0{}".format(row['step_now'])
                     elif 'comments' in row:
                         note = "comments: {}".format(row['comments'])
+                    elif 'msg' in row:
+                        note = row['msg']
 
                     response['data'].append([time_, user, action, note])
             except Exception as e:
