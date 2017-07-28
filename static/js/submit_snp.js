@@ -231,9 +231,8 @@ function addNew() {
                         }
 
                         if (id == 1) {
+                            //redirect to avoid restart a new submit by refresh
                             window.location.replace("/snp/add/"+data.submit_id.toString());
-
-                            freezePubmedId();
                         } else if (id == 3) {
                             genStep04();
                         } else if (id == 5) {
@@ -635,7 +634,9 @@ function addNew() {
     }
 
     function reviewSubmit() {
-        if (!content['no_flag']) {
+        if (content['no_flag']) {
+            content['no_flag'] = false;
+        } else {
             $('#review_alert').show();
         }
 
@@ -646,27 +647,30 @@ function addNew() {
         $("#STEP01_nav").prop("data-toggle", null);
         //remove STEP02's back
         $("#STEP02_back").remove();
-        //disable STEP02's pubmed_id
+        //fill & disable STEP02's pubmed_id
+        $("#STEP02_form input[name=pubmed_id]").val(content['STEP01']['pubmed_id']);
         freezePubmedId();
 
         //fill STEP02
         if ('STEP02' in content) {
             $("#STEP02_form :input").each(function() {
                 var name = $(this).attr("name");
-                $(this).val(content['STEP02'][name]);
+                if (name != 'pubmed_id') {
+                    $(this).val(content['STEP02'][name]);
+                }
             });
-            if (content['STEP02']['paper_uploaded']) {
-                var paper_name = content['STEP02']['paper_name'];
-                var paper_size = content['STEP02']['paper_size'];
-                var paper_link = content['STEP02']['paper_link'];
-                console.log(paper_link);
+        //fill Paper upload
+        if (content['paper_uploaded']) {
+            var paper_name = content['paper_name'];
+            var paper_size = content['paper_size'];
+            var paper_link = content['paper_link'];
 
-                $('#STEP02_paper_table').css('opacity', ß1);
-                $('#STEP02_paper_filename').text(paper_name);
-                $('#STEP02_paper_size').text(paper_size.toString()+" MB");
-                $('#STEP02_paper_download').show();
-                $('#STEP02_paper_download').attr('href', paper_link);
-            }
+            $('#STEP02_paper_table').css('opacity', 1);
+            $('#STEP02_paper_filename').text(paper_name);
+            $('#STEP02_paper_size').text(paper_size.toString()+" MB");
+            $('#STEP02_paper_download').show();
+            $('#STEP02_paper_download').attr('href', paper_link);
+        }
         } else { console.log('REVIEW:NO STEP02'); }
         //fill STEP03
         if ('STEP03' in content) {

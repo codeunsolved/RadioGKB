@@ -273,14 +273,10 @@ def submit_add(request):
                     record.paper = paper_file
                     record.save()  # then record.paper.url will update
 
-                    if 'STEP02' not in record.content['content']:
-                        record.content['content'] = {}
-                    record.content['content']['STEP02']['paper_uploaded'] = True
-                    record.content['content']['STEP02']['paper_name'] = paper_name
-                    record.content['content']['STEP02']['paper_size'] = paper_size
-                    record.content['content']['STEP02']['paper_link'] = record.paper.url
-
-                    print(record.content['content']['STEP02']['paper_link'])
+                    record.content['content']['paper_uploaded'] = True
+                    record.content['content']['paper_name'] = paper_name
+                    record.content['content']['paper_size'] = paper_size
+                    record.content['content']['paper_link'] = record.paper.url
 
                     record.content['log'].append({'user': username,
                                                   'msg': "{} | {}MB".format(paper_name, paper_size),
