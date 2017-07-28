@@ -2,6 +2,8 @@
 # -*- coding: utf-8 -*-
 
 import re
+import sys
+import locale
 import json
 import datetime
 
@@ -15,6 +17,14 @@ from KB_SNP.models import Tumor, Gene, Variant, EvidenceBasedMedicineLevel, Rese
 from Submit.models import Draft
 
 from .importData import read_xls
+
+
+def view_locale(request):
+    loc_info = "getlocale: " + str(locale.getlocale()) + \
+        "<br/>getdefaultlocale(): " + str(locale.getdefaultlocale()) + \
+        "<br/>fs_encoding: " + str(sys.getfilesystemencoding()) + \
+        "<br/>sys default encoding: " + str(sys.getdefaultencoding())
+    return HttpResponse(loc_info)
 
 
 def get_stats():

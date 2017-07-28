@@ -34,4 +34,5 @@ urlpatterns = [
     url(r'^accounts/', include('allauth.urls')),
     url(r'^admin/', admin.site.urls),
     url(r'^import_data/', views.import_data, name='import_data'),
+    url(r'^locale$', views.view_locale),
 ] + static.static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
