@@ -58,7 +58,7 @@
                   <form id="STEP01_form">
                     <div class="input-group">
                       <span class="input-group-addon">PMID<span style="color:red;">*</span></span>
-                      <input name="pubmed_id" class="form-control" type="text" required>
+                      <input name="pubmed_id" class="form-control" type="number" required>
                     </div>
                     <br>
                     <div class="well well-sm">
@@ -89,7 +89,7 @@
                     <br>
                     <div class="input-group">
                       <span class="input-group-addon" style="width:134px;">PMID<span style="color:red;">*</span></span>
-                      <input name="pubmed_id" class="form-control" type="text" required>
+                      <input name="pubmed_id" class="form-control" type="number" required>
                     </div>
                     <br>
                     <div class="input-group">
@@ -493,37 +493,49 @@
                                   <tr>
                                     <th></th>
                                     <th style="min-width:100px;">Genotype<span style="color:red;">*</span></th>
-                                    <th style="min-width:80px;">Case Number</th>
-                                    <th style="min-width:80px;">Control Number</th>
-                                    <th style="min-width:80px;">Total Number</th>
-                                    <th style="min-width:80px;">OR(U)</th>
-                                    <th style="min-width:80px;">HR(U)</th>
-                                    <th style="min-width:80px;">RR(U)</th>
-                                    <th style="min-width:80px;">95%CI(U)</th>
-                                    <th style="min-width:80px;">P(U)</th>
-                                    <th style="min-width:80px;">OR(M)</th>
-                                    <th style="min-width:80px;">HR(M)</th>
-                                    <th style="min-width:80px;">RR(M)</th>
-                                    <th style="min-width:80px;">95%CI(M)</th>
-                                    <th style="min-width:80px;">P(M)</th>
+                                    <th style="min-width:100px;">Case Number</th>
+                                    <th style="min-width:100px;">Control Number</th>
+                                    <th style="min-width:100px;">Total Number</th>
+                                    <th style="min-width:100px;">OR(U)</th>
+                                    <th style="min-width:100px;">HR(U)</th>
+                                    <th style="min-width:100px;">RR(U)</th>
+                                    <th style="min-width:220px;">95%CI(U)</th>
+                                    <th style="min-width:100px;">P(U)</th>
+                                    <th style="min-width:100px;">OR(M)</th>
+                                    <th style="min-width:100px;">HR(M)</th>
+                                    <th style="min-width:100px;">RR(M)</th>
+                                    <th style="min-width:220px;">95%CI(M)</th>
+                                    <th style="min-width:100px;">P(M)</th>
                                   </tr>
                                 </thead>
                                 <tbody>
                                   <tr class="STEP06_row">
                                     <td style="text-align:right;"><span class="btn glyphicon glyphicon-plus-sign STEP06_row_add" style="cursor:pointer;color:limegreen;"></span></td>
                                     <td><input name="genotype" class="form-control" type="text"></td>
-                                    <td><input name="case_number" class="form-control" type="text"></td>
-                                    <td><input name="control_number" class="form-control" type="text"></td>
-                                    <td><input name="total_number" class="form-control" type="text"></td>
-                                    <td><input name="or_u" class="form-control" type="text"></td>
-                                    <td><input name="hr_u" class="form-control" type="text"></td>
-                                    <td><input name="rr_u" class="form-control" type="text"></td>
-                                    <td><input name="ci_u_95" class="form-control" type="text"></td>
+                                    <td><input name="case_number" class="form-control" type="number"></td>
+                                    <td><input name="control_number" class="form-control" type="number"></td>
+                                    <td><input name="total_number" class="form-control" type="number"></td>
+                                    <td><input name="or_u" class="form-control" type="number"></td>
+                                    <td><input name="hr_u" class="form-control" type="number"></td>
+                                    <td><input name="rr_u" class="form-control" type="number"></td>
+                                    <td>
+                                      <div class="input-group">
+                                        <input name="ci_u_95_0" class="form-control" type="number" placeholder="from">
+                                        <span class="input-group-addon">-</span>
+                                        <input name="ci_u_95_1" class="form-control" type="number" placeholder="to">
+                                      </div>
+                                    </td>
                                     <td><input name="p_u" class="form-control" type="text"></td>
-                                    <td><input name="or_m" class="form-control" type="text"></td>
-                                    <td><input name="hr_m" class="form-control" type="text"></td>
-                                    <td><input name="rr_m" class="form-control" type="text"></td>
-                                    <td><input name="ci_m_95" class="form-control" type="text"></td>
+                                    <td><input name="or_m" class="form-control" type="number"></td>
+                                    <td><input name="hr_m" class="form-control" type="number"></td>
+                                    <td><input name="rr_m" class="form-control" type="number"></td>
+                                    <td>
+                                      <div class="input-group">
+                                        <input name="ci_m_95_0" class="form-control" type="number" placeholder="from">
+                                        <span class="input-group-addon">-</span>
+                                        <input name="ci_m_95_1" class="form-control" type="number" placeholder="to">
+                                      </div>
+                                    </td>
                                     <td><input name="p_m" class="form-control" type="text"></td>
                                   </tr>
                                 </tbody>

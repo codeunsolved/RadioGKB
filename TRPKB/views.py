@@ -115,11 +115,13 @@ def submit_query(request):
             for i, r in enumerate(results):
                 content = r.content
 
+                log_link = '<a class="log" submit_id="{}">Log</a></li>'.format(r.pk)
+
                 row = [i + 1,
                        r.kb,
                        r.title,
                        get_status_html(r.status, content),
-                       get_last_change(content)]
+                       "{}&nbsp;&nbsp;{}".format(get_last_change(content), log_link)]
                 response['data'].append(row)
         elif tab == 'pending':
             results = Draft.objects.exclude(status__in=['Draft', 'Accepted'])
@@ -147,11 +149,13 @@ def submit_query(request):
             for i, r in enumerate(results):
                 content = r.content
 
+                log_link = '<a class="log" submit_id="{}">Log</a></li>'.format(r.pk)
+
                 row = [i + 1,
                        r.kb,
                        r.title,
                        r.user.username,
-                       get_last_change(content)]
+                       "{}&nbsp;&nbsp;{}".format(get_last_change(content), log_link)]
                 response['data'].append(row)
 
     except Exception as e:
@@ -162,6 +166,122 @@ def submit_query(request):
 
 @login_required
 def submit_add(request):
+    def import_research(content):
+        pk_d = {'prog': {}, 'sub': {}}
+        # import Research
+        step02 = content['STEP02']
+        if step02['age_range_0'] and step02['age_range_1']:
+            age_range = [float(step02['age_range_0']), float(step02['age_range_1'])]
+        else:
+            age_range = None
+
+        ebml = EvidenceBasedMedicineLevel.objects.get(ebml=step02['ebml'])
+        research, created = Research.objects.get_or_create(
+            title=step02['title'],
+            language=step02['language'],
+            pub_year=int(step02['pub_year']),
+            pubmed_id=int(step02['pubmed_id']),
+            pub_type=step02['pub_type'],
+            ebml=ebml,
+            ethnicity=step02['ethnicity'] if step02['ethnicity'] else None,
+            patient_number=int(step02['patient_number']),
+            male=int(step02['male']) if step02['male'] else None,
+            female=int(step02['female']) if step02['female'] else None,
+            median_age=float(step02['median_age']) if step02['median_age'] else None,
+            mean_age=float(step02['mean_age']) if step02['mean_age'] else None,
+            age_range=age_range,
+            treatment_desc=step02['treatment_desc'] if step02['treatment_desc'] else None,
+            treatment_type=step02['treatment_type'] if step02['treatment_type'] else None)
+
+        # import Tumor
+        step03 = content['STEP03']
+        for row in step03['tumor']:
+            Tumor.objects.get_or_create(name=row['tumor'])
+
+        # import Gene & Variant
+        step04 = content['STEP04']
+        for row1 in step04['variant']:
+            for row2 in row1:
+                gene_name = row2['gene']
+                if row2['new']:
+                    gene_name = row2['gene_new']
+
+                if gene_name != '- N/A -':
+                    gene, created = Gene.objects.get_or_create(gene_official_symbol=gene_name)
+                    if row2['entrez_id']:
+                        gene.entrez_gene_id = int(row2['entrez_id'])
+                        gene.save()
+                else:
+                    gene = None
+
+                Variant.objects.get_or_create(gene=gene, dbsnp=row2['dbsnp'])
+
+        # import Prognosis
+        step05 = content['STEP05']
+        for row in step05['prognosis']:
+            prognosis, created = Prognosis.objects.get_or_create(
+                prognosis_name=row['prognosis_name'],
+                prognosis_type=row['prognosis_type'] if row['prognosis_type'] else None,
+                endpoint=row['endpoint'] if row['endpoint'] else None,
+                original=row['original'],
+                case_meaning=row['case_meaning'] if row['case_meaning'] else None,
+                control_meaning=row['control_meaning'] if row['control_meaning'] else None,
+                total_meaning=row['total_meaning'] if row['total_meaning'] else None,
+                annotation=row['annotation'] if row['annotation'] else None)
+
+            pk_d['prog'][row['prognosis_name']] = prognosis.pk
+
+            for sub in row['subgroup']:
+                if sub:
+                    subgroup, created = Subgroup.objects.get_or_create(prognosis=prognosis, subgroup=sub)
+
+                    if row['prognosis_name'] not in pk_d['sub']:
+                        pk_d['sub'][row['prognosis_name']] = {}
+                    pk_d['sub'][row['prognosis_name']][sub] = subgroup.pk
+
+        # import Association
+        step06 = content['STEP06']
+        for row1 in step06['association']:
+            for row in row1:
+                tumor = Tumor.objects.get(name=row['tumor'])
+                print(row['variant'])
+                variant = Variant.objects.get(dbsnp=row['variant'])
+                prognosis = Prognosis.objects.get(pk=pk_d['prog'][row['prognosis']])
+                if row['subgroup'] != '- N/A -':
+                    subgroup = Subgroup.objects.get(pk=pk_d['sub'][row['prognosis']][row['subgroup']])
+                else:
+                    subgroup = None
+
+                if row['ci_u_95_0'] and row['ci_u_95_1']:
+                    ci_u_95 = [float(row['ci_u_95_0']), float(row['ci_u_95_1'])]
+                else:
+                    ci_u_95 = None
+                if row['ci_m_95_0'] and row['ci_m_95_1']:
+                    ci_m_95 = [float(row['ci_m_95_0']), float(row['ci_m_95_1'])]
+                else:
+                    ci_m_95 = None
+
+            Association.objects.get_or_create(
+                research=research,
+                tumor=tumor,
+                variant=variant,
+                prognosis=prognosis,
+                subgroup=subgroup,
+                genotype=row['genotype'],
+                case_number=int(row['case_number']) if row['case_number'] else None,
+                control_number=int(row['control_number']) if row['control_number'] else None,
+                total_number=int(row['total_number']) if row['total_number'] else None,
+                or_u=float(row['or_u']) if row['or_u'] else None,
+                hr_u=float(row['hr_u']) if row['hr_u'] else None,
+                rr_u=float(row['rr_u']) if row['rr_u'] else None,
+                ci_u_95=ci_u_95,
+                p_u=row['p_u'] if row['p_u'] else None,
+                or_m=float(row['or_m']) if row['or_m'] else None,
+                hr_m=float(row['hr_m']) if row['hr_m'] else None,
+                rr_m=float(row['rr_m']) if row['rr_m'] else None,
+                ci_m_95=ci_m_95,
+                p_m=row['p_m'] if row['p_m'] else None)
+
     dup_msg = {1: "We already had this paper in KB-SNP! Please choose another.",
                2: "You already submitted/saved this paper! Please check your Draft box.",
                3: "Someone has been submited this paper already! Please choose another."}
@@ -169,180 +289,202 @@ def submit_add(request):
     response = {}
 
     username = request.user.username
-    try:
-        action = request.POST['action']
-        if action in ['save', 'next', 'submit']:
-            try:
-                kb = request.POST['kb']
-                content = json.loads(request.POST['content'])
-                step_now = content['step_now']
+    action = request.POST['action']
+    if action in ['save', 'next', 'submit']:
+        try:
+            kb = request.POST['kb']
+            content = json.loads(request.POST['content'])
+            step_now = content['step_now']
 
-                if kb == 'SNP':
-                    if step_now == 1:
-                        submitter = username
-                        pubmed_id = int(content['STEP01']['pubmed_id'])
+            if kb == 'SNP':
+                if step_now == 1:
+                    submitter = username
+                    pubmed_id = int(content['STEP01']['pubmed_id'])
 
-                        dup = 0
-                        if Research.objects.filter(pubmed_id=pubmed_id).first():
-                            dup = 1
-                        elif Draft.objects.filter(
-                                pubmed_id=pubmed_id, user__username=submitter).first():
-                            dup = 2
-                        elif Draft.objects.filter(
-                                pubmed_id=pubmed_id).exclude(status__in=['Draft', 'Rejected']).first():
-                            dup = 3
+                    dup = 0
+                    if Research.objects.filter(pubmed_id=pubmed_id).first():
+                        dup = 1
+                    elif Draft.objects.filter(
+                            pubmed_id=pubmed_id, user__username=submitter).first():
+                        dup = 2
+                    elif Draft.objects.filter(
+                            pubmed_id=pubmed_id).exclude(status__in=['Draft', 'Rejected']).first():
+                        dup = 3
 
-                        if dup:
-                            response['code'] = 0
-                            response['msg'] = dup_msg[dup]
-                        else:
-                            content_ = {'time': {}, 'log': []}
-
-                            content_['time']['create'] = str(datetime.datetime.now())
-                            content_['log'].append({'user': username, 'step_now': step_now,
-                                                    'action': 'create',
-                                                    'time': str(datetime.datetime.now())})
-                            content_['content'] = content
-
-                            user = User.objects.get(username=submitter)
-                            record = Draft.objects.create(user=user,
-                                                          status='Draft',
-                                                          kb='SNP',
-                                                          pubmed_id=pubmed_id,
-                                                          content=content_)
-                            record.content['content']['submit_id'] = record.pk
-                            record.save()
-
-                            response['code'] = 1
-                            response['submit_id'] = record.pk
+                    if dup:
+                        response['code'] = 0
+                        response['msg'] = dup_msg[dup]
                     else:
-                        submit_id = int(content['submit_id'])
-                        record = Draft.objects.get(pk=submit_id)
-                        submitter = record.user.username
+                        content_ = {'time': {}, 'log': []}
 
-                        if content['step_max'] < step_now:
-                            content['step_max'] = step_now
+                        content_['time']['create'] = str(datetime.datetime.now())
+                        content_['log'].append({'user': username, 'step_now': step_now,
+                                                'action': 'create',
+                                                'time': str(datetime.datetime.now())})
+                        content_['content'] = content
 
-                        record.content['log'].append({'user': username, 'step_now': step_now,
-                                                      'action': action,
-                                                      'time': str(datetime.datetime.now())})
-
-                        record.content['content'] = content
-
-                        if step_now == 2:
-                            title = content['STEP02']['title'].strip()
-                            record.title = title
-
-                        elif step_now == 7:
-                            record.content['time']['submit'] = str(datetime.datetime.now())
-                            record.status = 'Under Review'
-
+                        user = User.objects.get(username=submitter)
+                        record = Draft.objects.create(user=user,
+                                                      status='Draft',
+                                                      kb='SNP',
+                                                      pubmed_id=pubmed_id,
+                                                      content=content_)
+                        record.content['content']['submit_id'] = record.pk
                         record.save()
+
                         response['code'] = 1
-
-            except Exception as e:
-                response['code'] = 0
-                response['msg'] = e
-
-        elif action in ['upload']:
-            try:
-                submit_id = int(request.POST['submit_id'])
-                paper_file = request.FILES['paper']
-
-                paper_name = paper_file.name
-                paper_size = round(paper_file.size / 1000 / 1000, 3)
-
-                error_msg = []
-                if paper_size > 20:
-                    error_msg.append("Uploading paper exceeds the maximum upload size: 20MB")
-                if not re.search('\.(pdf|zip)$', paper_name):
-                    error_msg.append("Uploading paper only accepts pdf/zip format")
-
-                if len(error_msg) > 0:
-                    record.content['log'].append({'user': username,
-                                                  'msg': "ERROR: {}<br>{} | {}MB".format(
-                                                      '<br>'.join(error_msg), paper_name, paper_size),
-                                                  'action': 'paper upload',
-                                                  'time': str(datetime.datetime.now())})
-
-                    response['error'] = '<br>'.join(error_msg)
+                        response['submit_id'] = record.pk
                 else:
+                    submit_id = int(content['submit_id'])
                     record = Draft.objects.get(pk=submit_id)
-                    if record.paper:
-                        record.paper.delete()
-                    record.paper = paper_file
-                    record.save()  # then record.paper.url will update
+                    submitter = record.user.username
 
-                    record.content['content']['paper_uploaded'] = True
-                    record.content['content']['paper_name'] = paper_name
-                    record.content['content']['paper_size'] = paper_size
-                    record.content['content']['paper_link'] = record.paper.url
+                    if content['step_max'] < step_now:
+                        content['step_max'] = step_now
 
-                    record.content['log'].append({'user': username,
-                                                  'msg': "{} | {}MB".format(paper_name, paper_size),
-                                                  'action': 'paper upload',
+                    record.content['log'].append({'user': username, 'step_now': step_now,
+                                                  'action': action,
                                                   'time': str(datetime.datetime.now())})
+
+                    record.content['content'] = content
+
+                    if step_now == 2:
+                        title = content['STEP02']['title'].strip()
+                        record.title = title
+
+                    elif step_now == 7:
+                        record.content['time']['submit'] = str(datetime.datetime.now())
+                        record.status = 'Under Review'
 
                     record.save()
-                    response['url'] = record.paper.url
-            except Exception as e:
-                raise e
+                    response['code'] = 1
 
-        elif action in ['Revision', 'Accepted', 'Rejected']:
-            try:
-                submit_id = int(request.POST['submit_id'])
-                comments = request.POST['comments']
+        except Exception as e:
+            response['code'] = 0
+            response['msg'] = str(e)
 
+    elif action in ['upload']:
+        try:
+            submit_id = int(request.POST['submit_id'])
+            paper_file = request.FILES['paper']
+
+            paper_name = paper_file.name
+            paper_size = round(paper_file.size / 1000 / 1000, 3)
+
+            error_msg = []
+            if paper_size > 20:
+                error_msg.append("Uploading paper exceeds the maximum upload size: 20MB")
+            if not re.search('\.(pdf|zip)$', paper_name):
+                error_msg.append("Uploading paper only accepts pdf/zip format")
+
+            if len(error_msg) > 0:
+                record.content['log'].append({'user': username,
+                                              'msg': "ERROR: {}<br>{} | {}MB".format(
+                                                  '<br>'.join(error_msg), paper_name, paper_size),
+                                              'action': 'paper upload',
+                                              'time': str(datetime.datetime.now())})
+
+                response['error'] = '<br>'.join(error_msg)
+            else:
                 record = Draft.objects.get(pk=submit_id)
+                if record.paper:
+                    record.paper.delete()
+                record.paper = paper_file
 
-                record.content['comments'] = comments
-                record.status = action
-                record.content['log'].append({'user': username, 'comments': comments,
-                                              'action': action,
+                record.save()  # then record.paper.url will update
+
+                record.content['content']['paper_uploaded'] = True
+                record.content['content']['paper_name'] = paper_name
+                record.content['content']['paper_size'] = paper_size
+                record.content['content']['paper_link'] = record.paper.url
+
+                record.content['log'].append({'user': username,
+                                              'msg': "{} | {}MB".format(paper_name, paper_size),
+                                              'action': 'paper upload',
                                               'time': str(datetime.datetime.now())})
 
                 record.save()
-                response['code'] = 1
-            except Exception as e:
-                response['code'] = 0
 
-        elif action in ['Delete']:
-            try:
-                submit_id = int(request.POST['submit_id'])
+                response['url'] = record.paper.url
 
-                Draft.objects.get(pk=submit_id).delete()
+        except Exception as e:
+            raise e
 
-                response['code'] = 1
-            except Exception as e:
-                response['code'] = 0
+    elif action in ['Revision', 'Accepted', 'Rejected']:
+        try:
+            submit_id = int(request.POST['submit_id'])
+            comments = request.POST['comments']
 
-        elif action in ['Log']:
-            try:
-                submit_id = int(request.POST['submit_id'])
+            record = Draft.objects.get(pk=submit_id)
 
-                response = {'data': []}
+            record.content['comments'] = comments
+            record.status = action
+            record.content['log'].append({'user': username, 'comments': comments,
+                                          'action': action,
+                                          'time': str(datetime.datetime.now())})
 
-                log = Draft.objects.get(pk=submit_id).content['log']
+            record.save()
 
-                for row in log:
-                    time_ = row['time'][:19]
-                    user = row['user']
-                    action = row['action']
-                    note = ''
+            if action == 'Accepted':
+                try:
+                    import_research(record.content['content'])
+                    msg = 'Success'
+                    record.content['log'].append({'user': username, 'msg': msg,
+                                                  'action': 'import',
+                                                  'time': str(datetime.datetime.now())})
 
-                    if 'step_now' in row:
-                        note = "at STEP0{}".format(row['step_now'])
-                    elif 'comments' in row:
-                        note = "comments: {}".format(row['comments'])
-                    elif 'msg' in row:
-                        note = row['msg']
+                    record.save()
+                except Exception as e:
+                    record.status = 'Revision'
+                    record.content['comments'] += '!IMPORT ERROR!'
+                    msg = 'Error: {}'.format(e)
+                    record.content['log'].append({'user': username, 'msg': msg,
+                                                  'action': 'import',
+                                                  'time': str(datetime.datetime.now())})
 
-                    response['data'].append([time_, user, action, note])
-            except Exception as e:
-                raise e
+                    record.save()
+                    raise e
 
-    except Exception as e:
-        raise e
+            response['code'] = 1
+        except Exception as e:
+            response['code'] = 0
+            raise e
+
+    elif action in ['Delete']:
+        try:
+            submit_id = int(request.POST['submit_id'])
+
+            Draft.objects.get(pk=submit_id).delete()
+
+            response['code'] = 1
+        except Exception as e:
+            response['code'] = 0
+            response['msg'] = str(e)
+
+    elif action in ['Log']:
+        try:
+            submit_id = int(request.POST['submit_id'])
+
+            response = {'data': []}
+
+            log = Draft.objects.get(pk=submit_id).content['log']
+
+            for row in log:
+                time_ = row['time'][:19]
+                user = row['user']
+                action = row['action']
+                note = ''
+
+                if 'step_now' in row:
+                    note = "at STEP0{}".format(row['step_now'])
+                elif 'comments' in row:
+                    note = "comments: {}".format(row['comments'])
+                elif 'msg' in row:
+                    note = row['msg']
+
+                response['data'].append([time_, user, action, note])
+        except Exception as e:
+            raise e
 
     return HttpResponse(json.dumps(response), content_type="application/json")
 
@@ -531,7 +673,7 @@ def import_data(request):
                     Research.objects.get_or_create(title=row[1], language=row[2], pub_year=int(row[3]),
                                                    pubmed_id=pubmed_id, url=row[5], pub_type=row[6], ebml=ebml,
                                                    ethnicity=ethnicity, patient_number=int(row[9]),
-                                                   male=male, female=male,
+                                                   male=male, female=female,
                                                    median_age=median_age, mean_age=mean_age, age_range=age_range)
             if re.search('tumor', table) or re.search('all', table):
                 for row in data['tumor']:

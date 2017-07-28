@@ -552,7 +552,7 @@ function addNew() {
             }
 
             if (subgroups.length == 0) {
-                subgroup_options_html = '<option value="N/A" selected>- N/A -</option>';
+                subgroup_options_html = '<option value="- N/A -" selected>- N/A -</option>';
                 $subgroup.html(subgroup_options_html);
                 $subgroup.prop('disabled', true);
             } else {

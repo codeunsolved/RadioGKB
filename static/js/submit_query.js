@@ -24,9 +24,8 @@ function querySubmit() {
     $('#accepted').click({'table': 'accepted'}, queryDT);
 
     $('#dt_pending').on('click', '.pending_action', popupAction);
-    $('#dt_pending').on('click', '.log', popupLog);
     $('#dt_draft').on('click', '.draft_delete', deleteDraft);
-    $('#dt_draft').on('click', '.log', popupLog);
+    $('body').on('click', '.log', popupLog);
 
     $('#pending').trigger("click");
     $('#draft').trigger("click");
@@ -95,15 +94,17 @@ function querySubmit() {
                                  'comments': comments},
                                 function(data) {
                                     var alert_msg = '';
+                                    var content = '';
                                     if (data.code == 1) {
                                         alert_msg = 'Success!';
                                     } else if (data.code == 0) {
                                         alert_msg = 'Error!';
+                                        content = data.msg;
                                     }
 
                                     $.confirm({
                                         title: alert_msg,
-                                        content: '',
+                                        content: content,
                                         buttons: {
                                             ok: function () {
                                                 window.location.reload();
@@ -149,6 +150,7 @@ function querySubmit() {
                     row += '</tr>';
                     $content.find('tbody').append(row);
                 }
+
                 $.confirm({
                     title: "Log",
                     content: $content.prop('outerHTML'),
@@ -179,15 +181,17 @@ function querySubmit() {
                              'submit_id': submit_id},
                             function(data) {
                                 var alert_msg = '';
+                                var content = '';
                                 if (data.code == 1) {
                                     alert_msg = 'Success!';
                                 } else if (data.code == 0) {
                                     alert_msg = 'Error!';
+                                    content = data.msg;
                                 }
 
                                 $.confirm({
                                     title: alert_msg,
-                                    content: '',
+                                    content: content,
                                     buttons: {
                                         ok: function () {
                                             window.location.reload();
