@@ -89,7 +89,7 @@ def submit_query(request):
 
                 delete_link = '<a class="draft_delete" submit_id="{}">Delete</a></li>'.format(r.pk)
 
-                log_link = '<a class="pending_log" submit_id="{}">Log</a></li>'.format(r.pk)
+                log_link = '<a class="log" submit_id="{}">Log</a></li>'.format(r.pk)
 
                 action = "{}&nbsp;&nbsp;{}&nbsp;&nbsp;{}".format(edit_link, delete_link, log_link)
 
@@ -120,7 +120,7 @@ def submit_query(request):
 
                 approve_link = '<a class="pending_action" submit_id="{}">Approve</a></li>'.format(r.pk)
 
-                log_link = '<a class="pending_log" submit_id="{}">Log</a></li>'.format(r.pk)
+                log_link = '<a class="log" submit_id="{}">Log</a></li>'.format(r.pk)
 
                 action = "{}&nbsp;&nbsp;{}&nbsp;&nbsp;{}".format(edit_link, approve_link, log_link)
 

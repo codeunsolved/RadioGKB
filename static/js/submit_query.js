@@ -24,8 +24,9 @@ function querySubmit() {
     $('#accepted').click({'table': 'accepted'}, queryDT);
 
     $('#dt_pending').on('click', '.pending_action', popupAction);
-    $('#dt_pending').on('click', '.pending_log', popupLog);
+    $('#dt_pending').on('click', '.log', popupLog);
     $('#dt_draft').on('click', '.draft_delete', deleteDraft);
+    $('#dt_draft').on('click', '.log', popupLog);
 
     $('#pending').trigger("click");
     $('#draft').trigger("click");
