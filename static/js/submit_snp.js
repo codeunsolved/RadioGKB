@@ -659,6 +659,7 @@ function addNew() {
                     $(this).val(content['STEP02'][name]);
                 }
             });
+        } else { console.log('REVIEW:NO STEP02'); }
         //fill Paper upload
         if (content['paper_uploaded']) {
             var paper_name = content['paper_name'];
@@ -670,8 +671,7 @@ function addNew() {
             $('#STEP02_paper_size').text(paper_size.toString()+" MB");
             $('#STEP02_paper_download').show();
             $('#STEP02_paper_download').attr('href', paper_link);
-        }
-        } else { console.log('REVIEW:NO STEP02'); }
+        } else { console.log('REVIEW:NO PAPER UPLOAD'); }
         //fill STEP03
         if ('STEP03' in content) {
             var tumors = content.STEP03.tumor;
