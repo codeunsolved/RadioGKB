@@ -647,7 +647,9 @@ function addNew() {
         $("#STEP01_nav").prop("data-toggle", null);
         //remove STEP02's back
         $("#STEP02_back").remove();
+        //fill STEP02's url
         //fill & disable STEP02's pubmed_id
+        $("#STEP02_form input[name=url]").val("https://www.ncbi.nlm.nih.gov/pubmed/"+content['STEP01']['pubmed_id'].toString());
         $("#STEP02_form input[name=pubmed_id]").val(content['STEP01']['pubmed_id']);
         freezePubmedId();
 

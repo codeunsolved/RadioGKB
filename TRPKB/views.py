@@ -93,13 +93,13 @@ def submit_query(request):
                 content = r.content
 
                 if r.status == 'Under Review':
-                    edit_link = '<a style="pointer-events:none;color:gray;">Edit</a></li>'
+                    edit_link = '<a style="pointer-events:none;color:gray;">Edit</a>'
+                    delete_link = '<a style="pointer-events:none;color:gray;">Delete</a>'.format(r.pk)
                 else:
                     edit_link = '<a href="{}/add/{}">Edit</a></li>'.format(r.kb.lower(), r.pk)
+                    delete_link = '<a class="draft_delete" submit_id="{}">Delete</a>'.format(r.pk)
 
-                delete_link = '<a class="draft_delete" submit_id="{}">Delete</a></li>'.format(r.pk)
-
-                log_link = '<a class="log" submit_id="{}">Log</a></li>'.format(r.pk)
+                log_link = '<a class="log" submit_id="{}">Log</a>'.format(r.pk)
 
                 action = "{}&nbsp;&nbsp;{}&nbsp;&nbsp;{}".format(edit_link, delete_link, log_link)
 
@@ -115,7 +115,7 @@ def submit_query(request):
             for i, r in enumerate(results):
                 content = r.content
 
-                log_link = '<a class="log" submit_id="{}">Log</a></li>'.format(r.pk)
+                log_link = '<a class="log" submit_id="{}">Log</a>'.format(r.pk)
 
                 row = [i + 1,
                        r.kb,
@@ -128,11 +128,11 @@ def submit_query(request):
             for i, r in enumerate(results):
                 content = r.content
 
-                edit_link = '<a href="{}/add/{}">View</a></li>'.format(r.kb.lower(), r.pk)
+                edit_link = '<a href="{}/add/{}">View</a>'.format(r.kb.lower(), r.pk)
 
-                approve_link = '<a class="pending_action" submit_id="{}">Approve</a></li>'.format(r.pk)
+                approve_link = '<a class="pending_action" submit_id="{}">Approve</a>'.format(r.pk)
 
-                log_link = '<a class="log" submit_id="{}">Log</a></li>'.format(r.pk)
+                log_link = '<a class="log" submit_id="{}">Log</a>'.format(r.pk)
 
                 action = "{}&nbsp;&nbsp;{}&nbsp;&nbsp;{}".format(edit_link, approve_link, log_link)
 
@@ -149,7 +149,7 @@ def submit_query(request):
             for i, r in enumerate(results):
                 content = r.content
 
-                log_link = '<a class="log" submit_id="{}">Log</a></li>'.format(r.pk)
+                log_link = '<a class="log" submit_id="{}">Log</a>'.format(r.pk)
 
                 row = [i + 1,
                        r.kb,
@@ -181,6 +181,7 @@ def submit_add(request):
             language=step02['language'],
             pub_year=int(step02['pub_year']),
             pubmed_id=int(step02['pubmed_id']),
+            url=step02['url'] if step02['url'] else None,
             pub_type=step02['pub_type'],
             ebml=ebml,
             ethnicity=step02['ethnicity'] if step02['ethnicity'] else None,
