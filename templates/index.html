@@ -21,7 +21,7 @@
                     {% csrf_token %}
                     <div class="input-group">
                       <span class="input-group-addon" style="width:70px;">Gene</span>
-                      <input name="gene" class="form-control" type="text">
+                      <input name="gene" class="form-control" list="genes" type="text">
                     </div>
                     <br>
                     <div class="input-group">
@@ -49,6 +49,11 @@
               </div>
             </div>
           </div>
+          <datalist id="genes">
+            {% for gene in genes %}
+            <option value="{{ gene }}">
+            {% endfor %}
+          </datalist>
         </div>
         <div class="col-md-3 col-sm-3 col-xs-3">
         </div>

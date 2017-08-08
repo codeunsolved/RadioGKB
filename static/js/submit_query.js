@@ -152,6 +152,7 @@ function querySubmit() {
                 }
 
                 $.confirm({
+                    columnClass: 'col-md-8 col-md-offset-2',
                     title: "Log",
                     content: $content.prop('outerHTML'),
                     buttons: {
@@ -183,7 +184,7 @@ function querySubmit() {
                                 var alert_msg = '';
                                 var content = '';
                                 if (data.code == 1) {
-                                    alert_msg = 'Success!';
+                                    alert_msg = 'Delete successful!';
                                 } else if (data.code == 0) {
                                     alert_msg = 'Error!';
                                     content = data.msg;

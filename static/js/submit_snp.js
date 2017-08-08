@@ -16,8 +16,8 @@ $.ajaxSetup({
 $(document).ready(addNew());
 
 function addNew() {
-    var step_now = content['step_now'];
-    var step_max = content['step_max'];
+    var step_now = content.step_now;
+    var step_max = content.step_max;
     var tumor_num = 1;
     var prognosis_num = 1;
     var association_num = 1;
@@ -82,7 +82,7 @@ function addNew() {
         var action = event.data.action;
         var step_id = 'STEP0' + id.toString();
 
-        content['step_now'] = id;
+        content.step_now = id;
         content[step_id] = {}; // reset
 
         if (checkForm(step_id)) {
@@ -277,7 +277,7 @@ function addNew() {
                 $('#STEP02_upload_progress .progress-bar').css('width', '0%');
                 $('#STEP02_paper_table').css('opacity', 1);
                 $.each(data.files, function (index, file) {
-                    var paper_name = file.name;
+                    var paper_name = content.STEP01.pubmed_id.toString() + '_' + file.name;
                     var paper_size = (file.size/1000/1000).toFixed(3);
                     var error_msg = [];
 
@@ -619,7 +619,7 @@ function addNew() {
             content: 'Submit now?',
             buttons: {
                 yes: function () {
-                    content['step_now'] = 7;
+                    content.step_now = 7;
                     querySubmit({
                         'kb': 'SNP',
                         'action': 'submit',
@@ -634,8 +634,8 @@ function addNew() {
     }
 
     function reviewSubmit() {
-        if (content['no_flag']) {
-            content['no_flag'] = false;
+        if (content.no_flag) {
+            content.no_flag = false;
         } else {
             $('#review_alert').show();
         }
@@ -649,8 +649,8 @@ function addNew() {
         $("#STEP02_back").remove();
         //fill STEP02's url
         //fill & disable STEP02's pubmed_id
-        $("#STEP02_form input[name=url]").val("https://www.ncbi.nlm.nih.gov/pubmed/"+content['STEP01']['pubmed_id'].toString());
-        $("#STEP02_form input[name=pubmed_id]").val(content['STEP01']['pubmed_id']);
+        $("#STEP02_form input[name=url]").val("https://www.ncbi.nlm.nih.gov/pubmed/"+content.STEP01.pubmed_id.toString());
+        $("#STEP02_form input[name=pubmed_id]").val(content.STEP01.pubmed_id);
         freezePubmedId();
 
         //fill STEP02
@@ -658,15 +658,15 @@ function addNew() {
             $("#STEP02_form :input").each(function() {
                 var name = $(this).attr("name");
                 if (name != 'pubmed_id') {
-                    $(this).val(content['STEP02'][name]);
+                    $(this).val(content.STEP02[name]);
                 }
             });
         } else { console.log('REVIEW:NO STEP02'); }
         //fill Paper upload
-        if (content['paper_uploaded']) {
-            var paper_name = content['paper_name'];
-            var paper_size = content['paper_size'];
-            var paper_link = content['paper_link'];
+        if (content.paper_uploaded) {
+            var paper_name = content.paper_name;
+            var paper_size = content.paper_size;
+            var paper_link = content.paper_link;
 
             $('#STEP02_paper_table').css('opacity', 1);
             $('#STEP02_paper_filename').text(paper_name);
