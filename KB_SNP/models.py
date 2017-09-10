@@ -3,7 +3,7 @@ from django.contrib.postgres.fields import ArrayField, IntegerRangeField, FloatR
 
 
 class Tumor(models.Model):
-    name = models.CharField(max_length=50, unique=True)
+    name = models.CharField(max_length=100, unique=True)
     mesh_term = models.CharField(max_length=50, unique=True, null=True, blank=True)
     mesh_id = models.IntegerField(unique=True, null=True, blank=True)
 
@@ -56,7 +56,7 @@ class Research(models.Model):
     mean_age = models.FloatField(null=True, blank=True)
     age_range = FloatRangeField(null=True, blank=True)
     treatment_desc = models.TextField(null=True, blank=True)
-    treatment_type = models.CharField(max_length=50, null=True, blank=True)
+    treatment_type = models.CharField(max_length=500, null=True, blank=True)
 
     def __str__(self):
         return "{}".format(self.title)

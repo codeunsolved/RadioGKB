@@ -20,7 +20,7 @@ class Migration(migrations.Migration):
             name='Association',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('genotype', models.CharField(max_length=50)),
+                ('expression', models.CharField(max_length=50)),
                 ('case_number', models.IntegerField(blank=True, null=True)),
                 ('control_number', models.IntegerField(blank=True, null=True)),
                 ('total_number', models.IntegerField(blank=True, null=True)),
@@ -86,9 +86,11 @@ class Migration(migrations.Migration):
                 ('median_age', models.FloatField(blank=True, null=True)),
                 ('mean_age', models.FloatField(blank=True, null=True)),
                 ('age_range', django.contrib.postgres.fields.ranges.FloatRangeField(blank=True, null=True)),
+                ('exp_detection_method', models.CharField(blank=True, max_length=50, null=True)),
+                ('cut_off_value', models.TextField(blank=True, null=True)),
                 ('treatment_desc', models.TextField(blank=True, null=True)),
                 ('treatment_type', models.CharField(blank=True, max_length=500, null=True)),
-                ('ebml', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='KB_SNP.EvidenceBasedMedicineLevel')),
+                ('ebml', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='KB_Exp.EvidenceBasedMedicineLevel')),
             ],
         ),
         migrations.CreateModel(
@@ -96,51 +98,41 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('subgroup', models.CharField(max_length=200)),
-                ('prognosis', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='KB_SNP.Prognosis')),
+                ('prognosis', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='KB_Exp.Prognosis')),
             ],
         ),
         migrations.CreateModel(
             name='Tumor',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=100, unique=True)),
+                ('name', models.CharField(max_length=50, unique=True)),
                 ('mesh_term', models.CharField(blank=True, max_length=50, null=True, unique=True)),
                 ('mesh_id', models.IntegerField(blank=True, null=True, unique=True)),
             ],
         ),
-        migrations.CreateModel(
-            name='Variant',
-            fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('dbsnp', models.CharField(max_length=200)),
-                ('hgvs_g', models.CharField(blank=True, max_length=50, null=True)),
-                ('hgvs_p', models.CharField(blank=True, max_length=50, null=True)),
-                ('gene', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, to='KB_SNP.Gene')),
-            ],
+        migrations.AddField(
+            model_name='association',
+            name='gene',
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='KB_Exp.Gene'),
         ),
         migrations.AddField(
             model_name='association',
             name='prognosis',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='KB_SNP.Prognosis'),
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='KB_Exp.Prognosis'),
         ),
         migrations.AddField(
             model_name='association',
             name='research',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='KB_SNP.Research'),
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='KB_Exp.Research'),
         ),
         migrations.AddField(
             model_name='association',
             name='subgroup',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, to='KB_SNP.Subgroup'),
+            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, to='KB_Exp.Subgroup'),
         ),
         migrations.AddField(
             model_name='association',
             name='tumor',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='KB_SNP.Tumor'),
-        ),
-        migrations.AddField(
-            model_name='association',
-            name='variant',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='KB_SNP.Variant'),
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='KB_Exp.Tumor'),
         ),
     ]

@@ -12,30 +12,44 @@ from django.contrib.auth.models import User
 from django.http import HttpResponse, Http404
 from django.shortcuts import render
 
-from KB_SNP.models import Association
-from KB_SNP.models import Tumor, Gene, Variant, EvidenceBasedMedicineLevel, Research, Prognosis, Subgroup
+from KB_SNP.models import Tumor as T_Snp
+from KB_SNP.models import Gene as G_Snp
+from KB_SNP.models import Variant as V_Snp
+from KB_SNP.models import EvidenceBasedMedicineLevel as E_Snp
+from KB_SNP.models import Research as R_Snp
+from KB_SNP.models import Prognosis as P_Snp
+from KB_SNP.models import Subgroup as S_Snp
+from KB_SNP.models import Association as A_Snp
+from KB_Exp.models import Tumor as T_Exp
+from KB_Exp.models import Gene as G_Exp
+from KB_Exp.models import EvidenceBasedMedicineLevel as E_Exp
+from KB_Exp.models import Research as R_Exp
+from KB_Exp.models import Prognosis as P_Exp
+from KB_Exp.models import Subgroup as S_Exp
+from KB_Exp.models import Association as A_Exp
 from Submit.models import Draft
 
 from .importData import read_xls
 
 
 def view_locale(request):
-    loc_info = "getlocale: " + str(locale.getlocale()) + \
-        "<br/>getdefaultlocale(): " + str(locale.getdefaultlocale()) + \
-        "<br/>fs_encoding: " + str(sys.getfilesystemencoding()) + \
-        "<br/>sys default encoding: " + str(sys.getdefaultencoding())
+    loc_info = "getlocale: {}<br/>getdefaultlocale: {}<br/>".format(
+               str(locale.getlocale()), str(locale.getdefaultlocale()))
+    loc_info += "getfilesystemencoding: {}<br/>getdefaultencoding: {}".format(
+                str(sys.getfilesystemencoding()), str(sys.getdefaultencoding()))
     return HttpResponse(loc_info)
 
 
 def get_stats():
-    return {'research_num': len(Research.objects.all()),
-            'tumor_num': len(Tumor.objects.all()),
-            'gene_num': len(Gene.objects.all()),
-            'variant_num': len(Variant.objects.all())}
+    return {'r_snp_num': len(R_Snp.objects.all()),
+            'g_snp_num': len(G_Snp.objects.all()),
+            'v_snp_num': len(V_Snp.objects.all()),
+            'r_exp_num': len(R_Exp.objects.all()),
+            'g_exp_num': len(G_Exp.objects.all())}
 
 
 def index(request):
-    context = {'stats': get_stats(), 'genes': Gene.objects.all()}
+    context = {'stats': get_stats(), 'genes': G_Snp.objects.all()}
     return render(request, 'index.html', context)
 
 
@@ -176,8 +190,8 @@ def submit_add(request):
         else:
             age_range = None
 
-        ebml = EvidenceBasedMedicineLevel.objects.get(ebml=step02['ebml'])
-        research, created = Research.objects.get_or_create(
+        ebml = E_Snp.objects.get(ebml=step02['ebml'])
+        research, created = R_Snp.objects.get_or_create(
             title=step02['title'],
             language=step02['language'],
             pub_year=int(step02['pub_year']),
@@ -198,7 +212,7 @@ def submit_add(request):
         # import Tumor
         step03 = content['STEP03']
         for row in step03['tumor']:
-            Tumor.objects.get_or_create(name=row['tumor'])
+            T_Snp.objects.get_or_create(name=row['tumor'])
 
         # import Gene & Variant
         step04 = content['STEP04']
@@ -209,19 +223,19 @@ def submit_add(request):
                     gene_name = row2['gene_new']
 
                 if gene_name != '- N/A -':
-                    gene, created = Gene.objects.get_or_create(gene_official_symbol=gene_name)
+                    gene, created = G_Snp.objects.get_or_create(gene_official_symbol=gene_name)
                     if row2['entrez_id']:
                         gene.entrez_gene_id = int(row2['entrez_id'])
                         gene.save()
                 else:
                     gene = None
 
-                Variant.objects.get_or_create(gene=gene, dbsnp=row2['dbsnp'])
+                V_Snp.objects.get_or_create(gene=gene, dbsnp=row2['dbsnp'])
 
         # import Prognosis
         step05 = content['STEP05']
         for row in step05['prognosis']:
-            prognosis, created = Prognosis.objects.get_or_create(
+            prognosis, created = P_Snp.objects.get_or_create(
                 prognosis_name=row['prognosis_name'],
                 prognosis_type=row['prognosis_type'] if row['prognosis_type'] else None,
                 endpoint=row['endpoint'] if row['endpoint'] else None,
@@ -235,7 +249,7 @@ def submit_add(request):
 
             for sub in row['subgroup']:
                 if sub:
-                    subgroup, created = Subgroup.objects.get_or_create(prognosis=prognosis, subgroup=sub)
+                    subgroup, created = S_Snp.objects.get_or_create(prognosis=prognosis, subgroup=sub)
 
                     if row['prognosis_name'] not in pk_d['sub']:
                         pk_d['sub'][row['prognosis_name']] = {}
@@ -245,12 +259,12 @@ def submit_add(request):
         step06 = content['STEP06']
         for row1 in step06['association']:
             for row in row1:
-                tumor = Tumor.objects.get(name=row['tumor'])
+                tumor = T_Snp.objects.get(name=row['tumor'])
                 print(row['variant'])
-                variant = Variant.objects.get(dbsnp=row['variant'])
-                prognosis = Prognosis.objects.get(pk=pk_d['prog'][row['prognosis']])
+                variant = V_Snp.objects.get(dbsnp=row['variant'])
+                prognosis = P_Snp.objects.get(pk=pk_d['prog'][row['prognosis']])
                 if row['subgroup'] != '- N/A -':
-                    subgroup = Subgroup.objects.get(pk=pk_d['sub'][row['prognosis']][row['subgroup']])
+                    subgroup = S_Snp.objects.get(pk=pk_d['sub'][row['prognosis']][row['subgroup']])
                 else:
                     subgroup = None
 
@@ -263,7 +277,7 @@ def submit_add(request):
                 else:
                     ci_m_95 = None
 
-            Association.objects.get_or_create(
+            A_Snp.objects.get_or_create(
                 research=research,
                 tumor=tumor,
                 variant=variant,
@@ -304,7 +318,7 @@ def submit_add(request):
                     pubmed_id = int(content['STEP01']['pubmed_id'])
 
                     dup = 0
-                    if Research.objects.filter(pubmed_id=pubmed_id).first():
+                    if R_Snp.objects.filter(pubmed_id=pubmed_id).first():
                         dup = 1
                     elif Draft.objects.filter(
                             pubmed_id=pubmed_id, user__username=submitter).first():
@@ -498,8 +512,8 @@ def snp_add(request, submit_id):
     context = {'stats': get_stats(), 'submit_id': None, 'content': {}}
     forms = {'research': {}}
 
-    forms['research']['ebml'] = [x.ebml for x in EvidenceBasedMedicineLevel.objects.all()]
-    genes = [x.gene_official_symbol for x in Gene.objects.all()] + ['- N/A -']
+    forms['research']['ebml'] = [x.ebml for x in E_Snp.objects.all()]
+    genes = [x.gene_official_symbol for x in G_Snp.objects.all()] + ['- N/A -']
 
     context['forms'] = forms
     context['genes'] = genes
@@ -537,12 +551,12 @@ def snp_search(request):
         term_tumor = request.POST['tumor']
 
         if term_gene:
-            results = Association.objects.filter(
+            results = A_Snp.objects.filter(
                 tumor__name__icontains=term_tumor).filter(
                 variant__dbsnp__icontains=term_variant).filter(
                 variant__gene__gene_official_symbol__icontains=term_gene)
         else:
-            results = Association.objects.filter(
+            results = A_Snp.objects.filter(
                 tumor__name__icontains=term_tumor).filter(
                 variant__dbsnp__icontains=term_variant)
 
@@ -588,7 +602,7 @@ def snp_details(request, research_id, tumor_id, variant_id):
                'research': {}, 'tumor': {}, 'variant': {}, 'gene': {},
                'tabs': {'tab': [], 'content': {}}}
 
-    research = Research.objects.get(pk=research_id)
+    research = R_Snp.objects.get(pk=research_id)
     context['research'] = {'title': research.title, 'pub_year': research.pub_year,
                            'pubmed_id': research.pubmed_id if research.pubmed_id else '',
                            'url': research.url if research.url else '',
@@ -598,10 +612,10 @@ def snp_details(request, research_id, tumor_id, variant_id):
                            'treatment_type': research.treatment_type if research.treatment_type else '',
                            }
 
-    tumor = Tumor.objects.get(pk=tumor_id)
+    tumor = T_Snp.objects.get(pk=tumor_id)
     context['tumor']['name'] = tumor.name
 
-    variant = Variant.objects.get(pk=variant_id)
+    variant = V_Snp.objects.get(pk=variant_id)
     context['variant']['dbsnp'] = variant.dbsnp
 
     gene = variant.gene
@@ -620,7 +634,7 @@ def snp_details(request, research_id, tumor_id, variant_id):
         context['gene']['type'] = ''
         context['gene']['summary'] = ''
 
-    association = Association.objects.filter(research__pk=research_id, tumor__pk=tumor_id, variant__pk=variant_id)
+    association = A_Snp.objects.filter(research__pk=research_id, tumor__pk=tumor_id, variant__pk=variant_id)
 
     prognosis = {}
     for row in association:
@@ -681,14 +695,14 @@ def snp_details(request, research_id, tumor_id, variant_id):
                         trows[i].append(row[col])
             subgroups[subgroup_name]['tbody'] = trows
 
-        annotation = Prognosis.objects.get(pk=p_id).annotation
+        annotation = P_Snp.objects.get(pk=p_id).annotation
         context['tabs']['content'][p_id] = {'subgroups': subgroups,
                                             'annotation': annotation if annotation else None}
 
     return render(request, 'snp_details.html', context)
 
 
-def import_data(request):
+def import_snp(request):
     def get_via_pk(pk, data, i=1):
         for row in data:
             if row[0] == pk:
@@ -701,45 +715,48 @@ def import_data(request):
             path = request.GET['path']
             table = request.GET['table']
 
-            data = read_xls(path)
+            data = read_xls(path, 'snp')
 
             if re.search('research', table) or re.search('all', table):
                 for ebml in ['Systematic Review', 'Randomized Controlled Trial', 'Cohort Study', 'Case Control Study',
                              'Case Series', 'Case Report', 'Animal Assay', 'Cell Line Study']:
-                    EvidenceBasedMedicineLevel.objects.get_or_create(ebml=ebml)
+                    E_Snp.objects.get_or_create(ebml=ebml)
 
                 for row in data['research']:
                     pubmed_id = int(row[4]) if row[4] else None
-                    ebml = EvidenceBasedMedicineLevel.objects.get(ebml=row[7])
+                    ebml = E_Snp.objects.get(ebml=row[7])
                     ethnicity = row[8] if row[8] else None
                     male = int(row[10]) if row[10] else None
                     female = int(row[11]) if row[11] else None
                     median_age = float(row[12]) if row[12] else None
                     mean_age = float(row[13]) if row[13] else None
                     age_range = [float(x) for x in row[14].split('-')] if row[14] else None
-                    Research.objects.get_or_create(title=row[1], language=row[2], pub_year=int(row[3]),
-                                                   pubmed_id=pubmed_id, url=row[5], pub_type=row[6], ebml=ebml,
-                                                   ethnicity=ethnicity, patient_number=int(row[9]),
-                                                   male=male, female=female,
-                                                   median_age=median_age, mean_age=mean_age, age_range=age_range)
+                    treatment_desc = row[15] if row[15] else None
+                    treatment_type = row[16] if row[16] else None
+                    R_Snp.objects.get_or_create(title=row[1], language=row[2], pub_year=int(row[3]),
+                                                pubmed_id=pubmed_id, url=row[5], pub_type=row[6], ebml=ebml,
+                                                ethnicity=ethnicity, patient_number=int(row[9]),
+                                                male=male, female=female,
+                                                median_age=median_age, mean_age=mean_age, age_range=age_range,
+                                                treatment_desc=treatment_desc, treatment_type=treatment_type)
 
             if re.search('tumor', table) or re.search('all', table):
                 for row in data['tumor']:
-                    Tumor.objects.get_or_create(name=row[1])
+                    T_Snp.objects.get_or_create(name=row[1])
 
             if re.search('gene', table) or re.search('all', table):
                 for row in data['gene']:
-                    Gene.objects.get_or_create(gene_official_symbol=row[1],
-                                               entrez_gene_id=int(row[2]),
-                                               gene_alternative_symbols=row[3].split(';'),
-                                               gene_official_full_name=row[4],
-                                               gene_type=row[5],
-                                               gene_summary=row[6])
+                    G_Snp.objects.get_or_create(gene_official_symbol=row[1],
+                                                entrez_gene_id=int(row[2]),
+                                                gene_alternative_symbols=row[3].split(';'),
+                                                gene_official_full_name=row[4],
+                                                gene_type=row[5],
+                                                gene_summary=row[6])
 
             if re.search('variant', table) or re.search('all', table):
                 for row in data['variant']:
-                    gene = Gene.objects.get(gene_official_symbol=get_via_pk(row[1], data['gene'])) if row[1] else None
-                    Variant.objects.get_or_create(gene=gene, dbsnp=row[2])
+                    gene = G_Snp.objects.get(gene_official_symbol=get_via_pk(row[1], data['gene'])) if row[1] else None
+                    V_Snp.objects.get_or_create(gene=gene, dbsnp=row[2])
 
             if re.search('prognosis', table) or re.search('all', table):
                 for row in data['prognosis']:
@@ -749,23 +766,23 @@ def import_data(request):
                     control_meaning = row[6] if row[6] else None
                     total_meaning = row[7] if row[7] else None
                     annotation = row[9] if row[9] else None
-                    Prognosis.objects.create(prognosis_name=row[1], prognosis_type=prognosis_type,
-                                             endpoint=endpoint, original=row[4],
-                                             case_meaning=case_meaning, control_meaning=control_meaning,
-                                             total_meaning=total_meaning, annotation=annotation)
+                    P_Snp.objects.create(prognosis_name=row[1], prognosis_type=prognosis_type,
+                                         endpoint=endpoint, original=row[4],
+                                         case_meaning=case_meaning, control_meaning=control_meaning,
+                                         total_meaning=total_meaning, annotation=annotation)
 
             if re.search('subgroup', table) or re.search('all', table):
                 for row in data['subgroup']:
-                    prognosis = Prognosis.objects.get(pk=int(row[1]))
-                    Subgroup.objects.get_or_create(prognosis=prognosis, subgroup=row[2])
+                    prognosis = P_Snp.objects.get(pk=int(row[1]))
+                    S_Snp.objects.get_or_create(prognosis=prognosis, subgroup=row[2])
 
             if re.search('association', table) or re.search('all', table):
                 for row in data['association']:
-                    research = Research.objects.get(title=get_via_pk(row[1], data['research']))
-                    tumor = Tumor.objects.get(name=get_via_pk(row[2], data['tumor']))
-                    variant = Variant.objects.get(dbsnp=get_via_pk(row[4], data['variant'], 2))
-                    prognosis = Prognosis.objects.get(pk=int(row[5]))
-                    subgroup = Subgroup.objects.get(pk=int(row[6])) if row[6] else None
+                    research = R_Snp.objects.get(title=get_via_pk(row[1], data['research']))
+                    tumor = T_Snp.objects.get(name=get_via_pk(row[2], data['tumor']))
+                    variant = V_Snp.objects.get(dbsnp=get_via_pk(row[4], data['variant'], 2))
+                    prognosis = P_Snp.objects.get(pk=int(row[5]))
+                    subgroup = S_Snp.objects.get(pk=int(row[6])) if row[6] else None
                     case_number = int(row[8]) if row[8] else None
                     control_number = int(row[9]) if row[9] else None
                     total_number = int(row[10]) if row[10] else None
@@ -780,22 +797,141 @@ def import_data(request):
                     ci_m_95 = [float(x) for x in row[19].split('-')] if row[19] else None
                     p_m = row[20] if row[20] else None
                     try:
-                        Association.objects.get(research=research, tumor=tumor, variant=variant,
-                                                prognosis=prognosis, subgroup=subgroup, genotype=row[7],
-                                                case_number=case_number, control_number=control_number,
-                                                total_number=total_number,
-                                                or_u=or_u, hr_u=hr_u, rr_u=rr_u, ci_u_95=ci_u_95, p_u=p_u,
-                                                or_m=or_m, hr_m=hr_m, rr_m=rr_m, ci_m_95=ci_m_95, p_m=p_m)
-                        msg += "{}<br>".format(row)
+                        a = A_Snp.objects.get(research=research, tumor=tumor, variant=variant,
+                                              prognosis=prognosis, subgroup=subgroup, genotype=row[7],
+                                              case_number=case_number, control_number=control_number,
+                                              total_number=total_number,
+                                              or_u=or_u, hr_u=hr_u, rr_u=rr_u, ci_u_95=ci_u_95, p_u=p_u,
+                                              or_m=or_m, hr_m=hr_m, rr_m=rr_m, ci_m_95=ci_m_95, p_m=p_m)
+                        msg += "{} - {}<br>".format(a.pk, row)
                     except Exception as e:
                         pass
 
-                    Association.objects.create(research=research, tumor=tumor, variant=variant,
-                                               prognosis=prognosis, subgroup=subgroup, genotype=row[7],
-                                               case_number=case_number, control_number=control_number,
-                                               total_number=total_number,
-                                               or_u=or_u, hr_u=hr_u, rr_u=rr_u, ci_u_95=ci_u_95, p_u=p_u,
-                                               or_m=or_m, hr_m=hr_m, rr_m=rr_m, ci_m_95=ci_m_95, p_m=p_m)
+                    A_Snp.objects.create(research=research, tumor=tumor, variant=variant,
+                                         prognosis=prognosis, subgroup=subgroup, genotype=row[7],
+                                         case_number=case_number, control_number=control_number,
+                                         total_number=total_number,
+                                         or_u=or_u, hr_u=hr_u, rr_u=rr_u, ci_u_95=ci_u_95, p_u=p_u,
+                                         or_m=or_m, hr_m=hr_m, rr_m=rr_m, ci_m_95=ci_m_95, p_m=p_m)
+
+        except Exception as e:
+            raise e
+
+        return HttpResponse("OK!<br>" + msg)
+    else:
+        return render(request, 'import_data.html')
+
+
+def import_exp(request):
+    def get_via_pk(pk, data, i=1):
+        for row in data:
+            if row[0] == pk:
+                return row[i]
+        return None
+
+    msg = ""
+    if 'path' in request.GET and 'table' in request.GET:
+        try:
+            path = request.GET['path']
+            table = request.GET['table']
+
+            data = read_xls(path, 'exp')
+
+            if re.search('research', table) or re.search('all', table):
+                for ebml in ['Systematic Review', 'Randomized Controlled Trial', 'Cohort Study', 'Case Control Study',
+                             'Case Series', 'Case Report', 'Animal Assay', 'Cell Line Study']:
+                    E_Exp.objects.get_or_create(ebml=ebml)
+
+                for row in data['research']:
+                    pubmed_id = int(row[4]) if row[4] else None
+                    ebml = E_Exp.objects.get(ebml=row[7])
+                    ethnicity = row[8] if row[8] else None
+                    male = int(row[10]) if row[10] else None
+                    female = int(row[11]) if row[11] else None
+                    median_age = float(row[12]) if row[12] else None
+                    mean_age = float(row[13]) if row[13] else None
+                    age_range = [float(x) for x in row[14].split('-')] if row[14] else None
+                    exp_detection_method = row[15] if row[15] else None
+                    cut_off_value = row[16] if row[16] else None
+                    treatment_desc = row[17] if row[17] else None
+                    treatment_type = row[18] if row[18] else None
+                    R_Exp.objects.get_or_create(title=row[1], language=row[2], pub_year=int(row[3]),
+                                                pubmed_id=pubmed_id, url=row[5], pub_type=row[6], ebml=ebml,
+                                                ethnicity=ethnicity, patient_number=int(row[9]),
+                                                male=male, female=female,
+                                                median_age=median_age, mean_age=mean_age, age_range=age_range,
+                                                exp_detection_method=exp_detection_method,
+                                                cut_off_value=cut_off_value,
+                                                treatment_desc=treatment_desc, treatment_type=treatment_type)
+
+            if re.search('tumor', table) or re.search('all', table):
+                for row in data['tumor']:
+                    T_Exp.objects.get_or_create(name=row[1])
+
+            if re.search('gene', table) or re.search('all', table):
+                for row in data['gene']:
+                    G_Exp.objects.get_or_create(gene_official_symbol=row[1],
+                                                entrez_gene_id=int(row[2]),
+                                                gene_alternative_symbols=row[3].split(';'),
+                                                gene_official_full_name=row[4],
+                                                gene_type=row[5],
+                                                gene_summary=row[6])
+
+            if re.search('prognosis', table) or re.search('all', table):
+                for row in data['prognosis']:
+                    prognosis_type = row[2] if row[2] else None
+                    endpoint = row[3] if row[3] else None
+                    case_meaning = row[5] if row[5] else None
+                    control_meaning = row[6] if row[6] else None
+                    total_meaning = row[7] if row[7] else None
+                    annotation = row[8] if row[8] else None
+                    P_Exp.objects.create(prognosis_name=row[1], prognosis_type=prognosis_type,
+                                         endpoint=endpoint, original=row[4],
+                                         case_meaning=case_meaning, control_meaning=control_meaning,
+                                         total_meaning=total_meaning, annotation=annotation)
+
+            if re.search('subgroup', table) or re.search('all', table):
+                for row in data['subgroup']:
+                    prognosis = P_Exp.objects.get(pk=int(row[1]))
+                    S_Exp.objects.get_or_create(prognosis=prognosis, subgroup=row[2])
+
+            if re.search('association', table) or re.search('all', table):
+                for row in data['association']:
+                    research = R_Exp.objects.get(title=get_via_pk(row[1], data['research']))
+                    tumor = T_Exp.objects.get(name=get_via_pk(row[2], data['tumor']))
+                    gene = G_Exp.objects.get(gene_official_symbol=get_via_pk(row[3], data['gene']))
+                    prognosis = P_Exp.objects.get(pk=int(row[4]))
+                    subgroup = S_Exp.objects.get(pk=int(row[5])) if row[5] else None
+                    case_number = int(row[7]) if row[7] else None
+                    control_number = int(row[8]) if row[8] else None
+                    total_number = int(row[9]) if row[9] else None
+                    or_u = float(row[10]) if row[10] else None
+                    hr_u = float(row[11]) if row[11] else None
+                    rr_u = float(row[12]) if row[12] else None
+                    ci_u_95 = [float(x) for x in row[13].split('-')] if row[13] else None
+                    p_u = row[14] if row[14] else None
+                    or_m = float(row[15]) if row[15] else None
+                    hr_m = float(row[16]) if row[16] else None
+                    rr_m = float(row[17]) if row[17] else None
+                    ci_m_95 = [float(x) for x in row[18].split('-')] if row[18] else None
+                    p_m = row[19] if row[19] else None
+                    try:
+                        a = A_Exp.objects.get(research=research, tumor=tumor, gene=gene,
+                                              prognosis=prognosis, subgroup=subgroup, expression=row[6],
+                                              case_number=case_number, control_number=control_number,
+                                              total_number=total_number,
+                                              or_u=or_u, hr_u=hr_u, rr_u=rr_u, ci_u_95=ci_u_95, p_u=p_u,
+                                              or_m=or_m, hr_m=hr_m, rr_m=rr_m, ci_m_95=ci_m_95, p_m=p_m)
+                        msg += "{} - {}<br>".format(a.pk, row)
+                    except Exception as e:
+                        pass
+
+                    A_Exp.objects.create(research=research, tumor=tumor, gene=gene,
+                                         prognosis=prognosis, subgroup=subgroup, expression=row[6],
+                                         case_number=case_number, control_number=control_number,
+                                         total_number=total_number,
+                                         or_u=or_u, hr_u=hr_u, rr_u=rr_u, ci_u_95=ci_u_95, p_u=p_u,
+                                         or_m=or_m, hr_m=hr_m, rr_m=rr_m, ci_m_95=ci_m_95, p_m=p_m)
 
         except Exception as e:
             raise e

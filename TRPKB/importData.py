@@ -11,7 +11,7 @@ import re
 import xlrd
 
 
-def read_xls(path_xls):
+def read_xls(path_xls, kb):
     def read_table(tab_name):
         tab_data = []
 
@@ -26,9 +26,16 @@ def read_xls(path_xls):
 
     data = {}
     wb = xlrd.open_workbook(path_xls)
+
+    if kb == 'snp':
+        tab_list = tab_snp
+    elif kb == 'exp':
+        tab_list = tab_exp
+
     for key in tab_list:
         data[key] = read_table(key)
 
     return data
 
-tab_list = ['research', 'tumor', 'gene', 'variant', 'prognosis', 'subgroup', 'association']
+tab_snp = ['research', 'tumor', 'gene', 'variant', 'prognosis', 'subgroup', 'association']
+tab_exp = ['research', 'tumor', 'gene', 'prognosis', 'subgroup', 'association']

@@ -288,7 +288,7 @@ function addNew() {
                         error_msg.push("Uploading paper exceeds the maximum upload size: 20MB");
                         error = true;
                     }
-                    if (paper_name.search(/\.(pdf|zip)$/i) == -1) {
+                    if (paper_name.search(/\.(pdf|caj|zip)$/i) == -1) {
                         error_msg.push("Uploading paper only accepts pdf/zip format");
                         error = true;
                     }
@@ -311,6 +311,11 @@ function addNew() {
                         var paper_name = file.name;
                         var paper_size = (file.size/1000/1000).toFixed(3);
                         var paper_link = data.result.url
+
+                        content['paper_uploaded'] = true;
+                        content['paper_name'] = paper_name
+                        content['paper_size'] = paper_size
+                        content['paper_link'] = paper_link
 
                         $('#STEP02_upload_progress .progress-bar').attr('class', "progress-bar progress-bar-success");
                         $('#STEP02_paper_download').show();

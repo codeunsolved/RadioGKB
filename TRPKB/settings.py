@@ -34,6 +34,7 @@ ALLOWED_HOSTS = ['*']
 
 INSTALLED_APPS = [
     'KB_SNP.apps.KbSnpConfig',
+    'KB_Exp.apps.KbExpConfig',
     'Submit.apps.SubmitConfig',
     'django.contrib.admin',
     'django.contrib.auth',

@@ -7,7 +7,7 @@
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
-SET client_encoding = 'UTF8';
+SET client_encoding = 'SQL_ASCII';
 SET standard_conforming_strings = on;
 SET check_function_bodies = false;
 SET client_min_messages = warning;
@@ -215,7 +215,7 @@ CREATE TABLE "KB_SNP_research" (
     mean_age double precision,
     age_range numrange,
     treatment_desc text,
-    treatment_type character varying(50),
+    treatment_type character varying(200),
     ebml_id integer NOT NULL
 );
 
@@ -283,7 +283,7 @@ ALTER SEQUENCE "KB_SNP_subgroup_id_seq" OWNED BY "KB_SNP_subgroup".id;
 
 CREATE TABLE "KB_SNP_tumor" (
     id integer NOT NULL,
-    name character varying(50) NOT NULL,
+    name character varying(100) NOT NULL,
     mesh_term character varying(50),
     mesh_id integer
 );
@@ -346,45 +346,6 @@ ALTER TABLE "KB_SNP_variant_id_seq" OWNER TO trpkb;
 --
 
 ALTER SEQUENCE "KB_SNP_variant_id_seq" OWNED BY "KB_SNP_variant".id;
-
-
---
--- Name: Submit_draft; Type: TABLE; Schema: public; Owner: trpkb
---
-
-CREATE TABLE "Submit_draft" (
-    id integer NOT NULL,
-    status character varying(20) NOT NULL,
-    kb character varying(20) NOT NULL,
-    title character varying(500) NOT NULL,
-    pubmed_id integer,
-    content jsonb NOT NULL,
-    paper character varying(300),
-    user_id integer NOT NULL
-);
-
-
-ALTER TABLE "Submit_draft" OWNER TO trpkb;
-
---
--- Name: Submit_draft_id_seq; Type: SEQUENCE; Schema: public; Owner: trpkb
---
-
-CREATE SEQUENCE "Submit_draft_id_seq"
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
-ALTER TABLE "Submit_draft_id_seq" OWNER TO trpkb;
-
---
--- Name: Submit_draft_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: trpkb
---
-
-ALTER SEQUENCE "Submit_draft_id_seq" OWNED BY "Submit_draft".id;
 
 
 --
@@ -1027,13 +988,6 @@ ALTER TABLE ONLY "KB_SNP_tumor" ALTER COLUMN id SET DEFAULT nextval('"KB_SNP_tum
 --
 
 ALTER TABLE ONLY "KB_SNP_variant" ALTER COLUMN id SET DEFAULT nextval('"KB_SNP_variant_id_seq"'::regclass);
-
-
---
--- Name: id; Type: DEFAULT; Schema: public; Owner: trpkb
---
-
-ALTER TABLE ONLY "Submit_draft" ALTER COLUMN id SET DEFAULT nextval('"Submit_draft_id_seq"'::regclass);
 
 
 --
@@ -6545,21 +6499,6 @@ SELECT pg_catalog.setval('"KB_SNP_variant_id_seq"', 389, true);
 
 
 --
--- Data for Name: Submit_draft; Type: TABLE DATA; Schema: public; Owner: trpkb
---
-
-COPY "Submit_draft" (id, status, kb, title, pubmed_id, content, paper, user_id) FROM stdin;
-\.
-
-
---
--- Name: Submit_draft_id_seq; Type: SEQUENCE SET; Schema: public; Owner: trpkb
---
-
-SELECT pg_catalog.setval('"Submit_draft_id_seq"', 1, false);
-
-
---
 -- Data for Name: account_emailaddress; Type: TABLE DATA; Schema: public; Owner: trpkb
 --
 
@@ -6686,9 +6625,6 @@ COPY auth_permission (id, name, content_type_id, codename) FROM stdin;
 58	Can add social application	20	add_socialapp
 59	Can change social application	20	change_socialapp
 60	Can delete social application	20	delete_socialapp
-61	Can add draft	21	add_draft
-62	Can change draft	21	change_draft
-63	Can delete draft	21	delete_draft
 \.
 
 
@@ -6696,7 +6632,7 @@ COPY auth_permission (id, name, content_type_id, codename) FROM stdin;
 -- Name: auth_permission_id_seq; Type: SEQUENCE SET; Schema: public; Owner: trpkb
 --
 
-SELECT pg_catalog.setval('auth_permission_id_seq', 63, true);
+SELECT pg_catalog.setval('auth_permission_id_seq', 60, true);
 
 
 --
@@ -6705,8 +6641,8 @@ SELECT pg_catalog.setval('auth_permission_id_seq', 63, true);
 
 COPY auth_user (id, password, last_login, is_superuser, username, first_name, last_name, email, is_staff, is_active, date_joined) FROM stdin;
 1	pbkdf2_sha256$36000$YZMSWvPPBwQJ$UFN+baPQdVhuhUgjuZTRwOJx2pg9F3sfZMtq/t0lpDw=	2017-07-19 09:36:40.294831+00	f	trpkb			trpkb2017@163.com	t	t	2017-07-19 09:32:00+00
+3	pbkdf2_sha256$36000$AbeqeMuRmBLq$ehR+gaHKgeGCa821oVrquDDx8+3Ylvqonr6YIueRIj4=	2017-07-19 09:37:34.626901+00	f	wei			weicongchong@topgen.com.cn	f	t	2017-07-19 09:37:12.690414+00
 2	pbkdf2_sha256$36000$QKkLVgKriArF$v7FnmMca5+mxOlLlwqLuPuVNSuOSq32fis9sGNjyrg8=	2017-07-19 09:37:50.289499+00	t	admin				t	t	2017-07-19 09:34:05.999901+00
-3	pbkdf2_sha256$36000$AbeqeMuRmBLq$ehR+gaHKgeGCa821oVrquDDx8+3Ylvqonr6YIueRIj4=	2017-07-19 09:40:04.93026+00	f	wei			weicongchong@topgen.com.cn	f	t	2017-07-19 09:37:12.690414+00
 \.
 
 
@@ -6790,7 +6726,6 @@ COPY django_content_type (id, app_label, model) FROM stdin;
 18	socialaccount	socialaccount
 19	socialaccount	socialtoken
 20	socialaccount	socialapp
-21	Submit	draft
 \.
 
 
@@ -6798,7 +6733,7 @@ COPY django_content_type (id, app_label, model) FROM stdin;
 -- Name: django_content_type_id_seq; Type: SEQUENCE SET; Schema: public; Owner: trpkb
 --
 
-SELECT pg_catalog.setval('django_content_type_id_seq', 21, true);
+SELECT pg_catalog.setval('django_content_type_id_seq', 20, true);
 
 
 --
@@ -6827,7 +6762,6 @@ COPY django_migrations (id, app, name, applied) FROM stdin;
 19	socialaccount	0001_initial	2017-07-19 09:21:22.643065+00
 20	socialaccount	0002_token_max_lengths	2017-07-19 09:21:22.705902+00
 21	socialaccount	0003_extra_data_default_dict	2017-07-19 09:21:22.755979+00
-22	Submit	0001_initial	2017-07-19 09:41:05.617407+00
 \.
 
 
@@ -6835,7 +6769,7 @@ COPY django_migrations (id, app, name, applied) FROM stdin;
 -- Name: django_migrations_id_seq; Type: SEQUENCE SET; Schema: public; Owner: trpkb
 --
 
-SELECT pg_catalog.setval('django_migrations_id_seq', 22, true);
+SELECT pg_catalog.setval('django_migrations_id_seq', 21, true);
 
 
 --
@@ -6843,7 +6777,7 @@ SELECT pg_catalog.setval('django_migrations_id_seq', 22, true);
 --
 
 COPY django_session (session_key, session_data, expire_date) FROM stdin;
-5yj1eowp89313jsket33pttflo61d848	ZTIyMmM2MTJhYmQ1YzM5MmZiYzUxNDdlN2U5MWEzZWJiYzUyYzVjNjp7Il9zZXNzaW9uX2V4cGlyeSI6MCwiX2F1dGhfdXNlcl9pZCI6IjMiLCJfYXV0aF91c2VyX2hhc2giOiI4Mzg4YWI1MDU4MWEyNTBiY2RiMDU3ZjAzOGU1NGUzMTk1YTk4YTQyIiwiX2F1dGhfdXNlcl9iYWNrZW5kIjoiZGphbmdvLmNvbnRyaWIuYXV0aC5iYWNrZW5kcy5Nb2RlbEJhY2tlbmQifQ==	2017-08-02 09:40:04.95876+00
+gvje7bqa5v48yt1dbtedizb8ninj7ame	MjQ2MGIxNWMwODdhZjM5NjI0ODAxZjY5OTY2YzlhZGYwNDhmNGViZTp7Il9hdXRoX3VzZXJfaGFzaCI6IjY0YmEzZjYyYTE5MDU1NzNjMDI2ZTdkZDZjOWRhNDU3YmY3NzZhN2MiLCJfYXV0aF91c2VyX2lkIjoiMiIsIl9hdXRoX3VzZXJfYmFja2VuZCI6ImRqYW5nby5jb250cmliLmF1dGguYmFja2VuZHMuTW9kZWxCYWNrZW5kIn0=	2017-08-02 09:37:50.30764+00
 \.
 
 
@@ -7041,14 +6975,6 @@ ALTER TABLE ONLY "KB_SNP_tumor"
 
 ALTER TABLE ONLY "KB_SNP_variant"
     ADD CONSTRAINT "KB_SNP_variant_pkey" PRIMARY KEY (id);
-
-
---
--- Name: Submit_draft_pkey; Type: CONSTRAINT; Schema: public; Owner: trpkb
---
-
-ALTER TABLE ONLY "Submit_draft"
-    ADD CONSTRAINT "Submit_draft_pkey" PRIMARY KEY (id);
 
 
 --
@@ -7383,13 +7309,6 @@ CREATE INDEX "KB_SNP_variant_gene_id_b4449893" ON "KB_SNP_variant" USING btree (
 
 
 --
--- Name: Submit_draft_user_id_2b01e533; Type: INDEX; Schema: public; Owner: trpkb
---
-
-CREATE INDEX "Submit_draft_user_id_2b01e533" ON "Submit_draft" USING btree (user_id);
-
-
---
 -- Name: account_emailaddress_email_03be32b2_like; Type: INDEX; Schema: public; Owner: trpkb
 --
 
@@ -7612,14 +7531,6 @@ ALTER TABLE ONLY "KB_SNP_subgroup"
 
 ALTER TABLE ONLY "KB_SNP_variant"
     ADD CONSTRAINT "KB_SNP_variant_gene_id_b4449893_fk_KB_SNP_gene_id" FOREIGN KEY (gene_id) REFERENCES "KB_SNP_gene"(id) DEFERRABLE INITIALLY DEFERRED;
-
-
---
--- Name: Submit_draft_user_id_2b01e533_fk_auth_user_id; Type: FK CONSTRAINT; Schema: public; Owner: trpkb
---
-
-ALTER TABLE ONLY "Submit_draft"
-    ADD CONSTRAINT "Submit_draft_user_id_2b01e533_fk_auth_user_id" FOREIGN KEY (user_id) REFERENCES auth_user(id) DEFERRABLE INITIALLY DEFERRED;
 
 
 --

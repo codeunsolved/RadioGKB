@@ -33,6 +33,7 @@ urlpatterns = [
     url(r'^snp/details/(?P<research_id>\d+)/(?P<tumor_id>\d+)/(?P<variant_id>\d+)', views.snp_details, name='snp_details'),
     url(r'^accounts/', include('allauth.urls')),
     url(r'^admin/', admin.site.urls),
-    url(r'^import_data/', views.import_data, name='import_data'),
+    url(r'^import_snp/', views.import_snp, name='import_snp'),
+    url(r'^import_exp/', views.import_exp, name='import_exp'),
     url(r'^locale$', views.view_locale),
 ] + static.static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
