@@ -393,7 +393,7 @@ def submit_add(request):
             error_msg = []
             if paper_size > 20:
                 error_msg.append("Uploading paper exceeds the maximum upload size: 20MB")
-            if not re.search('\.(pdf|zip)$', paper_name):
+            if not re.search('\.(pdf|caj|zip)$', paper_name):
                 error_msg.append("Uploading paper only accepts pdf/zip format")
 
             if len(error_msg) > 0:
