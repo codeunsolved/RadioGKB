@@ -49,7 +49,8 @@ def get_stats():
 
 
 def index(request):
-    context = {'stats': get_stats(), 'genes': G_Snp.objects.all()}
+    context = {'stats': get_stats(),
+               'genes_snp': G_Snp.objects.all(), 'genes_exp': G_Exp.objects.all()}
     return render(request, 'index.html', context)
 
 
@@ -594,7 +595,52 @@ def snp_search(request):
     except Exception as e:
         raise e
 
-    return render(request, 'search_results.html', context)
+    return render(request, 'search_results_snp.html', context)
+
+
+def exp_search(request):
+    context = {'stats': get_stats(), 'num': None, 'desc': None, 'dt_data': []}
+    try:
+        term_gene = request.POST['gene']
+        term_tumor = request.POST['tumor']
+
+        results = A_Exp.objects.filter(
+            tumor__name__icontains=term_tumor).filter(
+            gene__gene_official_symbol__icontains=term_gene)
+
+        if len(results) == 0:
+            context['num'] = 0
+            context['desc'] = ", Please refine your key words."
+        else:
+            row_data = {}
+            for i, r in enumerate(results):
+                tumor = r.tumor.name
+                gene = r.gene.gene_official_symbol if r.gene else ''
+                tumor_id = r.tumor.pk
+                gene_id = r.gene.pk
+                key = "{}-{}".format(tumor, gene)
+                if key not in row_data:
+                    row_data[key] = {'tumor': tumor, 'tumor_id': tumor_id,
+                                     'gene': gene, 'gene_id': gene_id, 'research': set()}
+                row_data[key]['research'].add((r.research.title, r.research.pk))
+            for i, (k, v) in enumerate(row_data.items()):
+                research = ""
+                for title, pk in v['research']:
+                    research += "<p><a href=\"/exp/details/{}/{}/{}\">{}</a></p>".format(
+                        pk, v['tumor_id'], v['gene_id'], title)
+                row = [i + 1,
+                       v['gene'],
+                       v['tumor'],
+                       research]
+                context['dt_data'].append(row)
+
+            context['num'] = len(row_data)
+            context['desc'] = ""
+
+    except Exception as e:
+        raise e
+
+    return render(request, 'search_results_exp.html', context)
 
 
 def snp_details(request, research_id, tumor_id, variant_id):
@@ -700,6 +746,108 @@ def snp_details(request, research_id, tumor_id, variant_id):
                                             'annotation': annotation if annotation else None}
 
     return render(request, 'snp_details.html', context)
+
+
+def exp_details(request, research_id, tumor_id, gene_id):
+    context = {'stats': get_stats(),
+               'research': {}, 'tumor': {}, 'gene': {},
+               'tabs': {'tab': [], 'content': {}}}
+
+    research = R_Exp.objects.get(pk=research_id)
+    context['research'] = {'title': research.title, 'pub_year': research.pub_year,
+                           'pubmed_id': research.pubmed_id if research.pubmed_id else '',
+                           'url': research.url if research.url else '',
+                           'ebml': research.ebml,
+                           'ethnicity': research.ethnicity if research.ethnicity else '',
+                           'patient_number': research.patient_number,
+                           'treatment_type': research.treatment_type if research.treatment_type else '',
+                           }
+
+    tumor = T_Exp.objects.get(pk=tumor_id)
+    context['tumor']['name'] = tumor.name
+
+    gene = G_Exp.objects.get(pk=gene_id)
+    if gene:
+        context['gene']['name'] = gene.gene_official_symbol
+        context['gene']['id'] = gene.entrez_gene_id if gene.entrez_gene_id else ''
+        context['gene']['alias'] = ', '.join(gene.gene_alternative_symbols) if gene.gene_alternative_symbols else ''
+        context['gene']['full_name'] = gene.gene_official_full_name if gene.gene_official_full_name else ''
+        context['gene']['type'] = gene.gene_type if gene.gene_type else ''
+        context['gene']['summary'] = gene.gene_summary if gene.gene_summary else ''
+    else:
+        context['gene']['name'] = ''
+        context['gene']['id'] = ''
+        context['gene']['alias'] = ''
+        context['gene']['full_name'] = ''
+        context['gene']['type'] = ''
+        context['gene']['summary'] = ''
+
+    association = A_Exp.objects.filter(research__pk=research_id, tumor__pk=tumor_id, gene__pk=gene_id)
+
+    prognosis = {}
+    for row in association:
+        p_id = row.prognosis.pk
+        name = row.prognosis.prognosis_name
+        if p_id not in prognosis:
+            prognosis[p_id] = name
+
+    for p_id in prognosis:
+        context['tabs']['tab'].append({'p_id': p_id, 'name': prognosis[p_id]})
+
+        subgroups = {}
+        a_p = association.filter(prognosis__pk=p_id).order_by('pk')
+        for row in a_p:
+            cols = ['expression',
+                    'case_number', 'control_number', 'total_number',
+                    'or_u', 'hr_u', 'rr_u', 'ci_u_95', 'p_u',
+                    'or_m', 'hr_m', 'rr_m', 'ci_m_95', 'p_m']
+
+            if row.subgroup:
+                subgroup_name = row.subgroup.subgroup
+            else:
+                subgroup_name = ''
+            if subgroup_name not in subgroups:
+                subgroups[subgroup_name] = {'stats': {}, 'thead': [], 'tbody': []}
+
+            sub_stats = subgroups[subgroup_name]['stats']
+
+            def get_or_empty(key):
+                def handle_range(string):
+                    ranges = re.findall("Decimal\('([\d\.]+)'\)", string)
+                    return "[{}, {}]".format(ranges[0], ranges[1])
+
+                val = getattr(row, key)
+                if val and key in ['ci_u_95', 'ci_m_95']:
+                    val = handle_range(val.__str__())
+
+                if key not in sub_stats:
+                    sub_stats[key] = 0
+
+                if val:
+                    sub_stats[key] += 1
+                    return val
+                else:
+                    return ''
+
+            sub_row = {'expression': row.expression}
+            for col in cols:
+                sub_row[col] = get_or_empty(col)
+            subgroups[subgroup_name]['tbody'].append(sub_row)
+
+        for subgroup_name in subgroups:
+            trows = [[] for x in subgroups[subgroup_name]['tbody']]
+            for col in cols:
+                if subgroups[subgroup_name]['stats'][col] > 1:
+                    subgroups[subgroup_name]['thead'].append(col)
+                    for i, row in enumerate(subgroups[subgroup_name]['tbody']):
+                        trows[i].append(row[col])
+            subgroups[subgroup_name]['tbody'] = trows
+
+        annotation = P_Exp.objects.get(pk=p_id).annotation
+        context['tabs']['content'][p_id] = {'subgroups': subgroups,
+                                            'annotation': annotation if annotation else None}
+
+    return render(request, 'exp_details.html', context)
 
 
 def import_snp(request):

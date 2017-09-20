@@ -1,0 +1,151 @@
+{% extends "base.html" %}
+
+    {% block head_title %}Details - Expression{% endblock head_title %}
+
+      {% block container %}
+      <div class="row" style="margin-top: 10px;">
+        <div class="col-md-12 col-sm-12 col-xs-12">
+          <div class="panel panel-success">
+            <div class="panel-heading">
+              <h4>{{ research.title }} <a class="glyphicon glyphicon-link" href="{{ research.url }}"></a></span></h4>
+            </div>
+            <div class="panel-body">
+              <table>
+                <tbody>
+                  <tr>
+                    <td><strong>Publish year</strong></td>
+                    <td>&nbsp;:&nbsp;</td>
+                    <td>{{ research.pub_year }}</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Pubmed id</strong></td>
+                    <td>&nbsp;:&nbsp;</td>
+                    <td>{{ research.pubmed_id }}</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Treatment type</strong></td>
+                    <td>&nbsp;:&nbsp;</td>
+                    <td>{{ research.treatment_type }}</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Patient number</strong></td>
+                    <td>&nbsp;:&nbsp;</td>
+                    <td>{{ research.patient_number }}</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Ethnicity</strong></td>
+                    <td>&nbsp;:&nbsp;</td>
+                    <td>{{ research.ethnicity }}</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Evidence Based Medicine Level</strong></td>
+                    <td>&nbsp;:&nbsp;</td>
+                    <td>{{ research.ebml }}</td>
+                  </tr>
+                </tbody>
+              </table>
+
+              <hr>
+
+              <table>
+                <tbody>
+                  <tr>
+                    <td><strong>Tumor</strong></td>
+                    <td>&nbsp;:&nbsp;</td>
+                    <td>{{ tumor.name }}</td>
+                  </tr>
+                </tbody>
+              </table>
+
+              <hr>
+
+              <table>
+                <tbody>
+                  <tr>
+                    <td style="width: 120px;"><strong>Gene</strong></td>
+                    <td>&nbsp;:&nbsp;</td>
+                    <td>{{ gene.name }}</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Entrez gene ID</strong></td>
+                    <td>&nbsp;:&nbsp;</td>
+                    <td>{{ gene.id }}</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Gene full name</strong></td>
+                    <td>&nbsp;:&nbsp;</td>
+                    <td>{{ gene.full_name }}</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Alias</strong></td>
+                    <td>&nbsp;:&nbsp;</td>
+                    <td>{{ gene.alias }}</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Type</strong></td>
+                    <td>&nbsp;:&nbsp;</td>
+                    <td>{{ gene.type }}</td>
+                  </tr>
+                  <tr style="vertical-align:text-top;">
+                    <td><strong>Summary</strong></td>
+                    <td>&nbsp;:&nbsp;</td>
+                    <td>{{ gene.summary }}</td>
+                  </tr>
+                </tbody>
+              </table>
+
+              <hr>
+
+              <ul class="nav nav-tabs">
+                {% for tab in tabs.tab %}
+                  {% if forloop.first %}
+                    <li role="presentation" class="active"><a href="#p_{{ tab.p_id }}" data-toggle="tab">{{ tab.name }}</a></li>
+                  {% else %}
+                    <li role="presentation"><a href="#p_{{ tab.p_id }}" data-toggle="tab">{{ tab.name }}</a></li>
+                  {% endif %}
+                {% endfor %}
+              </ul>
+
+              <div class="tab-content">
+              {% for p_id, content in tabs.content.items %}
+                {% if forloop.first %}
+                  <div id="p_{{ p_id }}" class="tab-pane fade in active">
+                {% else %}
+                  <div id="p_{{ p_id }}" class="tab-pane fade">
+                {% endif %}
+                    <div class="panel panel-default" style="border-top: none;">
+                      <div class="panel-body">
+                      {% for subgroup_name, subgroup in content.subgroups.items %}
+                        <p><strong>Subgroup</strong> : {{ subgroup_name }}</p>
+                        <table class="table">
+                          <thead>
+                            <tr>
+                            {% for th in subgroup.thead %}
+                              <th>{{ th }}</th>
+                            {% endfor %}
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {% for row in subgroup.tbody %}
+                            <tr>
+                              {% for td in row %}
+                                <td>{{ td }}</td>
+                              {% endfor %}
+                            </tr>
+                            {% endfor %}
+                          </tbody>
+                        </table>
+                      {% endfor %}
+                      </div>
+                      {% if content.annotation %}
+                      <div class="panel-footer">{{ content.annotation }}</div>
+                      {% endif %}
+                    </div>
+                  </div>
+              {% endfor %}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endblock container %}

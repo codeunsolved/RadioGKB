@@ -98,5 +98,4 @@ class Association(models.Model):
     p_m = models.CharField(max_length=50, null=True, blank=True)
 
     def __str__(self):
-        return "[{!s}][{}][{}]{}".format(self.tumor, self.variant.gene.gene_official_symbol,
-                                         self.variant.dbsnp, self.genotype)
+        return "[{!s}][{}]{}".format(self.tumor, self.gene.gene_official_symbol, self.expression)

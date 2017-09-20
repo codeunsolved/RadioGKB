@@ -21,7 +21,7 @@
                     {% csrf_token %}
                     <div class="input-group">
                       <span class="input-group-addon" style="width:70px;">Gene</span>
-                      <input name="gene" class="form-control" list="genes" type="text">
+                      <input name="gene" class="form-control" list="genes_snp" type="text">
                     </div>
                     <br>
                     <div class="input-group">
@@ -43,14 +43,31 @@
             <div id="Expression" class="tab-pane fade">
               <div class="panel panel-default panel-tab">
                 <div class="panel-body">
-                  <p>Coming soon!</p>
-                  <br><br><br><br><br><br><br><br><br>
+                  <form class="form-horizontal" role="form" method="POST" action="{% url 'exp_search' %}">
+                    {% csrf_token %}
+                    <div class="input-group">
+                      <span class="input-group-addon" style="width:70px;">Gene</span>
+                      <input name="gene" class="form-control" list="genes_exp" type="text">
+                    </div>
+                    <br>
+                    <div class="input-group">
+                      <span class="input-group-addon" style="width:70px;">Tumor</span>
+                      <input name="tumor" class="form-control" type="text">
+                    </div>
+                    <br>
+                    <button class="btn btn-info btn-block" type="submit">Search :: <span class="glyphicon glyphicon-search" aria-hidden="true"></span></button>
+                  </form>
                 </div>
               </div>
             </div>
           </div>
-          <datalist id="genes">
-            {% for gene in genes %}
+          <datalist id="genes_snp">
+            {% for gene in genes_snp %}
+            <option value="{{ gene }}">
+            {% endfor %}
+          </datalist>
+          <datalist id="genes_exp">
+            {% for gene in genes_exp %}
             <option value="{{ gene }}">
             {% endfor %}
           </datalist>
