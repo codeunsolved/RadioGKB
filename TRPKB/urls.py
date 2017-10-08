@@ -29,6 +29,7 @@ urlpatterns = [
     url(r'^news/', views.news, name='news'),
     url(r'^profile', views.profile, name='profile'),
     url(r'^snp/add/(?P<submit_id>\w+)', views.snp_add, name='snp_add'),
+    url(r'^exp/add/(?P<submit_id>\w+)', views.exp_add, name='exp_add'),
     url(r'^snp/search', views.snp_search, name='snp_search'),
     url(r'^exp/search', views.exp_search, name='exp_search'),
     url(r'^snp/details/(?P<research_id>\d+)/(?P<tumor_id>\d+)/(?P<variant_id>\d+)', views.snp_details, name='snp_details'),

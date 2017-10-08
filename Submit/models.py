@@ -13,7 +13,7 @@ class Draft(models.Model):
 
     KB_CHOICES = (
         ('SNP', 'SNP'),
-        ('Expression', 'Expression'),)
+        ('Exp', 'Expression'),)
 
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES)
