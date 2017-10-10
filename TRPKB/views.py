@@ -279,26 +279,26 @@ def submit_add(request):
                     else:
                         ci_m_95 = None
 
-                A_Snp.objects.get_or_create(
-                    research=research,
-                    tumor=tumor,
-                    variant=variant,
-                    prognosis=prognosis,
-                    subgroup=subgroup,
-                    genotype=row['genotype'],
-                    case_number=int(row['case_number']) if row['case_number'] else None,
-                    control_number=int(row['control_number']) if row['control_number'] else None,
-                    total_number=int(row['total_number']) if row['total_number'] else None,
-                    or_u=float(row['or_u']) if row['or_u'] else None,
-                    hr_u=float(row['hr_u']) if row['hr_u'] else None,
-                    rr_u=float(row['rr_u']) if row['rr_u'] else None,
-                    ci_u_95=ci_u_95,
-                    p_u=row['p_u'] or None,
-                    or_m=float(row['or_m']) if row['or_m'] else None,
-                    hr_m=float(row['hr_m']) if row['hr_m'] else None,
-                    rr_m=float(row['rr_m']) if row['rr_m'] else None,
-                    ci_m_95=ci_m_95,
-                    p_m=row['p_m'] or None)
+                    A_Snp.objects.get_or_create(
+                        research=research,
+                        tumor=tumor,
+                        variant=variant,
+                        prognosis=prognosis,
+                        subgroup=subgroup,
+                        genotype=row['genotype'],
+                        case_number=int(row['case_number']) if row['case_number'] else None,
+                        control_number=int(row['control_number']) if row['control_number'] else None,
+                        total_number=int(row['total_number']) if row['total_number'] else None,
+                        or_u=float(row['or_u']) if row['or_u'] else None,
+                        hr_u=float(row['hr_u']) if row['hr_u'] else None,
+                        rr_u=float(row['rr_u']) if row['rr_u'] else None,
+                        ci_u_95=ci_u_95,
+                        p_u=row['p_u'] or None,
+                        or_m=float(row['or_m']) if row['or_m'] else None,
+                        hr_m=float(row['hr_m']) if row['hr_m'] else None,
+                        rr_m=float(row['rr_m']) if row['rr_m'] else None,
+                        ci_m_95=ci_m_95,
+                        p_m=row['p_m'] or None)
 
         elif kb == 'Exp':
             pk_d = {'prog': {}, 'sub': {}}
@@ -395,26 +395,26 @@ def submit_add(request):
                     else:
                         ci_m_95 = None
 
-                A_Exp.objects.get_or_create(
-                    research=research,
-                    tumor=tumor,
-                    gene=gene,
-                    prognosis=prognosis,
-                    subgroup=subgroup,
-                    expression=row['expression'],
-                    case_number=int(row['case_number']) if row['case_number'] else None,
-                    control_number=int(row['control_number']) if row['control_number'] else None,
-                    total_number=int(row['total_number']) if row['total_number'] else None,
-                    or_u=float(row['or_u']) if row['or_u'] else None,
-                    hr_u=float(row['hr_u']) if row['hr_u'] else None,
-                    rr_u=float(row['rr_u']) if row['rr_u'] else None,
-                    ci_u_95=ci_u_95,
-                    p_u=row['p_u'] if row['p_u'] else None,
-                    or_m=float(row['or_m']) if row['or_m'] else None,
-                    hr_m=float(row['hr_m']) if row['hr_m'] else None,
-                    rr_m=float(row['rr_m']) if row['rr_m'] else None,
-                    ci_m_95=ci_m_95,
-                    p_m=row['p_m'] or None)
+                    A_Exp.objects.get_or_create(
+                        research=research,
+                        tumor=tumor,
+                        gene=gene,
+                        prognosis=prognosis,
+                        subgroup=subgroup,
+                        expression=row['expression'],
+                        case_number=int(row['case_number']) if row['case_number'] else None,
+                        control_number=int(row['control_number']) if row['control_number'] else None,
+                        total_number=int(row['total_number']) if row['total_number'] else None,
+                        or_u=float(row['or_u']) if row['or_u'] else None,
+                        hr_u=float(row['hr_u']) if row['hr_u'] else None,
+                        rr_u=float(row['rr_u']) if row['rr_u'] else None,
+                        ci_u_95=ci_u_95,
+                        p_u=row['p_u'] if row['p_u'] else None,
+                        or_m=float(row['or_m']) if row['or_m'] else None,
+                        hr_m=float(row['hr_m']) if row['hr_m'] else None,
+                        rr_m=float(row['rr_m']) if row['rr_m'] else None,
+                        ci_m_95=ci_m_95,
+                        p_m=row['p_m'] or None)
 
     dup_msg = {1: "We already had this paper in KB-SNP! Please choose another.",
                2: "You already submitted/saved this paper! Please check your Draft box.",

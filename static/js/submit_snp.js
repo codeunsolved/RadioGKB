@@ -189,7 +189,7 @@ function addNew() {
 
         $("#"+step_id+"_form").find("input:required, select").each(function() {
             var v = $(this).val();
-            if (v.length == 0 || v.match(/^\s+$/g)) {
+            if (v == null || v.length == 0 || v.match(/^\s+$/g)) {
                 msgs.push('Please fill required field(s)');
                 valid = false;
                 return false;
@@ -339,11 +339,13 @@ function addNew() {
         $tumor_html.find('#STEP03_tumor_no').after(tumor_minus_html);
         $tumor_html.insertBefore('#tumor_above');
         recur_step04 = 1;
+        recur_step06 = 1;
     }
 
     function minusTumor() {
         $(this).parent().parent().remove();
         recur_step04 = 1;
+        recur_step06 = 1;
     }
 
     function genStep04() {
@@ -377,12 +379,12 @@ function addNew() {
 
         $variant_html.find('.STEP04_gene_existed').before(variant_minus_html);
         $(this).parent().parent().find('.variant_above').before($variant_html.prop('outerHTML'));
-        recur_step04 = 1;
+        recur_step06 = 1;
     }
 
     function minusVariant() {
         $(this).parent().parent().parent().remove();
-        recur_step04 = 1;
+        recur_step06 = 1;
     }
 
     function toggleGeneNew() {
@@ -564,6 +566,7 @@ function addNew() {
                 for (var i = 0; i < subgroups.length; i++) {
                     subgroup_options_html += '<option value="'+subgroups[i]+'">'+subgroups[i]+'</option>';
                 }
+                subgroup_options_html += '<option value="- N/A -">- N/A -</option>'; // add case: allow no subgroup selected
                 $subgroup.html(subgroup_options_html);
                 $subgroup.removeAttr("disabled");
             }
