@@ -2,7 +2,11 @@
  * PROGRAM : submit_snp
  * AUTHOR  : codeunsolved@gmail.com
  * CREATED : July 14 2017
- * VERSION : v0.0.1
+ * VERSION : v0.0.2
+ * UPDATE  : [v0.0.2] October 10 2017
+ * 1. optimize genStep04()/genStep06() trigger;
+ * 2. add '- N/A -' option when subgroups specified;
+ * 3. optimize checkStep() empty value judgement;
  */
 
 $.ajaxSetup({

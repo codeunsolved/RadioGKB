@@ -2,7 +2,11 @@
  * PROGRAM : submit_exp
  * AUTHOR  : codeunsolved@gmail.com
  * CREATED : October 8 2017
- * VERSION : v0.0.1
+ * VERSION : v0.0.2
+ * UPDATE  : [v0.0.2] October 10 2017
+ * 1. optimize genStep04()/genStep06() trigger;
+ * 2. add '- N/A -' option when subgroups specified;
+ * 3. optimize checkStep() empty value judgement;
  */
 
 $.ajaxSetup({
@@ -535,6 +539,7 @@ function addNew() {
                 for (var i = 0; i < subgroups.length; i++) {
                     subgroup_options_html += '<option value="'+subgroups[i]+'">'+subgroups[i]+'</option>';
                 }
+                subgroup_options_html += '<option value="- N/A -">- N/A -</option>'; // add case: allow no subgroup selected
                 $subgroup.html(subgroup_options_html);
                 $subgroup.removeAttr("disabled");
             }
