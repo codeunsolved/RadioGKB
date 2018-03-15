@@ -1,2 +1,2 @@
-# TumorRadiotherapyPrognosisKnowledgebase
-Tumor Radiotherapy Prognosis Knowledgebase
+# Radiation Genomics Knowledgebase
+Radiation Genomics Knowledgebase

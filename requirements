@@ -1,5 +1,5 @@
 # Django
-django>=1.11
+django>=1.11,<2
 django-allauth
 # Postgresql
 psycopg2
