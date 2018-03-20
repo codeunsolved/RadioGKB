@@ -855,13 +855,13 @@ def snp_details(request, research_id, tumor_id, variant_id):
 
     cols = [
         ('genotype', 'Genotype'),
-        ('case_meaning', 'Case meaning'),
-        ('control_meaning', 'Control meaning'),
-        ('total_number', 'Total number'),
+        ('case_number', 'case_meaning'),
+        ('control_number', 'control_meaning'),
+        ('total_number', 'total_meaning'),
         ('or_u', 'OR (U)'), ('hr_u', 'HR (U)'), ('rr_u', 'RR (U)'),
-        ('ci_u_95', '95% CI (U)'), ('p_u', 'p (U)'),
+        ('ci_u_95', '95% CI (U)'), ('p_u', 'P (U)'),
         ('or_m', 'OR (M)'), ('hr_m', 'HR (M)'), ('rr_m', 'RR (M)'),
-        ('ci_m_95', '95% CI (M)'), ('p_m', 'p (M)')
+        ('ci_m_95', '95% CI (M)'), ('p_m', 'P (M)')
     ]
 
     for p_id in prognosis:
@@ -888,12 +888,9 @@ def snp_details(request, research_id, tumor_id, variant_id):
                     ranges = re.findall("Decimal\('([\d\.]+)'\)", string)
                     return "[{}, {}]".format(ranges[0], ranges[1])
 
-                if key in ['case_meaning', 'control_meaning']:
-                    val = getattr(row.prognosis, key)
-                else:
-                    val = getattr(row, key)
-                    if val and key in ['ci_u_95', 'ci_m_95']:
-                        val = handle_range(val.__str__())
+                val = getattr(row, key)
+                if val and key in ['ci_u_95', 'ci_m_95']:
+                    val = handle_range(val.__str__())
 
                 if key not in sub_stats:
                     sub_stats[key] = 0
@@ -913,6 +910,8 @@ def snp_details(request, research_id, tumor_id, variant_id):
             trows = [[] for x in subgroups[subgroup_name]['tbody']]
             for key, val in cols:
                 if subgroups[subgroup_name]['stats'][key] >= 1:
+                    if '_meaning' in val:
+                        val = getattr(a_p[0].prognosis, val)
                     subgroups[subgroup_name]['thead'].append(val)
                     for i, row in enumerate(subgroups[subgroup_name]['tbody']):
                         trows[i].append(row[key])
@@ -979,13 +978,13 @@ def exp_details(request, research_id, tumor_id, gene_id):
 
     cols = [
         ('expression', 'Expression'),
-        ('case_meaning', 'Case meaning'),
-        ('control_meaning', 'Control meaning'),
-        ('total_number', 'Total number'),
+        ('case_number', 'case_meaning'),
+        ('control_number', 'control_meaning'),
+        ('total_number', 'total_meaning'),
         ('or_u', 'OR (U)'), ('hr_u', 'HR (U)'), ('rr_u', 'RR (U)'),
-        ('ci_u_95', '95% CI (U)'), ('p_u', 'p (U)'),
+        ('ci_u_95', '95% CI (U)'), ('p_u', 'P (U)'),
         ('or_m', 'OR (M)'), ('hr_m', 'HR (M)'), ('rr_m', 'RR (M)'),
-        ('ci_m_95', '95% CI (M)'), ('p_m', 'p (M)')
+        ('ci_m_95', '95% CI (M)'), ('p_m', 'P (M)')
     ]
 
     for p_id in prognosis:
@@ -1011,12 +1010,9 @@ def exp_details(request, research_id, tumor_id, gene_id):
                     ranges = re.findall("Decimal\('([\d\.]+)'\)", string)
                     return "[{}, {}]".format(ranges[0], ranges[1])
 
-                if key in ['case_meaning', 'control_meaning']:
-                    val = getattr(row.prognosis, key)
-                else:
-                    val = getattr(row, key)
-                    if val and key in ['ci_u_95', 'ci_m_95']:
-                        val = handle_range(val.__str__())
+                val = getattr(row, key)
+                if val and key in ['ci_u_95', 'ci_m_95']:
+                    val = handle_range(val.__str__())
 
                 if key not in sub_stats:
                     sub_stats[key] = 0
@@ -1036,6 +1032,8 @@ def exp_details(request, research_id, tumor_id, gene_id):
             trows = [[] for x in subgroups[subgroup_name]['tbody']]
             for key, val in cols:
                 if subgroups[subgroup_name]['stats'][key] >= 1:
+                    if '_meaning' in val:
+                        val = getattr(a_p[0].prognosis, val)
                     subgroups[subgroup_name]['thead'].append(val)
                     for i, row in enumerate(subgroups[subgroup_name]['tbody']):
                         trows[i].append(row[key])
