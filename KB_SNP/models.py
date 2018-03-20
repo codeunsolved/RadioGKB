@@ -6,6 +6,7 @@ class Tumor(models.Model):
     name = models.CharField(max_length=100, unique=True)
     mesh_term = models.CharField(max_length=50, unique=True, null=True, blank=True)
     mesh_id = models.IntegerField(unique=True, null=True, blank=True)
+    tumor_type = models.CharField(max_length=50, null=True, blank=True)
 
     def __str__(self):
         return "{}".format(self.name)
@@ -106,5 +107,5 @@ class Association(models.Model):
     p_m = models.CharField(max_length=50, null=True, blank=True)
 
     def __str__(self):
-        return "[{!s}][{}][{}]{}".format(self.tumor, self.variant.gene.gene_official_symbol,
-                                         self.variant.dbsnp, self.genotype)
+        return "No.{} [{!s}][{}][{}]{}".format(self.pk, self.tumor, self.variant.gene.gene_official_symbol,
+                                               self.variant.dbsnp, self.genotype)

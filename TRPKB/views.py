@@ -44,8 +44,10 @@ def get_stats():
     return {'r_snp_num': len(R_Snp.objects.all()),
             'g_snp_num': len(G_Snp.objects.all()),
             'v_snp_num': len(V_Snp.objects.all()),
+            'tt_snp_num': len(set(T_Snp.objects.values_list('tumor_type', flat=True))),
             'r_exp_num': len(R_Exp.objects.all()),
-            'g_exp_num': len(G_Exp.objects.all())}
+            'g_exp_num': len(G_Exp.objects.all()),
+            'tt_exp_num': len(set(T_Exp.objects.values_list('tumor_type', flat=True)))}
 
 
 def index(request):
@@ -798,34 +800,41 @@ def exp_search(request):
 
 
 def snp_details(request, research_id, tumor_id, variant_id):
+    # Main
     context = {'stats': get_stats(),
                'research': {}, 'tumor': {}, 'variant': {}, 'gene': {},
                'tabs': {'tab': [], 'content': {}}}
 
+    # Research
     research = R_Snp.objects.get(pk=research_id)
     context['research'] = {'title': research.title, 'pub_year': research.pub_year,
-                           'pubmed_id': research.pubmed_id if research.pubmed_id else '',
-                           'url': research.url if research.url else '',
+                           'pubmed_id': research.pubmed_id or '',
+                           'url': research.url or '',
                            'ebml': research.ebml,
-                           'ethnicity': research.ethnicity if research.ethnicity else '',
+                           'ethnicity': research.ethnicity or '',
                            'patient_number': research.patient_number,
-                           'treatment_type': research.treatment_type if research.treatment_type else '',
+                           'treatment_type': research.treatment_type or '',
+                           'treatment_desc': research.treatment_desc or ''
                            }
 
+    # Tumor
     tumor = T_Snp.objects.get(pk=tumor_id)
     context['tumor']['name'] = tumor.name
+    context['tumor']['type'] = tumor.tumor_type
 
+    # Variant
     variant = V_Snp.objects.get(pk=variant_id)
     context['variant']['dbsnp'] = variant.dbsnp
 
+    # Gene
     gene = variant.gene
     if gene:
         context['gene']['name'] = gene.gene_official_symbol
-        context['gene']['id'] = gene.entrez_gene_id if gene.entrez_gene_id else ''
-        context['gene']['alias'] = ', '.join(gene.gene_alternative_symbols) if gene.gene_alternative_symbols else ''
-        context['gene']['full_name'] = gene.gene_official_full_name if gene.gene_official_full_name else ''
-        context['gene']['type'] = gene.gene_type if gene.gene_type else ''
-        context['gene']['summary'] = gene.gene_summary if gene.gene_summary else ''
+        context['gene']['id'] = gene.entrez_gene_id or ''
+        context['gene']['alias'] = ', '.join(gene.gene_alternative_symbols) or ''
+        context['gene']['full_name'] = gene.gene_official_full_name or ''
+        context['gene']['type'] = gene.gene_type or ''
+        context['gene']['summary'] = gene.gene_summary or ''
     else:
         context['gene']['name'] = ''
         context['gene']['id'] = ''
@@ -834,6 +843,7 @@ def snp_details(request, research_id, tumor_id, variant_id):
         context['gene']['type'] = ''
         context['gene']['summary'] = ''
 
+    # Association & Prognosis
     association = A_Snp.objects.filter(research__pk=research_id, tumor__pk=tumor_id, variant__pk=variant_id)
 
     prognosis = {}
@@ -843,23 +853,33 @@ def snp_details(request, research_id, tumor_id, variant_id):
         if p_id not in prognosis:
             prognosis[p_id] = name
 
+    cols = [
+        ('genotype', 'Genotype'),
+        ('case_number', 'case_meaning'),
+        ('control_number', 'control_meaning'),
+        ('total_number', 'total_meaning'),
+        ('or_u', 'OR (U)'), ('hr_u', 'HR (U)'), ('rr_u', 'RR (U)'),
+        ('ci_u_95', '95% CI (U)'), ('p_u', 'P (U)'),
+        ('or_m', 'OR (M)'), ('hr_m', 'HR (M)'), ('rr_m', 'RR (M)'),
+        ('ci_m_95', '95% CI (M)'), ('p_m', 'P (M)')
+    ]
+
     for p_id in prognosis:
         context['tabs']['tab'].append({'p_id': p_id, 'name': prognosis[p_id]})
 
-        subgroups = {}
         a_p = association.filter(prognosis__pk=p_id).order_by('pk')
+
+        subgroups = {}
         for row in a_p:
-            cols = ['genotype',
-                    'case_number', 'control_number', 'total_number',
-                    'or_u', 'hr_u', 'rr_u', 'ci_u_95', 'p_u',
-                    'or_m', 'hr_m', 'rr_m', 'ci_m_95', 'p_m']
 
             if row.subgroup:
                 subgroup_name = row.subgroup.subgroup
             else:
-                subgroup_name = ''
+                subgroup_name = 'N/A'
             if subgroup_name not in subgroups:
-                subgroups[subgroup_name] = {'stats': {}, 'thead': [], 'tbody': []}
+                endpoint = row.prognosis.endpoint
+                subgroups[subgroup_name] = {'stats': {}, 'endpoint': endpoint,
+                                            'thead': [], 'tbody': []}
 
             sub_stats = subgroups[subgroup_name]['stats']
 
@@ -882,52 +902,62 @@ def snp_details(request, research_id, tumor_id, variant_id):
                     return ''
 
             sub_row = {'genotype': row.genotype}
-            for col in cols:
-                sub_row[col] = get_or_empty(col)
+            for key in dict(cols):
+                sub_row[key] = get_or_empty(key)
             subgroups[subgroup_name]['tbody'].append(sub_row)
 
         for subgroup_name in subgroups:
             trows = [[] for x in subgroups[subgroup_name]['tbody']]
-            for col in cols:
-                if subgroups[subgroup_name]['stats'][col] > 1:
-                    subgroups[subgroup_name]['thead'].append(col)
+            for key, val in cols:
+                if subgroups[subgroup_name]['stats'][key] >= 1:
+                    if '_meaning' in val:
+                        val = getattr(a_p[0].prognosis, val)
+                    subgroups[subgroup_name]['thead'].append(val)
                     for i, row in enumerate(subgroups[subgroup_name]['tbody']):
-                        trows[i].append(row[col])
+                        trows[i].append(row[key])
             subgroups[subgroup_name]['tbody'] = trows
 
         annotation = P_Snp.objects.get(pk=p_id).annotation
         context['tabs']['content'][p_id] = {'subgroups': subgroups,
-                                            'annotation': annotation if annotation else None}
+                                            'annotation': annotation or None}
 
     return render(request, 'snp_details.html', context)
 
 
 def exp_details(request, research_id, tumor_id, gene_id):
+    # Main
     context = {'stats': get_stats(),
                'research': {}, 'tumor': {}, 'gene': {},
                'tabs': {'tab': [], 'content': {}}}
 
+    # Research
     research = R_Exp.objects.get(pk=research_id)
     context['research'] = {'title': research.title, 'pub_year': research.pub_year,
-                           'pubmed_id': research.pubmed_id if research.pubmed_id else '',
-                           'url': research.url if research.url else '',
+                           'pubmed_id': research.pubmed_id or '',
+                           'url': research.url or '',
                            'ebml': research.ebml,
-                           'ethnicity': research.ethnicity if research.ethnicity else '',
+                           'ethnicity': research.ethnicity or '',
                            'patient_number': research.patient_number,
-                           'treatment_type': research.treatment_type if research.treatment_type else '',
+                           'treatment_type': research.treatment_type or '',
+                           'treatment_desc': research.treatment_desc or '',
+                           'exp_detection_method': research.exp_detection_method or '',
+                           'cut_off_value': research.cut_off_value or ''
                            }
 
+    # Tumor
     tumor = T_Exp.objects.get(pk=tumor_id)
     context['tumor']['name'] = tumor.name
+    context['tumor']['type'] = tumor.tumor_type
 
+    # Gene
     gene = G_Exp.objects.get(pk=gene_id)
     if gene:
         context['gene']['name'] = gene.gene_official_symbol
-        context['gene']['id'] = gene.entrez_gene_id if gene.entrez_gene_id else ''
-        context['gene']['alias'] = ', '.join(gene.gene_alternative_symbols) if gene.gene_alternative_symbols else ''
-        context['gene']['full_name'] = gene.gene_official_full_name if gene.gene_official_full_name else ''
-        context['gene']['type'] = gene.gene_type if gene.gene_type else ''
-        context['gene']['summary'] = gene.gene_summary if gene.gene_summary else ''
+        context['gene']['id'] = gene.entrez_gene_id or ''
+        context['gene']['alias'] = ', '.join(gene.gene_alternative_symbols) or ''
+        context['gene']['full_name'] = gene.gene_official_full_name or ''
+        context['gene']['type'] = gene.gene_type or ''
+        context['gene']['summary'] = gene.gene_summary or ''
     else:
         context['gene']['name'] = ''
         context['gene']['id'] = ''
@@ -936,6 +966,7 @@ def exp_details(request, research_id, tumor_id, gene_id):
         context['gene']['type'] = ''
         context['gene']['summary'] = ''
 
+    # Association & Prognosis
     association = A_Exp.objects.filter(research__pk=research_id, tumor__pk=tumor_id, gene__pk=gene_id)
 
     prognosis = {}
@@ -945,23 +976,32 @@ def exp_details(request, research_id, tumor_id, gene_id):
         if p_id not in prognosis:
             prognosis[p_id] = name
 
+    cols = [
+        ('expression', 'Expression'),
+        ('case_number', 'case_meaning'),
+        ('control_number', 'control_meaning'),
+        ('total_number', 'total_meaning'),
+        ('or_u', 'OR (U)'), ('hr_u', 'HR (U)'), ('rr_u', 'RR (U)'),
+        ('ci_u_95', '95% CI (U)'), ('p_u', 'P (U)'),
+        ('or_m', 'OR (M)'), ('hr_m', 'HR (M)'), ('rr_m', 'RR (M)'),
+        ('ci_m_95', '95% CI (M)'), ('p_m', 'P (M)')
+    ]
+
     for p_id in prognosis:
         context['tabs']['tab'].append({'p_id': p_id, 'name': prognosis[p_id]})
 
-        subgroups = {}
         a_p = association.filter(prognosis__pk=p_id).order_by('pk')
-        for row in a_p:
-            cols = ['expression',
-                    'case_number', 'control_number', 'total_number',
-                    'or_u', 'hr_u', 'rr_u', 'ci_u_95', 'p_u',
-                    'or_m', 'hr_m', 'rr_m', 'ci_m_95', 'p_m']
 
+        subgroups = {}
+        for row in a_p:
             if row.subgroup:
                 subgroup_name = row.subgroup.subgroup
             else:
-                subgroup_name = ''
+                subgroup_name = 'N/A'
             if subgroup_name not in subgroups:
-                subgroups[subgroup_name] = {'stats': {}, 'thead': [], 'tbody': []}
+                endpoint = row.prognosis.endpoint
+                subgroups[subgroup_name] = {'stats': {}, 'endpoint': endpoint,
+                                            'thead': [], 'tbody': []}
 
             sub_stats = subgroups[subgroup_name]['stats']
 
@@ -984,22 +1024,24 @@ def exp_details(request, research_id, tumor_id, gene_id):
                     return ''
 
             sub_row = {'expression': row.expression}
-            for col in cols:
-                sub_row[col] = get_or_empty(col)
+            for key in dict(cols):
+                sub_row[key] = get_or_empty(key)
             subgroups[subgroup_name]['tbody'].append(sub_row)
 
         for subgroup_name in subgroups:
             trows = [[] for x in subgroups[subgroup_name]['tbody']]
-            for col in cols:
-                if subgroups[subgroup_name]['stats'][col] > 1:
-                    subgroups[subgroup_name]['thead'].append(col)
+            for key, val in cols:
+                if subgroups[subgroup_name]['stats'][key] >= 1:
+                    if '_meaning' in val:
+                        val = getattr(a_p[0].prognosis, val)
+                    subgroups[subgroup_name]['thead'].append(val)
                     for i, row in enumerate(subgroups[subgroup_name]['tbody']):
-                        trows[i].append(row[col])
+                        trows[i].append(row[key])
             subgroups[subgroup_name]['tbody'] = trows
 
         annotation = P_Exp.objects.get(pk=p_id).annotation
         context['tabs']['content'][p_id] = {'subgroups': subgroups,
-                                            'annotation': annotation if annotation else None}
+                                            'annotation': annotation or None}
 
     return render(request, 'exp_details.html', context)
 
@@ -1044,7 +1086,7 @@ def import_snp(request):
 
             if re.search('tumor', table) or re.search('all', table):
                 for row in data['tumor']:
-                    T_Snp.objects.get_or_create(name=row[1])
+                    T_Snp.objects.get_or_create(name=row[1], tumor_type=row[2])
 
             if re.search('gene', table) or re.search('all', table):
                 for row in data['gene']:
@@ -1168,7 +1210,7 @@ def import_exp(request):
 
             if re.search('tumor', table) or re.search('all', table):
                 for row in data['tumor']:
-                    T_Exp.objects.get_or_create(name=row[1])
+                    T_Exp.objects.get_or_create(name=row[1], tumor_type=row[2])
 
             if re.search('gene', table) or re.search('all', table):
                 for row in data['gene']:

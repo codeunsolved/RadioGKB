@@ -25,7 +25,14 @@
                   <tr>
                     <td><strong>Treatment type</strong></td>
                     <td>&nbsp;:&nbsp;</td>
-                    <td>{{ research.treatment_type }}</td>
+                    <td>{{ research.treatment_type }} <a data-toggle="collapse" data-target="#treatment_desc">Details</a></td>
+                  </tr>
+                  <tr>
+                    <td></td>
+                    <td></td>
+                    <td id="treatment_desc" class="collapse">
+                    {{ research.treatment_desc }}
+                    </td>
                   </tr>
                   <tr>
                     <td><strong>Patient number</strong></td>
@@ -38,9 +45,21 @@
                     <td>{{ research.ethnicity }}</td>
                   </tr>
                   <tr>
-                    <td><strong>Evidence Based Medicine Level</strong></td>
+                    <td nowrap><strong>EBML(Evidence Based Medicine Level)</strong></td>
                     <td>&nbsp;:&nbsp;</td>
                     <td>{{ research.ebml }}</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Gene expression detection</strong></td>
+                    <td>&nbsp;:&nbsp;</td>
+                    <td>{{ research.exp_detection_method }} <a data-toggle="collapse" data-target="#cut_off">Cut off</a></td>
+                  </tr>
+                  <tr>
+                    <td></td>
+                    <td></td>
+                    <td id="cut_off" class="collapse">
+                    {{ research.cut_off_value }}
+                    </td>
                   </tr>
                 </tbody>
               </table>
@@ -50,9 +69,14 @@
               <table>
                 <tbody>
                   <tr>
-                    <td><strong>Tumor</strong></td>
+                    <td><strong>Tumor name</strong></td>
                     <td>&nbsp;:&nbsp;</td>
                     <td>{{ tumor.name }}</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Tumor type</strong></td>
+                    <td>&nbsp;:&nbsp;</td>
+                    <td>{{ tumor.type }}</td>
                   </tr>
                 </tbody>
               </table>
@@ -116,7 +140,10 @@
                     <div class="panel panel-default" style="border-top: none;">
                       <div class="panel-body">
                       {% for subgroup_name, subgroup in content.subgroups.items %}
-                        <p><strong>Subgroup</strong> : {{ subgroup_name }}</p>
+                        {% if subgroup_name != 'N/A' %}
+                          <p><strong>Subgroup</strong> : {{ subgroup_name }}</p>
+                        {% endif %}
+                        <p><strong>Endpoint</strong> : {{ subgroup.endpoint }}</p>
                         <table class="table">
                           <thead>
                             <tr>
@@ -135,6 +162,8 @@
                             {% endfor %}
                           </tbody>
                         </table>
+                        <br>
+                        <br>
                       {% endfor %}
                       </div>
                       {% if content.annotation %}
