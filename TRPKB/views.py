@@ -44,10 +44,15 @@ def get_stats():
     return {'r_snp_num': len(R_Snp.objects.all()),
             'g_snp_num': len(G_Snp.objects.all()),
             'v_snp_num': len(V_Snp.objects.all()),
-            'tt_snp_num': len(set(T_Snp.objects.values_list('tumor_type', flat=True))),
+            'tumor_t_snp_num': len(set(T_Snp.objects.values_list('tumor_type', flat=True))),
+            'patient_snp_num': sum([x.patient_number for x in R_Snp.objects.all()]),
+            'treatment_t_snp_num': len(set(R_Snp.objects.values_list('treatment_type', flat=True))),
             'r_exp_num': len(R_Exp.objects.all()),
             'g_exp_num': len(G_Exp.objects.all()),
-            'tt_exp_num': len(set(T_Exp.objects.values_list('tumor_type', flat=True)))}
+            'tumor_t_exp_num': len(set(T_Exp.objects.values_list('tumor_type', flat=True))),
+            'patient_exp_num': sum([x.patient_number for x in R_Exp.objects.all()]),
+            'treatment_t_exp_num': len(set(R_Exp.objects.values_list('treatment_type', flat=True))),
+            }
 
 
 def index(request):
@@ -817,6 +822,9 @@ def snp_details(request, research_id, tumor_id, variant_id):
                            'treatment_desc': research.treatment_desc or ''
                            }
 
+    if re.search('[\u4e00-\u9fa5]', context['research']['treatment_desc']):
+        context['research']['treatment_desc'] = ''
+
     # Tumor
     tumor = T_Snp.objects.get(pk=tumor_id)
     context['tumor']['name'] = tumor.name
@@ -943,6 +951,12 @@ def exp_details(request, research_id, tumor_id, gene_id):
                            'exp_detection_method': research.exp_detection_method or '',
                            'cut_off_value': research.cut_off_value or ''
                            }
+
+    if re.search('[\u4e00-\u9fa5]', context['research']['treatment_desc']):
+        context['research']['treatment_desc'] = ''
+
+    if re.search('[\u4e00-\u9fa5]', context['research']['cut_off_value']):
+        context['research']['cut_off_value'] = ''
 
     # Tumor
     tumor = T_Exp.objects.get(pk=tumor_id)

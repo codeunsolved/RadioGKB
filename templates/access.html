@@ -16,7 +16,7 @@
       <div class="col-md-12 col-sm-12 col-xs-12">
         <div class="panel panel-default">
           <div class="panel-body">
-            <p>In RadioGKB (Radiation Genomics Knowledgebase) homepage, we offer two kind of search: SNP (Single Nucleotide Polymorphism) and Expression. You can find the association between SNP or gene expression and cancer prognosis in patients receiving radiotherapy-based treatment.</p>
+            <p>In RTPDB (Radiotherapy Prognosis Database) homepage, we offer two kind of search: SNP (Single Nucleotide Polymorphism) and Expression. You can find the association between SNP or gene expression and cancer prognosis in patients receiving radiotherapy-based treatment.</p>
             <h3>SNP</h3>
             <p>You can choose one of the way listed below for search:</p>
             <ol>
@@ -37,13 +37,190 @@
             <h3>Notes in Input</h3>
             <p>When you input Gene for search, please use official symbol. For example, the alias of XRCC1 (X-ray repair cross complementing 1, Entrez GeneID: 7515) is RCC. If you enter RCC instead of XRCC1, you will not get any result. Before entering gene, you can query for whether the gene you input is official symbol or not at NCBI Gene (<a href="https://www.ncbi.nlm.nih.gov/gene">https://www.ncbi.nlm.nih.gov/gene</a>). We will solve this problem in subsequent update.</p>
             <p>When you input Variant for search, please use the name which is prefixed with “rs” (such as rs25487). If SNP is named after other type. You can use Google to find the name we need.</p>
-            <p>When you input Tumor for search, we highly recommend you use our suggested name. Figure 1 shows how to do this. When you enter “Breast”, we recommend you with “Breast cancer”, then you can choose it.</p>
+            <p>The database provides 16 tumor types for SNP search and 26 tumor types for Expression search. All tumor types list in Table 1.</p>
             <br>
-            <div class="text-center">
-              <div class="row">
-                <img style="max-width:60%;" src="/static/images/access_figure1.png" alt="Figure 1 Choose the recommended tumor name">
+            <div class="row">
+              <div class="col-md-1 col-sm-1 col-xs-1">
               </div>
-              <strong>Figure 1 Choose the recommended tumor name</strong>
+              <div class="col-md-10 col-sm-10 col-xs-10">
+                <div class="text-center">
+                  <strong>Table 1. Tumors types in SNP and Expression data</strong>
+                </div>
+                <table class="table-threeline">
+                  <thead>
+                    <tr>
+                      <th>SNP</th>
+                      <th>No. of studies (%)</th>
+                      <th>Expression</th>
+                      <th>No. of studies (%)</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>Lung cancer</td>
+                      <td>59 (21.85%)</td>
+                      <td>Rectal cancer</td>
+                      <td>120 (24.29%</td>
+                    </tr>
+                    <tr>
+                      <td>Breast cancer</td>
+                      <td>38 (14.07%)</td>
+                      <td>Esophageal cancer</td>
+                      <td>82 16.60%)</td>
+                    </tr>
+                    <tr>
+                      <td>Esophageal cancer</td>
+                      <td>35 (12.96%)</td>
+                      <td>Head and neck cancer</td>
+                      <td>61 (12.35%)</td>
+                    </tr>
+                    <tr>
+                      <td>Nasopharyngeal cancer</td>
+                      <td>28 (10.37%)</td>
+                      <td>Nasopharyngeal cancer</td>
+                      <td>53 (10.73%)</td>
+                    </tr>
+                    <tr>
+                      <td>Rectal cancer</td>
+                      <td>27 (10.00%)</td>
+                      <td>Cervical cancer</td>
+                      <td>33 (6.68%)</td>
+                    </tr>
+                    <tr>
+                      <td>Prostate cancer</td>
+                      <td>18 (6.67%)</td>
+                      <td>Oropharyngeal cancer</td>
+                      <td>30 (6.07%)</td>
+                    </tr>
+                    <tr>
+                      <td>Head and neck cancer</td>
+                      <td>17 (6.30%)</td>
+                      <td>Breast cancer</td>
+                      <td>21 (4.25%)</td>
+                    </tr>
+                    <tr>
+                      <td>Cervical cancer</td>
+                      <td>13 (4.81%)</td>
+                      <td>Prostate cancer</td>
+                      <td>19 (3.85%)</td>
+                    </tr>
+                    <tr>
+                      <td>Pancreatic cancer</td>
+                      <td>10 (3.70%)</td>
+                      <td>Laryngeal cancer</td>
+                      <td>18 (3.64%)</td>
+                    </tr>
+                    <tr>
+                      <td>Glioma</td>
+                      <td>6 (2.22%)</td>
+                      <td>Lung cancer</td>
+                      <td>12 (2.43%)</td>
+                    </tr>
+                    <tr>
+                      <td>Oropharyngeal cancer</td>
+                      <td>5 (1.85%)</td>
+                      <td>Bladder cancer</td>
+                      <td>12 (2.43%)</td>
+                    </tr>
+                    <tr>
+                      <td>Oral cancer</td>
+                      <td>5 (1.85%)</td>
+                      <td>Glioma</td>
+                      <td>9 (1.82%)</td>
+                    </tr>
+                    <tr>
+                      <td>Bladder cancer</td>
+                      <td>5 (1.85%)</td>
+                      <td>Oral cancer</td>
+                      <td>7 (1.42%)</td>
+                    </tr>
+                    <tr>
+                      <td>Gastric cancer</td>
+                      <td>2 (0.74%)</td>
+                      <td>Pharyngeal cancer</td>
+                      <td>2 (0.40%)</td>
+                    </tr>
+                    <tr>
+                      <td>Medulloblastoma</td>
+                      <td>1 (0.37%)</td>
+                      <td>Cheek mucosa cancer</td>
+                      <td>2 (0.40%)</td>
+                    </tr>
+                    <tr>
+                      <td>Gallbladder cancer</td>
+                      <td>1 (0.37%)</td>
+                      <td>Laryngopharyngeal cancer</td>
+                      <td>2 (0.40%)</td>
+                    </tr>
+                    <tr>
+                      <td></td>
+                      <td></td>
+                      <td>Lymphoma</td>
+                      <td>2 (0.40%)</td>
+                    </tr>
+                    <tr>
+                      <td></td>
+                      <td></td>
+                      <td>Tongue cancer</td>
+                      <td>1 (0.20%)</td>
+                    </tr>
+                    <tr>
+                      <td></td>
+                      <td></td>
+                      <td>Lacrimal gland cancer</td>
+                      <td>1 (0.20%)</td>
+                    </tr>
+                    <tr>
+                      <td></td>
+                      <td></td>
+                      <td>Gastric cancer</td>
+                      <td>1 (0.20%)</td>
+                    </tr>
+                    <tr>
+                      <td></td>
+                      <td></td>
+                      <td>Anal cancer</td>
+                      <td>1 (0.20%)</td>
+                    </tr>
+                    <tr>
+                      <td></td>
+                      <td></td>
+                      <td>Soft tissue sarcoma</td>
+                      <td>1 (0.20%)</td>
+                    </tr>
+                    <tr>
+                      <td></td>
+                      <td></td>
+                      <td>Pancreatic cancer</td>
+                      <td>1 (0.20%)</td>
+                    </tr>
+                    <tr>
+                      <td></td>
+                      <td></td>
+                      <td>Tonsil cancer</td>
+                      <td>1 (0.20%)</td>
+                    </tr>
+                    <tr>
+                      <td></td>
+                      <td></td>
+                      <td>Maxillary sinus cancer</td>
+                      <td>1 (0.20%)</td>
+                    </tr>
+                    <tr>
+                      <td></td>
+                      <td></td>
+                      <td>Medulloblastoma</td>
+                      <td>1 (0.20%)</td>
+                    </tr>
+                    <tr>
+                      <td>Total</td>
+                      <td>270 (100%)</td>
+                      <td>Total</td>
+                      <td>496 (100%)</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
             </div>
           </div>
         </div>

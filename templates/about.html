@@ -15,10 +15,10 @@
     <div class="row" style="margin-top: 10px; margin-bottom: 100px;">
       <div class="col-md-2 col-sm-2 col-xs-2">
         <ul class="nav nav-pills nav-stacked">
-          <li role="presentation" class="active"><a href="#about_trpkb" data-toggle="tab">About RadioGKB</a></li>
+          <li role="presentation" class="active"><a href="#about_trpkb" data-toggle="tab">About RTPDB</a></li>
           <li role="presentation"><a href="#cite" data-toggle="tab">Cite</a></li>
           <li role="presentation"><a href="#contact" data-toggle="tab">Contact</a></li>
-          <li role="presentation"><a href="#contribution" data-toggle="tab">Contribution</a></li>
+          <li role="presentation"><a href="#acknowledgements" data-toggle="tab">Acknowledgements</a></li>
         </ul>
       </div>
       <div class="col-md-10 col-sm-10 col-xs-10">
@@ -26,18 +26,18 @@
           <div id="about_trpkb" class="tab-pane fade in active">
             <div class="panel panel-default">
               <div class="panel-body">
-                <h1>About Knowledgebase</h1>
-                <p>The RadioGKB (Radiation Genomics Knowledgebase) is a tumor knowledge resource that focus on the relationship between human genetic variation or gene expression and prognosis of patients who received radiotherapy with or without other treatments. RadioGKB collects, curates and disseminates knowledge about the impact of human genetic variation on prognosis of cancer patients. Now, we mainly focus on the association between single nucleotide polymorphism (SNP) or gene expression and prognosis. Mutations in other type will be included in turn.</p>
+                <h1>About Database</h1>
+                <p>The RTPDB (Radiotherapy Prognosis Database) is a tumor prognosis resource that focus on the relationship between human genetic variation or gene expression and prognosis of patients who received radiotherapy with or without other treatments. RTPDB collects, curates and disseminates data about the impact of human genetic variation on prognosis of cancer patients. Now, we mainly focus on the association between single nucleotide polymorphism (SNP) or gene expression and prognosis. Mutations in other type will be included in turn.</p>
                 <br>
                 <div class="img-thumbnail text-center">
-                  <img style="max-width:100%;" src="/static/images/about_RadioGKB_Structure.png" alt="Figure 1 The RadioGKB Knowledge Structure">
-                  <strong>Figure 1. The RadioGKB Knowledge Structure</strong>
+                  <img style="max-width:100%;" src="/static/images/about_RTPDB_Structure.png" alt="Figure 1 The RTPDB Data Structure">
+                  <strong>Figure 1. The RTPDB Data Structure</strong>
                 </div>
                 <br>
                 <br>
-                <p><strong>Figure 1 The RadioGKB Knowledge Structure</strong> Providing users with a visualization of the different types of information found in knowledgebase, and how this knowledge is acquired and integrated together – from the data of variation and prognosis at the outside of the circle to implementation of genetic variation in the clinic at the central. Each step is described briefly below.</p>
+                <p><strong>Figure 1 The RTPDB Data Structure</strong> Providing users with a visualization of the different types of information found in database, and how this data is acquired and integrated together – from the data of variation and prognosis at the outside of the circle to implementation of genetic variation in the clinic at the central. Each step is described briefly below.</p>
                 <h3 style="color:#6699FF;">Tumor Prognosis Literature</h3>
-                <p>The tumor prognosis literature, such as publications found in PubMed and published by researchers and clinicians forms the outside of the RadioGKB knowledge structure. From here, we include literature according to inclusion criteria. For every study included in the RadioGKB, we classify them by Evidence-based Medicine Level from iCMDB knowledgebase (<a href="http://www.vishuo.com/cn/icmdb/">http://www.vishuo.com/cn/icmdb/</a>).</p>
+                <p>The tumor prognosis literature, such as publications found in PubMed and published by researchers and clinicians forms the outside of the RTPDB data structure. From here, we include literature according to inclusion criteria. For every study included in the RTPDB, we classify them by Evidence-based Medicine Level from iCMDB knowledgebase (<a href="http://www.vishuo.com/cn/icmdb/">http://www.vishuo.com/cn/icmdb/</a>).</p>
                 <br>
                 <div class="img-thumbnail text-center">
                   <img style="max-width:100%;" src="/static/images/about_EBML.png" alt="Figure 2 Evidence-based Medicine Level">
@@ -45,15 +45,15 @@
                 </div>
                 <br>
                 <br>
-                <h3 style="color:#6699FF;">Knowledge Extraction</h3>
+                <h3 style="color:#6699FF;">Data Extraction</h3>
                 <p>We extract some clinical information, such as patient number, sex ratio, age, genetic variation, treatment, prognosis and statistical results from the publication.</p>
-                <h3 style="color:#6699FF;">Knowledge Annotation, Aggregation & Integration</h3>
+                <h3 style="color:#6699FF;">Data Annotation, Aggregation & Integration</h3>
                 <p>We replace name of gene and variation with official name. At the same time, we collect the primary information of gene and variation. Then we summary up the treatment in clinical terms.</p>
                 <h3 style="color:#6699FF;">Clinical Implementation</h3>
                 <p>Base on the statistical result, we would know whether the genetic variation or gene expression could influence the prognosis with specific treatment.</p>
-                <h1>About Knowledge</h1>
+                <h1>About Data</h1>
                 <p>We focus on the association between single nucleotide polymorphism (SNP) and prognosis of cancer patients who received radiotherapy with or without other treatments. As we know, most SNP in human genome has two alleles: ancestral allele and minor allele. So, there are three genotypes in this specific position: wild homozygous type, mutant heterozygous type and mutant homozygous type.</p>
-                <p>In clinical cohort study, we need to know whether exposure group influences the study endpoint when compared with un-exposure group under specific circumstance. In our knowledgebase, the exposure group often means wild homozygous type, and the un-exposure group often means mutant heterozygous type and mutant homozygous type or mutant heterozygous/homozygous type. For endpoint, it stands for specific event of prognosis. For example, most research use death as the endpoint in overall survival (OS).</p>
+                <p>In clinical cohort study, we need to know whether exposure group influences the study endpoint when compared with un-exposure group under specific circumstance. In our database, the exposure group often means wild homozygous type, and the un-exposure group often means mutant heterozygous type and mutant homozygous type or mutant heterozygous/homozygous type. For endpoint, it stands for specific event of prognosis. For example, most research use death as the endpoint in overall survival (OS).</p>
                 <p>OR (odds ratio), HR (hazard ratio) and RR (relative risk/risk ratio) are extracted from publications to show the association between SNP and prognosis. Some articles do not offer OR sometimes, OR need to be calculated by using STATA 14.1 (StataCorp. 2015. Stata Statistical Software: Release 14. College Station, TX: StataCorp LP.) with original data.</p>
                 <br>
                 <div class="row">
@@ -178,7 +178,7 @@
                   <div class="col-md-1 col-sm-1 col-xs-1">
                   </div>
                 </div>
-                <p><i>HR: hazard ratio; 95% CI: 95% confidence interval; U: univariate analysis; M: multivariate analysis, it means the HR was adjusted for some clinical factors. Event: ≥2 radiation pneumonitis.</i></p>
+                <p>HR: hazard ratio; 95% CI: 95% confidence interval; U: univariate analysis; M: multivariate analysis, it means the HR was adjusted for some clinical factors. Event: ≥2 radiation pneumonitis.</p>
                 <p>The data in table 2 comes from the article below.</p>
                 <p><i>Yin M, Liao Z, Liu Z, et al. Functional polymorphisms of base excision repair genes XRCC1 and APEX1 predict risk of radiation pneumonitis in patients with non–small cell lung cancer treated with definitive radiation therapy[J]. International Journal of Radiation Oncology* Biology* Physics, 2011, 81(3): e67-e73. </i></p>
               </div>
@@ -197,17 +197,29 @@
           <div id="contact" class="tab-pane fade">
             <div class="panel panel-default">
               <div class="panel-body">
-                <p>Coming soon!</p>
-                <br><br><br><br><br><br><br><br><br>
+                <p><strong>Yuan Yang</strong></p>
+                <br>
+                <p>School of Life Sciences, Fudan University</p>
+                <br>
+                <p><strong>Address: </strong>2005 Songhu Road, Shanghai 200438, P.R.China</p>
+                <br>
+                <p><strong>Email: </strong><a href="mailto:yuanyang15@fudan.edu.cn">yuanyang15@fudan.edu.cn</a></p>
               </div>
             </div>
           </div>
 
-          <div id="contribution" class="tab-pane fade">
+          <div id="acknowledgements" class="tab-pane fade">
             <div class="panel panel-default">
               <div class="panel-body">
-                <p>Coming soon!</p>
-                <br><br><br><br><br><br><br><br><br>
+                <p>Thanks <strong>Congchong Wei</strong> (Shanghai Burning Rock Medical Examination Institute Co., Ltd) for help in website building.</p>
+                <br>
+                <p>Thanks <strong>Qiang Wang</strong> (School of Mathematics and Physics, Anhui University of technology, Maanshan, Anhui, China) for help in database design.</p>
+                <br>
+                <p>Thanks <strong>Li Qiu</strong> and <strong>Ming Luo</strong> (Department of Clinical Oncology, Taihe Hospital, Hubei University of Medicine, Shiyan, Hubei, China) for help in classification of tumor and prognosis.</p>
+                <br>
+                <p>Thanks <strong>Huanhuan Chen</strong> and <strong>Ting Zhang</strong> Guangxi Medical University, Nanning, Guangxi, China) for help in collecting data.</p>
+                <br>
+                <p>Tanks <strong>Quanying Liu</strong> and <strong>other 14 students</strong> (Department of Pharmacology, School of Basic Medicine, Hubei University of Medicine, Shiyan, Hubei, China) for help in collecting data.</p>
               </div>
             </div>
           </div>

@@ -9,7 +9,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     {% endblock head_meta %}
 
-    <title>RadioGKB | {% block head_title %}{% endblock head_title %}</title>
+    <title>RTPDB | {% block head_title %}{% endblock head_title %}</title>
 
     <!-- Bootstrap core CSS -->
     <link href='{% static "vendors/bootstrap/3.3.7/css/bootstrap.min.css" %}' rel="stylesheet">
@@ -38,7 +38,7 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="/">RadioGKB</a>
+          <a class="navbar-brand" href="/">RTPDB</a>
         </div>
         <div class="navbar-collapse collapse">
           {% if user.is_authenticated %}
@@ -74,9 +74,9 @@
       <div class="col-md-12 col-sm-12 col-xs-12">
         <div class="jumbotron" style="margin-bottom:0px;">
           <div class="container">
-            <p>Radiation Genomics Knowledgebase</p>
-            <p>SNP: <span style="color: green;">{{ stats.r_snp_num }}</span> papers, <span style="color: green;">{{ stats.g_snp_num }}</span> genes, <span style="color: green;">{{ stats.v_snp_num }}</span> variants, <span style="color: green;">{{ stats.tt_snp_num }}</span> tumor types.</p>
-            <p>Expression: <span style="color: green;">{{ stats.r_exp_num }}</span> papers, <span style="color: green;">{{ stats.g_exp_num }}</span> genes, <span style="color: green;">{{ stats.tt_exp_num }}</span> tumor types.</p>
+            <p>Radiotherapy Prognosis Database</p>
+            <p>SNP: <span style="color: green;">{{ stats.r_snp_num }}</span> papers, <span style="color: green;">{{ stats.g_snp_num }}</span> genes, <span style="color: green;">{{ stats.v_snp_num }}</span> variants, <span style="color: green;">{{ stats.tumor_t_snp_num }}</span> tumor types, <span style="color: green;">{{ stats.patient_snp_num }}</span> patients, <span style="color: green;">{{ stats.treatment_t_snp_num }}</span> treatment types.</p>
+            <p>Expression: <span style="color: green;">{{ stats.r_exp_num }}</span> papers, <span style="color: green;">{{ stats.g_exp_num }}</span> genes, <span style="color: green;">{{ stats.tumor_t_exp_num }}</span> tumor types, <span style="color: green;">{{ stats.patient_exp_num }}</span> patients, <span style="color: green;">{{ stats.treatment_t_exp_num }}</span> treatment types.</p>
           </div>
         </div>
       </div>
@@ -108,7 +108,7 @@
 
       {% block footer %}
       <footer>
-        <p>Copyright &copy; 2017 Radiation Genomics Knowledgebase | All Rights Reserved | Email: <a href="mailto:trpkb2017@163.com">trpkb2017@163.com</a></p>
+        <p>Copyright &copy; 2018 Radiotherapy Prognosis Database | All Rights Reserved | Email: <a href="mailto:yuanyang15@fudan.edu.cn">yuanyang15@fudan.edu.cn</a></p>
       </footer>
       {% endblock footer %}
     </div>
