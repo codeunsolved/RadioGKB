@@ -7,7 +7,7 @@
       {% block nav %}
       <li role="presentation" class="active"><a href="{% url 'about' %}">About</a></li>
       <li role="presentation"><a href="{% url 'access' %}">Access</a></li>
-      <li role="presentation"><a href="{% url 'submit' %}">Submit</a></li>
+      <!--<li role="presentation"><a href="{% url 'submit' %}">Submit</a></li>-->
       <li role="presentation"><a href="{% url 'news' %}">News</a></li>
       {% endblock nav %}
 
@@ -26,70 +26,53 @@
           <div id="about_trpkb" class="tab-pane fade in active">
             <div class="panel panel-default">
               <div class="panel-body">
-                <h1>About Database</h1>
                 <p>The RTPDB (Radiotherapy Prognosis Database) is a tumor prognosis resource that focus on the relationship between human genetic variation or gene expression and prognosis of patients who received radiotherapy with or without other treatments. RTPDB collects, curates and disseminates data about the impact of human genetic variation on prognosis of cancer patients. Now, we mainly focus on the association between single nucleotide polymorphism (SNP) or gene expression and prognosis. Mutations in other type will be included in turn.</p>
-                <br>
                 <div class="img-thumbnail text-center">
-                  <img style="max-width:100%;" src="/static/images/about_RTPDB_Structure.png" alt="Figure 1 The RTPDB Data Structure">
-                  <strong>Figure 1. The RTPDB Data Structure</strong>
+                  <img style="max-width:100%;" src="/static/images/about_studies.png" alt="Figure 1. The distribution of studies included in the database from 1994 to 2018">
+                  <strong>Figure 1. The distribution of studies included in the database from 1994 to 2018</strong>
                 </div>
                 <br>
-                <br>
-                <p><strong>Figure 1 The RTPDB Data Structure</strong> Providing users with a visualization of the different types of information found in database, and how this data is acquired and integrated together – from the data of variation and prognosis at the outside of the circle to implementation of genetic variation in the clinic at the central. Each step is described briefly below.</p>
-                <h3 style="color:#6699FF;">Tumor Prognosis Literature</h3>
-                <p>The tumor prognosis literature, such as publications found in PubMed and published by researchers and clinicians forms the outside of the RTPDB data structure. From here, we include literature according to inclusion criteria. For every study included in the RTPDB, we classify them by Evidence-based Medicine Level from iCMDB knowledgebase (<a href="http://www.vishuo.com/cn/icmdb/">http://www.vishuo.com/cn/icmdb/</a>).</p>
-                <br>
-                <div class="img-thumbnail text-center">
-                  <img style="max-width:100%;" src="/static/images/about_EBML.png" alt="Figure 2 Evidence-based Medicine Level">
-                  <strong>Figure 2. Evidence-based Medicine Level</strong>
-                </div>
-                <br>
-                <br>
-                <h3 style="color:#6699FF;">Data Extraction</h3>
-                <p>We extract some clinical information, such as patient number, sex ratio, age, genetic variation, treatment, prognosis and statistical results from the publication.</p>
-                <h3 style="color:#6699FF;">Data Annotation, Aggregation & Integration</h3>
-                <p>We replace name of gene and variation with official name. At the same time, we collect the primary information of gene and variation. Then we summary up the treatment in clinical terms.</p>
-                <h3 style="color:#6699FF;">Clinical Implementation</h3>
-                <p>Base on the statistical result, we would know whether the genetic variation or gene expression could influence the prognosis with specific treatment.</p>
-                <h1>About Data</h1>
-                <p>We focus on the association between single nucleotide polymorphism (SNP) and prognosis of cancer patients who received radiotherapy with or without other treatments. As we know, most SNP in human genome has two alleles: ancestral allele and minor allele. So, there are three genotypes in this specific position: wild homozygous type, mutant heterozygous type and mutant homozygous type.</p>
-                <p>In clinical cohort study, we need to know whether exposure group influences the study endpoint when compared with un-exposure group under specific circumstance. In our database, the exposure group often means wild homozygous type, and the un-exposure group often means mutant heterozygous type and mutant homozygous type or mutant heterozygous/homozygous type. For endpoint, it stands for specific event of prognosis. For example, most research use death as the endpoint in overall survival (OS).</p>
-                <p>OR (odds ratio), HR (hazard ratio) and RR (relative risk/risk ratio) are extracted from publications to show the association between SNP and prognosis. Some articles do not offer OR sometimes, OR need to be calculated by using STATA 14.1 (StataCorp. 2015. Stata Statistical Software: Release 14. College Station, TX: StataCorp LP.) with original data.</p>
                 <br>
                 <div class="row">
                   <div class="col-md-1 col-sm-1 col-xs-1">
                   </div>
                   <div class="col-md-10 col-sm-10 col-xs-10">
                     <div class="text-center">
-                      <strong>Table 1. Four-fold table</strong>
+                      <strong>Table 1. The language of included studies</strong>
                     </div>
                     <table class="table-threeline">
                       <thead>
                         <tr>
-                          <th>Group</th>
-                          <th>Event</th>
-                          <th>Non-event</th>
-                          <th>Total</th>
+                          <th>Language</th>
+                          <th>SNP (%)</th>
+                          <th>Expression (%)</th>
+                          <th>Total (%)</th>
                         </tr>
                       </thead>
                       <tbody>
                         <tr>
-                          <td>Exposure</td>
-                          <td><span style="color:red;">a</span></td>
-                          <td><span style="color:red;">b</span></td>
-                          <td>a+b</td>
+                          <td>Chinese</td>
+                          <td>45 (16.67%)</td>
+                          <td>53 (10.72%)</td>
+                          <td>98 (12.83%)</td>
                         </tr>
                         <tr>
-                          <td>Un-exposure</td>
-                          <td><span style="color:red;">c</span></td>
-                          <td><span style="color:red;">d</span></td>
-                          <td>c+d</td>
+                          <td>English</td>
+                          <td>225 (83.33%)</td>
+                          <td>440 (89.07%)</td>
+                          <td>665 (87.04%)</td>
+                        </tr>
+                        <tr>
+                          <td>Korean</td>
+                          <td>0 (0.00%)</td>
+                          <td>1 (0.21%)</td>
+                          <td>1 (0.13%)</td>
                         </tr>
                         <tr>
                           <td>Total</td>
-                          <td>a+c</td>
-                          <td>b+d</td>
-                          <td></td>
+                          <td>270 (35.33%)</td>
+                          <td>494 (64.67)</td>
+                          <td>764 (100.00%)</td>
                         </tr>
                       </tbody>
                     </table>
@@ -97,80 +80,54 @@
                   <div class="col-md-1 col-sm-1 col-xs-1">
                   </div>
                 </div>
-                <div class="text-center">
-                  <img style="max-width:100%;" src="/static/images/about_formula.png">
-                </div>
                 <br>
-                <br>
-                <p>OR often be used in case-control study or prospective study. HR often been used clinical medicine research or cohort study of Epidemiology. Hazard is an instantons rate of a given outcome, which include time factor. HR is a ratio of two hazards (Exposure/Un-exposure) at that given time. RR often be used in cohort study or randomized controlled trial.</p>
-                <p>If both OR/HR/RR and low value of 95% confidence interval (95% CI) > 1, the patients in exposure group has high risk to reach the endpoint compared with un-exposure group. On the contrary, the patients in exposure group has low risk to reach the endpoint. To be more accurate, we consider P value > 0.05 as significance level.</p>
-                <p>In the result page, we use table to present the association between SNP and prognosis. Table 2 shows the association between XRCC1 rs25487 and ≥2 radiation pneumonitis in patients after treatment for non-small cell lung cancer.</p>
                 <br>
                 <div class="row">
                   <div class="col-md-1 col-sm-1 col-xs-1">
                   </div>
                   <div class="col-md-10 col-sm-10 col-xs-10">
                     <div class="text-center">
-                      <strong>Table 2. The association between XRCC1 rs25487 and ≥2 radiation pneumonitis in patients after treatment for non-small cell lung cancer</strong>
+                      <strong>Table 2. The publication type of included studies</strong>
                     </div>
                     <table class="table-threeline">
                       <thead>
                         <tr>
-                          <th>Genotypes</th>
-                          <th>No. of patients</th>
-                          <th>Event</th>
-                          <th>HR (U)</th>
-                          <th>95%CI (U)</th>
-                          <th>P (U)</th>
-                          <th>HR (M)</th>
-                          <th>95%CI (M)</th>
-                          <th>P (M)</th>
+                          <th>Publication type</th>
+                          <th>SNP (%)</th>
+                          <th>Expression (%)</th>
+                          <th>Total (%)</th>
                         </tr>
                       </thead>
                       <tbody>
                         <tr>
-                          <td>GG</td>
-                          <td>49</td>
-                          <td>25</td>
-                          <td>1.00</td>
-                          <td></td>
-                          <td></td>
-                          <td>1.00</td>
-                          <td></td>
-                          <td></td>
+                          <td>Journal</td>
+                          <td>260 (96.30%)</td>
+                          <td>473 (95.75%)</td>
+                          <td>733 (95.54%)</td>
                         </tr>
                         <tr>
-                          <td>AG</td>
-                          <td>72</td>
-                          <td>28</td>
-                          <td>0.73</td>
-                          <td>0.42-1.25</td>
-                          <td>0.248</td>
-                          <td>0.76</td>
-                          <td>0.44-1.31</td>
-                          <td>0.322</td>
+                          <td>Doctoral Dissertation</td>
+                          <td>5 (1.85%)</td>
+                          <td>13 (2.63%)</td>
+                          <td>18 (2.36%)</td>
                         </tr>
                         <tr>
-                          <td>AA</td>
-                          <td>44</td>
-                          <td>13</td>
-                          <td>0.52</td>
-                          <td>0.26-1.01</td>
-                          <td>0.054</td>
-                          <td>0.48</td>
-                          <td>0.24-0.97</td>
-                          <td>0.041</td>
+                          <td>Masters' Thesis</td>
+                          <td>4 (1.48%)</td>
+                          <td>8 (1.62%)</td>
+                          <td>12 (1.57%)</td>
                         </tr>
                         <tr>
-                          <td>AG/AA</td>
-                          <td>116</td>
-                          <td>41</td>
-                          <td>0.64</td>
-                          <td>0.39-1.06</td>
-                          <td>0.081</td>
-                          <td>0.65</td>
-                          <td>0.39-1.09</td>
-                          <td>0.100</td>
+                          <td>Proceeding</td>
+                          <td>1 (0.37%)</td>
+                          <td>0 (0.00%)</td>
+                          <td>0 (0.13%)</td>
+                        </tr>
+                        <tr>
+                          <td>Total</td>
+                          <td>270 (35.33%)</td>
+                          <td>494 (64.67)</td>
+                          <td>764 (100.00%)</td>
                         </tr>
                       </tbody>
                     </table>
@@ -178,9 +135,227 @@
                   <div class="col-md-1 col-sm-1 col-xs-1">
                   </div>
                 </div>
-                <p>HR: hazard ratio; 95% CI: 95% confidence interval; U: univariate analysis; M: multivariate analysis, it means the HR was adjusted for some clinical factors. Event: ≥2 radiation pneumonitis.</p>
-                <p>The data in table 2 comes from the article below.</p>
-                <p><i>Yin M, Liao Z, Liu Z, et al. Functional polymorphisms of base excision repair genes XRCC1 and APEX1 predict risk of radiation pneumonitis in patients with non–small cell lung cancer treated with definitive radiation therapy[J]. International Journal of Radiation Oncology* Biology* Physics, 2011, 81(3): e67-e73. </i></p>
+                <br>
+                <br>
+                <div class="img-thumbnail text-center">
+                  <img style="max-width:100%;" src="/static/images/about_patients.png" alt="Figure 2. The range of patients’ number in included studies">
+                  <strong>Figure 2. The range of patients’ number in included studies</strong>
+                </div>
+                <br>
+                <br>
+                <div class="img-thumbnail text-center">
+                  <img style="max-width:100%;" src="/static/images/about_top10_tumor.png" alt="Figure 3. Tumor word cloud in SNP and expression data">
+                  <strong>Figure 3. Tumor word cloud in SNP and Expression data</strong>
+                </div>
+                <br>
+                <br>
+                <div class="img-thumbnail text-center">
+                  <img style="max-width:100%;" src="/static/images/about_top10_gene_variant.png" alt="Figure 4. Top 10 variant and gene in SNP and expression data">
+                  <strong>Figure 4. Top 10 variant and gene in SNP and Expression data</strong>
+                </div>
+                <br>
+                <br>
+                <div class="row">
+                  <div class="col-md-1 col-sm-1 col-xs-1">
+                  </div>
+                  <div class="col-md-10 col-sm-10 col-xs-10">
+                    <div class="text-center">
+                      <strong>Table 3. The treatment type in SNP data</strong>
+                    </div>
+                    <table class="table-threeline">
+                      <thead>
+                        <tr>
+                          <th>Treatment type</th>
+                          <th>Meaning</th>
+                          <th>Number of studies (%)</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td>Radiotherapy ± Chemotherapy</td>
+                          <td>All patients received radiotherapy, and partial patients received chemotherapy.</td>
+                          <td>62 (22.96%)</td>
+                        </tr>
+                        <tr>
+                          <td>Radiotherapy + Chemotherapy</td>
+                          <td>All patients received radiotherapy and chemotherapy.</td>
+                          <td>44 (16.30%)</td>
+                        </tr>
+                        <tr>
+                          <td>Radiotherapy</td>
+                          <td>All patients received radiotherapy.</td>
+                          <td>44 (16.30%)</td>
+                        </tr>
+                        <tr>
+                          <td>Radiotherapy + Chemotherapy + Surgery</td>
+                          <td>All patients received radiotherapy, chemotherapy and surgery.</td>
+                          <td>34 (12.59%)</td>
+                        </tr>
+                        <tr>
+                          <td>Radiotherapy ± Chemotherapy ± Surgery</td>
+                          <td>All patients received radiotherapy, and partial patients received chemotherapy and surgery.</td>
+                          <td>18 (6.67%)</td>
+                        </tr>
+                        <tr>
+                          <td>Radiotherapy + Surgery</td>
+                          <td>All patients received radiotherapy and surgery.</td>
+                          <td>18 (6.67%)</td>
+                        </tr>
+                        <tr>
+                          <td>Radiotherapy + Chemotherapy ± Surgery</td>
+                          <td>All patients received radiotherapy and chemotherapy, and partial patients received surgery.</td>
+                          <td>16 (5.93%)</td>
+                        </tr>
+                        <tr>
+                          <td>Radiotherapy ± Hormone therapy</td>
+                          <td>All patients received radiotherapy, and partial patients received hormone therapy.</td>
+                          <td>8 (2.96%)</td>
+                        </tr>
+                        <tr>
+                          <td>Radiotherapy ± Chemotherapy + Surgery</td>
+                          <td>All patients received radiotherapy and surgery, and partial patients received chemotherapy.</td>
+                          <td>8 (2.96%)</td>
+                        </tr>
+                        <tr>
+                          <td>Radiotherapy ± Chemotherapy ± Hormone therapy + Surgery</td>
+                          <td>All patients received radiotherapy and surgery, and partial patients received chemotherapy and hormone therapy.</td>
+                          <td>6 (2.22%)</td>
+                        </tr>
+                        <tr>
+                          <td>Radiotherapy ± Hormone therapy ± Surgery</td>
+                          <td>All patients received radiotherapy, and partial patients received hormone therapy and surgery.</td>
+                          <td>5 (1.85%)</td>
+                        </tr>
+                        <tr>
+                          <td>Radiotherapy ± Hormone therapy + Surgery</td>
+                          <td>All patients received radiotherapy and surgery, and partial patients received hormone therapy.</td>
+                          <td>2 (0.74%)</td>
+                        </tr>
+                        <tr>
+                          <td>Radiotherapy ± Chemotherapy ± Hormone therapy</td>
+                          <td>All patients received radiotherapy, and partial patients received chemotherapy and hormone therapy.</td>
+                          <td>2 (0.74%)</td>
+                        </tr>
+                        <tr>
+                          <td>Radiotherapy + Chemotherapy + Hormone therapy</td>
+                          <td>All patients received radiotherapy, chemotherapy and hormone therapy.</td>
+                          <td>1 (0.37%)</td>
+                        </tr>
+                        <tr>
+                          <td>Radiotherapy ± Surgery</td>
+                          <td>All patients received radiotherapy, and partial patients received surgery.</td>
+                          <td>1 (0.37%)</td>
+                        </tr>
+                        <tr>
+                          <td>Radiotherapy ± Chemotherapy ± Hormone therapy ± Surgery</td>
+                          <td>All patients received radiotherapy, and partial patients received chemotherapy, hormone therapy and surgery.</td>
+                          <td>1 (0.37%)</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                  <div class="col-md-1 col-sm-1 col-xs-1">
+                  </div>
+                </div>
+                <br>
+                <br>
+                <div class="row">
+                  <div class="col-md-1 col-sm-1 col-xs-1">
+                  </div>
+                  <div class="col-md-10 col-sm-10 col-xs-10">
+                    <div class="text-center">
+                      <strong>Table 4. The treatment type in Expression data</strong>
+                    </div>
+                    <table class="table-threeline">
+                      <thead>
+                        <tr>
+                          <th>Treatment type</th>
+                          <th>Meaning</th>
+                          <th>Number of studies (%)</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td>Radiotherapy + Chemotherapy + Surgery</td>
+                          <td>All patients received radiotherapy, chemotherapy and surgery.</td>
+                          <td>130 (26.96%)</td>
+                        </tr>
+                        <tr>
+                          <td>Radiotherapy</td>
+                          <td>All patients received radiotherapy.</td>
+                          <td>90 (18.22%)</td>
+                        </tr>
+                        <tr>
+                          <td>Radiotherapy + Chemotherapy</td>
+                          <td>All patients received radiotherapy and chemotherapy.</td>
+                          <td>89 (18.02%)</td>
+                        </tr>
+                        <tr>
+                          <td>Radiotherapy ± Chemotherapy</td>
+                          <td>All patients received radiotherapy, and partial patients received chemotherapy.</td>
+                          <td>66 (13.36%)</td>
+                        </tr>
+                        <tr>
+                          <td>Radiotherapy + Surgery</td>
+                          <td>All patients received radiotherapy and surgery.</td>
+                          <td>49 (9.92%)</td>
+                        </tr>
+                        <tr>
+                          <td>Radiotherapy + Chemotherapy ± Surgery</td>
+                          <td>All patients received radiotherapy and chemotherapy, and partial patients received surgery.</td>
+                          <td>23 (4.66%)</td>
+                        </tr>
+                        <tr>
+                          <td>Radiotherapy ± Chemotherapy ± Surgery</td>
+                          <td>All patients received radiotherapy, and partial patients received chemotherapy and surgery.</td>
+                          <td>13 (2.6%)</td>
+                        </tr>
+                        <tr>
+                          <td>Radiotherapy ± Chemotherapy + Surgery</td>
+                          <td>All patients received radiotherapy and surgery, and partial patients received chemotherapy.</td>
+                          <td>11 (2.23%)</td>
+                        </tr>
+                        <tr>
+                          <td>Radiotherapy ± Hormone therapy</td>
+                          <td>All patients received radiotherapy, and partial patients received hormone therapy.</td>
+                          <td>7 (1.42%)</td>
+                        </tr>
+                        <tr>
+                          <td>Radiotherapy ± Surgery</td>
+                          <td>All patients received radiotherapy, and partial patients received surgery.</td>
+                          <td>5 (1.01%)</td>
+                        </tr>
+                        <tr>
+                          <td>Radiotherapy + Hormone therapy</td>
+                          <td>All patients received radiotherapy and hormone therapy.</td>
+                          <td>5 (1.01%)</td>
+                        </tr>
+                        <tr>
+                          <td>Radiotherapy ± Chemotherapy ± Hormone therapy + Surgery</td>
+                          <td>All patients received radiotherapy and surgery, and partial patients received chemotherapy and hormone therapy.</td>
+                          <td>2 (0.40%)</td>
+                        </tr>
+                        <tr>
+                          <td>Radiotherapy + Chemotherapy ± Hormone therapy + Surgery</td>
+                          <td>All patients received radiotherapy, chemotherapy and surgery, and partial patients received hormone therapy.</td>
+                          <td>2 (0.40%)</td>
+                        </tr>
+                        <tr>
+                          <td>Radiotherapy ± Chemotherapy ± Hormone therapy ± Surgery</td>
+                          <td>All patients received radiotherapy, and partial patients received chemotherapy, hormone therapy and surgery.</td>
+                          <td>1 (0.20%)</td>
+                        </tr>
+                        <tr>
+                          <td>Radiotherapy ± Chemotherapy ± Hormone therapy</td>
+                          <td>All patients received radiotherapy, and partial patients received chemotherapy and hormone therapy.</td>
+                          <td>1 (0.20%)</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                  <div class="col-md-1 col-sm-1 col-xs-1">
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -203,7 +378,7 @@
                 <br>
                 <p><strong>Address: </strong>2005 Songhu Road, Shanghai 200438, P.R.China</p>
                 <br>
-                <p><strong>Email: </strong><a href="mailto:yuanyang15@fudan.edu.cn">yuanyang15@fudan.edu.cn</a></p>
+                <p><strong>Email: </strong><a href="mailto:rtpdb2018@163.com">rtpdb2018@163.com</a></p>
               </div>
             </div>
           </div>
@@ -219,7 +394,7 @@
                 <br>
                 <p>Thanks <strong>Huanhuan Chen</strong> and <strong>Ting Zhang</strong> Guangxi Medical University, Nanning, Guangxi, China) for help in collecting data.</p>
                 <br>
-                <p>Tanks <strong>Quanying Liu</strong> and <strong>other 14 students</strong> (Department of Pharmacology, School of Basic Medicine, Hubei University of Medicine, Shiyan, Hubei, China) for help in collecting data.</p>
+                <p>Thanks <strong>Quanying Liu</strong> and <strong>other 14 students</strong> (Department of Pharmacology, School of Basic Medicine, Hubei University of Medicine, Shiyan, Hubei, China) for help in collecting data.</p>
               </div>
             </div>
           </div>

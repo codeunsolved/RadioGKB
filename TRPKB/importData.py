@@ -5,6 +5,7 @@
 # CREATED : July 5 2017
 # VERSION : v0.0.1
 
+import sys
 import xlrd
 
 
@@ -62,3 +63,11 @@ def check_association(data, kb):
 
         check_range(u, i, 'U')
         check_range(m, i, 'M')
+
+
+if __name__ == '__main__':
+    path_xls = sys.argv[1]
+    kb = sys.argv[2]
+
+    data = read_xls(path_xls, kb)
+    check_association(data, kb)

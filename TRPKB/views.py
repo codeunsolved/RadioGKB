@@ -737,12 +737,16 @@ def snp_search(request):
                 if key not in row_data:
                     row_data[key] = {'tumor': tumor, 'tumor_id': tumor_id, 'gene': gene,
                                      'variant': variant, 'variant_id': variant_id, 'research': set()}
-                row_data[key]['research'].add((r.research.title, r.research.pk))
+                row_data[key]['research'].add((r.research.title, r.research.pk,
+                                               r.research.pub_year, r.research.journal))
             for i, (k, v) in enumerate(row_data.items()):
                 research = ""
-                for title, pk in v['research']:
-                    research += "<p><a href=\"/snp/details/{}/{}/{}\">{}</a></p>".format(
-                        pk, v['tumor_id'], v['variant_id'], title)
+                for title, pk, pub_year, journal in v['research']:
+                    research += "<p><a href=\"/snp/details/{r_id}/{t_id}/{v_id}\">" \
+                                "(<span style=\"color:DodgerBlue\">{pub_year}</span>) {title} " \
+                                "(<i style=\"color:red\">{journal}</i>)</a></p>".format(
+                                    r_id=pk, t_id=v['tumor_id'], v_id=v['variant_id'],
+                                    pub_year=pub_year, title=title, journal=journal)
                 row = [i + 1,
                        v['gene'],
                        v['variant'],
@@ -783,12 +787,16 @@ def exp_search(request):
                 if key not in row_data:
                     row_data[key] = {'tumor': tumor, 'tumor_id': tumor_id,
                                      'gene': gene, 'gene_id': gene_id, 'research': set()}
-                row_data[key]['research'].add((r.research.title, r.research.pk))
+                row_data[key]['research'].add((r.research.title, r.research.pk,
+                                               r.research.pub_year, r.research.journal))
             for i, (k, v) in enumerate(row_data.items()):
                 research = ""
-                for title, pk in v['research']:
-                    research += "<p><a href=\"/exp/details/{}/{}/{}\">{}</a></p>".format(
-                        pk, v['tumor_id'], v['gene_id'], title)
+                for title, pk, pub_year, journal in v['research']:
+                    research += "<p><a href=\"/exp/details/{r_id}/{t_id}/{g_id}\">" \
+                                "(<span style=\"color:DodgerBlue\">{pub_year}</span>) {title} " \
+                                "(<i style=\"color:red\">{journal}</i>)</a></p>".format(
+                                    r_id=pk, t_id=v['tumor_id'], g_id=v['gene_id'],
+                                    pub_year=pub_year, title=title, journal=journal)
                 row = [i + 1,
                        v['gene'],
                        v['tumor'],
@@ -804,6 +812,24 @@ def exp_search(request):
     return render(request, 'search_results_exp.html', context)
 
 
+
+def handle_range(string):
+    ranges = re.findall("Decimal\('([\d\.]+)'\)", string)
+    if ranges:
+        return "[{}, {}]".format(ranges[0], ranges[1])
+    else:
+        return ''
+
+
+def handle_prognosis_origin(string):
+    if string == 'Yes':
+        return 'The association in table came from the original study.'
+    elif string == 'No':
+        return 'The association were calculated by ‘cci’ module in STATA 14.0.'
+    else:
+        return ''
+
+
 def snp_details(request, research_id, tumor_id, variant_id):
     # Main
     context = {'stats': get_stats(),
@@ -812,14 +838,23 @@ def snp_details(request, research_id, tumor_id, variant_id):
 
     # Research
     research = R_Snp.objects.get(pk=research_id)
-    context['research'] = {'title': research.title, 'pub_year': research.pub_year,
+    context['research'] = {'title': research.title,
+                           'pub_year': research.pub_year,
+                           'language': research.language,
+                           'pub_type': research.pub_type,
+                           'journal': research.journal or '',
                            'pubmed_id': research.pubmed_id or '',
+                           'abstract': research.abstract or '',
                            'url': research.url or '',
                            'ebml': research.ebml,
                            'ethnicity': research.ethnicity or '',
                            'patient_number': research.patient_number,
                            'treatment_type': research.treatment_type or '',
-                           'treatment_desc': research.treatment_desc or ''
+                           'treatment_desc': research.treatment_desc or '',
+                           'sex_ratio': "{}/{}".format(research.male, research.female),
+                           'age_median': research.median_age or '',
+                           'age_mean': research.mean_age or '',
+                           'age_range': handle_range(research.age_range.__str__()) or '',
                            }
 
     if re.search('[\u4e00-\u9fa5]', context['research']['treatment_desc']):
@@ -833,6 +868,19 @@ def snp_details(request, research_id, tumor_id, variant_id):
     # Variant
     variant = V_Snp.objects.get(pk=variant_id)
     context['variant']['dbsnp'] = variant.dbsnp
+    context['variant']['allele'] = variant.allele
+    context['variant']['allele_thead'] = ['', variant.allele]
+    context['variant']['allele_tbody'] = []
+    context['variant']['allele_footer'] = \
+        'Based on data from the 1000 Genomes project (' \
+        '<a href="http://www.internationalgenome.org/">' \
+        'http://www.internationalgenome.org/</a>), phase III.'
+    if variant.allele:
+        context['variant']['allele_tbody'].append(['African (n=1322)', variant.afr])
+        context['variant']['allele_tbody'].append(['Ad Mixed American (n=694)', variant.amr])
+        context['variant']['allele_tbody'].append(['East Asian (n=1008)', variant.eas])
+        context['variant']['allele_tbody'].append(['European (n=1006)', variant.eur])
+        context['variant']['allele_tbody'].append(['South Asian (n=978)', variant.sas])
 
     # Gene
     gene = variant.gene
@@ -879,23 +927,20 @@ def snp_details(request, research_id, tumor_id, variant_id):
 
         subgroups = {}
         for row in a_p:
-
             if row.subgroup:
                 subgroup_name = row.subgroup.subgroup
             else:
                 subgroup_name = 'N/A'
+
             if subgroup_name not in subgroups:
                 endpoint = row.prognosis.endpoint
                 subgroups[subgroup_name] = {'stats': {}, 'endpoint': endpoint,
+                                            'origin': handle_prognosis_origin(row.prognosis.original),
                                             'thead': [], 'tbody': []}
 
             sub_stats = subgroups[subgroup_name]['stats']
 
             def get_or_empty(key):
-                def handle_range(string):
-                    ranges = re.findall("Decimal\('([\d\.]+)'\)", string)
-                    return "[{}, {}]".format(ranges[0], ranges[1])
-
                 val = getattr(row, key)
                 if val and key in ['ci_u_95', 'ci_m_95']:
                     val = handle_range(val.__str__())
@@ -907,7 +952,10 @@ def snp_details(request, research_id, tumor_id, variant_id):
                     sub_stats[key] += 1
                     return val
                 else:
-                    return ''
+                    if '_number' in key:
+                        return 0
+                    else:
+                        return ''
 
             sub_row = {'genotype': row.genotype}
             for key in dict(cols):
@@ -940,14 +988,23 @@ def exp_details(request, research_id, tumor_id, gene_id):
 
     # Research
     research = R_Exp.objects.get(pk=research_id)
-    context['research'] = {'title': research.title, 'pub_year': research.pub_year,
+    context['research'] = {'title': research.title,
+                           'pub_year': research.pub_year,
+                           'language': research.language,
+                           'pub_type': research.pub_type,
+                           'journal': research.journal or '',
                            'pubmed_id': research.pubmed_id or '',
+                           'abstract': research.abstract or '',
                            'url': research.url or '',
                            'ebml': research.ebml,
                            'ethnicity': research.ethnicity or '',
                            'patient_number': research.patient_number,
                            'treatment_type': research.treatment_type or '',
                            'treatment_desc': research.treatment_desc or '',
+                           'sex_ratio': "{}/{}".format(research.male, research.female),
+                           'age_median': research.median_age or '',
+                           'age_mean': research.mean_age or '',
+                           'age_range': handle_range(research.age_range.__str__()) or '',
                            'exp_detection_method': research.exp_detection_method or '',
                            'cut_off_value': research.cut_off_value or ''
                            }
@@ -1012,18 +1069,16 @@ def exp_details(request, research_id, tumor_id, gene_id):
                 subgroup_name = row.subgroup.subgroup
             else:
                 subgroup_name = 'N/A'
+
             if subgroup_name not in subgroups:
                 endpoint = row.prognosis.endpoint
                 subgroups[subgroup_name] = {'stats': {}, 'endpoint': endpoint,
+                                            'origin': handle_prognosis_origin(row.prognosis.original),
                                             'thead': [], 'tbody': []}
 
             sub_stats = subgroups[subgroup_name]['stats']
 
             def get_or_empty(key):
-                def handle_range(string):
-                    ranges = re.findall("Decimal\('([\d\.]+)'\)", string)
-                    return "[{}, {}]".format(ranges[0], ranges[1])
-
                 val = getattr(row, key)
                 if val and key in ['ci_u_95', 'ci_m_95']:
                     val = handle_range(val.__str__())
@@ -1035,7 +1090,10 @@ def exp_details(request, research_id, tumor_id, gene_id):
                     sub_stats[key] += 1
                     return val
                 else:
-                    return ''
+                    if '_number' in key:
+                        return 0
+                    else:
+                        return ''
 
             sub_row = {'expression': row.expression}
             for key in dict(cols):
@@ -1083,20 +1141,23 @@ def import_snp(request):
                 for row in data['research']:
                     pubmed_id = int(row[4]) if row[4] else None
                     ebml = E_Snp.objects.get(ebml=row[7])
-                    ethnicity = row[8] if row[8] else None
+                    ethnicity = row[8] or None
                     male = int(row[10]) if row[10] else None
                     female = int(row[11]) if row[11] else None
                     median_age = float(row[12]) if row[12] else None
                     mean_age = float(row[13]) if row[13] else None
                     age_range = [float(x) for x in row[14].split('-')] if row[14] else None
-                    treatment_desc = row[15] if row[15] else None
-                    treatment_type = row[16] if row[16] else None
+                    treatment_desc = row[15] or None
+                    treatment_type = row[16] or None
+                    journal = row[17] or None
+                    abstract = row[18] or None
                     R_Snp.objects.get_or_create(title=row[1], language=row[2], pub_year=int(row[3]),
                                                 pubmed_id=pubmed_id, url=row[5], pub_type=row[6], ebml=ebml,
                                                 ethnicity=ethnicity, patient_number=int(row[9]),
                                                 male=male, female=female,
                                                 median_age=median_age, mean_age=mean_age, age_range=age_range,
-                                                treatment_desc=treatment_desc, treatment_type=treatment_type)
+                                                treatment_desc=treatment_desc, treatment_type=treatment_type,
+                                                journal=journal, abstract=abstract)
 
             if re.search('tumor', table) or re.search('all', table):
                 for row in data['tumor']:
@@ -1114,7 +1175,17 @@ def import_snp(request):
             if re.search('variant', table) or re.search('all', table):
                 for row in data['variant']:
                     gene = G_Snp.objects.get(gene_official_symbol=get_via_pk(row[1], data['gene'])) if row[1] else None
-                    V_Snp.objects.get_or_create(gene=gene, dbsnp=row[2])
+                    dbsnp = row[2]
+                    allele = row[3] or None
+                    afr = row[4] or None
+                    amr = row[5] or None
+                    eas = row[6] or None
+                    eur = row[7] or None
+                    sas = row[8] or None
+                    V_Snp.objects.get_or_create(gene=gene, dbsnp=dbsnp,
+                                                allele=allele, afr=afr,
+                                                amr=amr, eas=eas,
+                                                eur=eur, sas=sas)
 
             if re.search('prognosis', table) or re.search('all', table):
                 for row in data['prognosis']:
@@ -1203,16 +1274,18 @@ def import_exp(request):
                 for row in data['research']:
                     pubmed_id = int(row[4]) if row[4] else None
                     ebml = E_Exp.objects.get(ebml=row[7])
-                    ethnicity = row[8] if row[8] else None
+                    ethnicity = row[8] or None
                     male = int(row[10]) if row[10] else None
                     female = int(row[11]) if row[11] else None
                     median_age = float(row[12]) if row[12] else None
                     mean_age = float(row[13]) if row[13] else None
                     age_range = [float(x) for x in row[14].split('-')] if row[14] else None
-                    exp_detection_method = row[15] if row[15] else None
-                    cut_off_value = row[16] if row[16] else None
-                    treatment_desc = row[17] if row[17] else None
-                    treatment_type = row[18] if row[18] else None
+                    exp_detection_method = row[15] or None
+                    cut_off_value = row[16] or None
+                    treatment_desc = row[17] or None
+                    treatment_type = row[18] or None
+                    journal = row[19] or None
+                    abstract = row[20] or None
                     R_Exp.objects.get_or_create(title=row[1], language=row[2], pub_year=int(row[3]),
                                                 pubmed_id=pubmed_id, url=row[5], pub_type=row[6], ebml=ebml,
                                                 ethnicity=ethnicity, patient_number=int(row[9]),
@@ -1220,7 +1293,8 @@ def import_exp(request):
                                                 median_age=median_age, mean_age=mean_age, age_range=age_range,
                                                 exp_detection_method=exp_detection_method,
                                                 cut_off_value=cut_off_value,
-                                                treatment_desc=treatment_desc, treatment_type=treatment_type)
+                                                treatment_desc=treatment_desc, treatment_type=treatment_type,
+                                                journal=journal, abstract=abstract)
 
             if re.search('tumor', table) or re.search('all', table):
                 for row in data['tumor']:

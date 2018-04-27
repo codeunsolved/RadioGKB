@@ -50,6 +50,8 @@ class Research(models.Model):
     cut_off_value = models.TextField(null=True, blank=True)
     treatment_desc = models.TextField(null=True, blank=True)
     treatment_type = models.CharField(max_length=500, null=True, blank=True)
+    journal = models.CharField(max_length=100, null=True, blank=True)
+    abstract = models.TextField(null=True, blank=True)
 
     def __str__(self):
         return "{}".format(self.title)

@@ -29,6 +29,12 @@ class Variant(models.Model):
     dbsnp = models.CharField(max_length=200)
     hgvs_g = models.CharField(max_length=50, null=True, blank=True)
     hgvs_p = models.CharField(max_length=50, null=True, blank=True)
+    allele = models.CharField(max_length=50, null=True, blank=True)
+    afr  = models.CharField(max_length=50, null=True, blank=True)
+    amr  = models.CharField(max_length=50, null=True, blank=True)
+    eas  = models.CharField(max_length=50, null=True, blank=True)
+    eur  = models.CharField(max_length=50, null=True, blank=True)
+    sas = models.CharField(max_length=50, null=True, blank=True)
 
     def __str__(self):
         return "[{!s}]{}".format(self.gene, self.dbsnp)
@@ -58,6 +64,8 @@ class Research(models.Model):
     age_range = FloatRangeField(null=True, blank=True)
     treatment_desc = models.TextField(null=True, blank=True)
     treatment_type = models.CharField(max_length=500, null=True, blank=True)
+    journal = models.CharField(max_length=100, null=True, blank=True)
+    abstract = models.TextField(null=True, blank=True)
 
     def __str__(self):
         return "{}".format(self.title)

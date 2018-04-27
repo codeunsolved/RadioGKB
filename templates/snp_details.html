@@ -13,9 +13,24 @@
               <table>
                 <tbody>
                   <tr>
-                    <td><strong>Publish year</strong></td>
+                    <td><strong>Publish type</strong></td>
+                    <td>&nbsp;:&nbsp;</td>
+                    <td>{{ research.pub_type }}</td>
+                  </tr>
+                  <tr>
+                    <td nowrap><strong>Publish year</strong></td>
                     <td>&nbsp;:&nbsp;</td>
                     <td>{{ research.pub_year }}</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Language</strong></td>
+                    <td>&nbsp;:&nbsp;</td>
+                    <td>{{ research.language }}</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Journal</strong></td>
+                    <td>&nbsp;:&nbsp;</td>
+                    <td>{{ research.journal }}</td>
                   </tr>
                   <tr>
                     <td><strong>Pubmed id</strong></td>
@@ -23,9 +38,23 @@
                     <td>{{ research.pubmed_id }}</td>
                   </tr>
                   <tr>
+                    <td valign="top"><strong>Abstract</strong></td>
+                    <td valign="top">&nbsp;:&nbsp;</td>
+                    <td ><div class="ellipsisContent">{{ research.abstract }}</div><a class="show-more">more</a></td>
+                  </tr>
+                </tbody>
+              </table>
+
+              <hr>
+
+              <table>
+                <tbody>
+                  <tr>
                     <td><strong>Treatment type</strong></td>
                     <td>&nbsp;:&nbsp;</td>
-                    <td>{{ research.treatment_type }} <a data-toggle="collapse" data-target="#treatment_desc">Details</a></td>
+                    <td>{{ research.treatment_type }} 
+                      <!--<a data-toggle="collapse" data-target="#treatment_desc">Details</a>-->
+                    </td>
                   </tr>
                   <tr>
                     <td></td>
@@ -44,10 +73,32 @@
                     <td>&nbsp;:&nbsp;</td>
                     <td>{{ research.ethnicity }}</td>
                   </tr>
+                  <!--
                   <tr>
                     <td nowrap><strong>Evidence Based Medicine Level</strong></td>
                     <td>&nbsp;:&nbsp;</td>
                     <td>{{ research.ebml }}</td>
+                  </tr>
+                  -->
+                  <tr>
+                    <td><strong>Male/female</strong></td>
+                    <td>&nbsp;:&nbsp;</td>
+                    <td>{{ research.sex_ratio }}</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Age median</strong></td>
+                    <td>&nbsp;:&nbsp;</td>
+                    <td>{{ research.age_median }}</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Age mean</strong></td>
+                    <td>&nbsp;:&nbsp;</td>
+                    <td>{{ research.age_mean }}</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Age range</strong></td>
+                    <td>&nbsp;:&nbsp;</td>
+                    <td>{{ research.age_range }}</td>
                   </tr>
                 </tbody>
               </table>
@@ -115,6 +166,31 @@
                     <td>&nbsp;:&nbsp;</td>
                     <td>{{ variant.dbsnp }}</td>
                   </tr>
+                  <tr>
+                    <td colspan="3">
+                      {% if variant.allele %}
+                        <table class="table">
+                          <thead>
+                            <tr>
+                            {% for th in variant.allele_thead %}
+                              <th>{{ th }}</th>
+                            {% endfor %}
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {% for row in variant.allele_tbody %}
+                            <tr>
+                              {% for td in row %}
+                                <td>{{ td }}</td>
+                              {% endfor %}
+                            </tr>
+                            {% endfor %}
+                          </tbody>
+                        </table>
+                        {{ variant.allele_footer|safe }}
+                      {% endif %}
+                    </td>
+                  </tr>
                 </tbody>
               </table>
 
@@ -144,6 +220,7 @@
                           <p><strong>Subgroup</strong> : {{ subgroup_name }}</p>
                         {% endif %}
                         <p><strong>Endpoint</strong> : {{ subgroup.endpoint }}</p>
+                        <p>{{ subgroup.origin }}</p>
                         <table class="table">
                           <thead>
                             <tr>
@@ -178,3 +255,23 @@
         </div>
       </div>
       {% endblock container %}
+
+    {% block script %}
+    <script type="text/javascript">
+      //Refer: https://stackoverflow.com/questions/12307666/how-to-create-a-show-more-button-and-specify-how-many-lines-of-text-can-be-ini
+      $("a.show-more").on("click", function() {
+          var $this = $(this);
+          var $content = $this.prev("div");
+          var linkText = $this.text();
+          
+          if(linkText === "more"){
+              linkText = "less";
+              $content.removeClass("ellipsisContent");
+          } else {
+              linkText = "more";
+              $content.addClass("ellipsisContent");
+          };
+          $this.text(linkText);
+      });
+    </script>
+    {% endblock script %}

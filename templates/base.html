@@ -41,6 +41,7 @@
           <a class="navbar-brand" href="/">RTPDB</a>
         </div>
         <div class="navbar-collapse collapse">
+          <!-- 
           {% if user.is_authenticated %}
           <ul class="nav navbar-nav navbar-right">
             <li class="active"><a>Welcome, {{ user.username }}</a></li>
@@ -63,7 +64,11 @@
           <ul class="nav navbar-nav navbar-right">
             <li><a href="{% url 'index' %}">Home</a></li>
           </ul>
-          {% endif %}
+          {% endif %} 
+          -->
+          <ul class="nav navbar-nav navbar-right">
+            <li><a href="{% url 'index' %}">Home</a></li>
+          </ul>
         </div>
       </div>
     </nav>
@@ -75,8 +80,8 @@
         <div class="jumbotron" style="margin-bottom:0px;">
           <div class="container">
             <p>Radiotherapy Prognosis Database</p>
-            <p>SNP: <span style="color: green;">{{ stats.r_snp_num }}</span> papers, <span style="color: green;">{{ stats.g_snp_num }}</span> genes, <span style="color: green;">{{ stats.v_snp_num }}</span> variants, <span style="color: green;">{{ stats.tumor_t_snp_num }}</span> tumor types, <span style="color: green;">{{ stats.patient_snp_num }}</span> patients, <span style="color: green;">{{ stats.treatment_t_snp_num }}</span> treatment types.</p>
-            <p>Expression: <span style="color: green;">{{ stats.r_exp_num }}</span> papers, <span style="color: green;">{{ stats.g_exp_num }}</span> genes, <span style="color: green;">{{ stats.tumor_t_exp_num }}</span> tumor types, <span style="color: green;">{{ stats.patient_exp_num }}</span> patients, <span style="color: green;">{{ stats.treatment_t_exp_num }}</span> treatment types.</p>
+            <p>SNP: <span style="color: green;">{{ stats.r_snp_num }}</span> studies, <span style="color: green;">{{ stats.g_snp_num }}</span> genes, <span style="color: green;">{{ stats.v_snp_num }}</span> variants, <span style="color: green;">{{ stats.tumor_t_snp_num }}</span> tumor types, <span style="color: green;">{{ stats.patient_snp_num }}</span> patients, <span style="color: green;">{{ stats.treatment_t_snp_num }}</span> treatment types.</p>
+            <p>Expression: <span style="color: green;">{{ stats.r_exp_num }}</span> studies, <span style="color: green;">{{ stats.g_exp_num }}</span> genes, <span style="color: green;">{{ stats.tumor_t_exp_num }}</span> tumor types, <span style="color: green;">{{ stats.patient_exp_num }}</span> patients, <span style="color: green;">{{ stats.treatment_t_exp_num }}</span> treatment types.</p>
           </div>
         </div>
       </div>
@@ -91,7 +96,7 @@
           {% block nav %}
           <li role="presentation"><a href="{% url 'about' %}">About</a></li>
           <li role="presentation"><a href="{% url 'access' %}">Access</a></li>
-          <li role="presentation"><a href="{% url 'submit' %}">Submit</a></li>
+          <!--<li role="presentation"><a href="{% url 'submit' %}">Submit</a></li>-->
           <li role="presentation"><a href="{% url 'news' %}">News</a></li>
           {% endblock nav %}
         </ul>
@@ -108,7 +113,7 @@
 
       {% block footer %}
       <footer>
-        <p>Copyright &copy; 2018 Radiotherapy Prognosis Database | All Rights Reserved | Email: <a href="mailto:yuanyang15@fudan.edu.cn">yuanyang15@fudan.edu.cn</a></p>
+        <p>Copyright &copy; 2018 Radiotherapy Prognosis Database | All Rights Reserved | Email: <a href="mailto:rtpdb2018@163.com">rtpdb2018@163.com</a></p>
       </footer>
       {% endblock footer %}
     </div>
