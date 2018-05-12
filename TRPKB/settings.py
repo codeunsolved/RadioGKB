@@ -51,12 +51,15 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    # LocaleMiddleware should come after SessionMiddleware, because LocaleMiddleware makes use of session data.
+    # And it should come before CommonMiddleware because CommonMiddleware needs an activated language in order to resolve the requested URL.
+    # https://docs.djangoproject.com/en/1.11/topics/i18n/translation/#how-django-discovers-language-preference
     'django.middleware.locale.LocaleMiddleware',
+    'django.middleware.common.CommonMiddleware',
 ]
 
 ROOT_URLCONF = 'TRPKB.urls'
@@ -165,6 +168,11 @@ DEFAULT_FROM_EMAIL = config.DEFAULT_FROM_EMAIL
 
 LANGUAGE_CODE = 'en-us'
 
+LANGUAGES = [
+  ('en-us', ('English')),
+  ('zh-hans', ('中文')),
+]
+
 TIME_ZONE = 'UTC'
 
 USE_I18N = True
@@ -172,6 +180,10 @@ USE_I18N = True
 USE_L10N = True
 
 USE_TZ = True
+
+LOCALE_PATHS = (
+    os.path.join(BASE_DIR, 'locale'),
+)
 
 
 # Static files (CSS, JavaScript, Images)

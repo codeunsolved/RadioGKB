@@ -1,0 +1,223 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2018-05-12 17:12+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: templates/account/email/email_confirmation_message.txt:1
+#, python-format
+msgid ""
+"Hello from %(site_name)s!\n"
+"\n"
+"You're receiving this e-mail because user %(user_display)s has given yours "
+"as an e-mail address to connect their account.\n"
+"\n"
+"To confirm this is correct, go to %(activate_url)s\n"
+msgstr ""
+
+#: templates/account/email/email_confirmation_message.txt:7
+#, python-format
+msgid ""
+"Thank you from %(site_name)s!\n"
+"%(site_domain)s"
+msgstr ""
+
+#: templates/account/email/password_reset_key_message.txt:1
+#, python-format
+msgid ""
+"Hello from %(site_name)s!\n"
+"\n"
+"You're receiving this e-mail because you or someone else has requested a "
+"password for your user account.\n"
+"It can be safely ignored if you did not request a password reset. Click the "
+"link below to reset your password."
+msgstr ""
+
+#: templates/account/email/password_reset_key_message.txt:8
+#, python-format
+msgid "In case you forgot, your username is %(username)s."
+msgstr ""
+
+#: templates/account/email/password_reset_key_message.txt:10
+#, python-format
+msgid ""
+"Thank you for using %(site_name)s!\n"
+"%(site_domain)s"
+msgstr ""
+
+#: templates/account/email/password_reset_key_subject.txt:3
+msgid "Password Reset E-mail"
+msgstr ""
+
+#: templates/account/email_confirm.html:7
+#: templates/account/email_confirm.html:18
+msgid "Confirm E-mail Address"
+msgstr ""
+
+#: templates/account/email_confirm.html:24
+#, python-format
+msgid ""
+"Please confirm that <a href=\"mailto:%(email)s\">%(email)s</a> is an e-mail "
+"address for user %(user_display)s."
+msgstr ""
+
+#: templates/account/email_confirm.html:28
+msgid "Confirm"
+msgstr ""
+
+#: templates/account/email_confirm.html:35
+#, python-format
+msgid ""
+"This e-mail confirmation link expired or is invalid. Please <a href="
+"\"%(email_url)s\">issue a new e-mail confirmation request</a>."
+msgstr ""
+
+#: templates/account/login.html:7
+msgid "Sign In"
+msgstr ""
+
+#: templates/account/logout.html:6 templates/account/logout.html:17
+#: templates/account/logout.html:23
+msgid "Sign Out"
+msgstr ""
+
+#: templates/account/logout.html:19
+msgid "Are you sure you want to sign out?"
+msgstr ""
+
+#: templates/account/password_change.html:6
+#: templates/account/password_change.html:17
+#: templates/account/password_change.html:22
+#: templates/account/password_reset_from_key.html:6
+#: templates/account/password_reset_from_key.html:17
+#: templates/account/password_reset_from_key_done.html:6
+#: templates/account/password_reset_from_key_done.html:17
+msgid "Change Password"
+msgstr ""
+
+#: templates/account/password_reset.html:6
+#: templates/account/password_reset.html:17
+#: templates/account/password_reset_done.html:7
+#: templates/account/password_reset_done.html:18
+msgid "Password Reset"
+msgstr ""
+
+#: templates/account/password_reset.html:22
+msgid ""
+"Forgotten your password? Enter your e-mail address below, and we'll send you "
+"an e-mail allowing you to reset it."
+msgstr ""
+
+#: templates/account/password_reset.html:31
+msgid "Reset My Password"
+msgstr ""
+
+#: templates/account/password_reset.html:34
+msgid "Please contact us if you have any trouble resetting your password."
+msgstr ""
+
+#: templates/account/password_reset_done.html:24
+msgid ""
+"We have sent you an e-mail. Please contact us if you do not receive it "
+"within a few minutes."
+msgstr ""
+
+#: templates/account/password_reset_from_key.html:17
+msgid "Bad Token"
+msgstr ""
+
+#: templates/account/password_reset_from_key.html:21
+#, python-format
+msgid ""
+"The password reset link was invalid, possibly because it has already been "
+"used.  Please request a <a href=\"%(passwd_reset_url)s\">new password reset</"
+"a>."
+msgstr ""
+
+#: templates/account/password_reset_from_key.html:31
+msgid "change password"
+msgstr ""
+
+#: templates/account/password_reset_from_key.html:34
+#: templates/account/password_reset_from_key_done.html:18
+msgid "Your password is now changed."
+msgstr ""
+
+#: templates/account/signup.html:14
+msgid "Signup"
+msgstr ""
+
+#: templates/account/signup_closed.html:6
+#: templates/account/signup_closed.html:17
+msgid "Sign Up Closed"
+msgstr ""
+
+#: templates/account/signup_closed.html:19
+msgid "We are sorry, but the sign up is currently closed."
+msgstr ""
+
+#: templates/account/snippets/already_logged_in.html:5
+msgid "Note"
+msgstr ""
+
+#: templates/account/snippets/already_logged_in.html:5
+#, python-format
+msgid "you are already logged in as %(user_display)s."
+msgstr ""
+
+#: templates/account/verification_sent.html:6
+#: templates/account/verification_sent.html:17
+msgid "Verify Your E-mail Address"
+msgstr ""
+
+#: templates/account/verification_sent.html:19
+msgid ""
+"We have sent an e-mail to you for verification. Follow the link provided to "
+"finalize the signup process. Please contact us if you do not receive it "
+"within a few minutes."
+msgstr ""
+
+#: templates/snp_add.html:39
+msgid " - You are in review mode - "
+msgstr " - 您目前处于review模式 - "
+
+#: templates/snp_add.html:48
+msgid "Check duplication"
+msgstr "检查重复"
+
+#: templates/snp_add.html:49
+msgid "Research"
+msgstr "文献"
+
+#: templates/snp_add.html:50
+msgid "Tumor"
+msgstr "癌种"
+
+#: templates/snp_add.html:51
+msgid "Gene & Variant"
+msgstr "基因与变异"
+
+#: templates/snp_add.html:52
+msgid "Prognosis"
+msgstr "预后"
+
+#: templates/snp_add.html:53
+msgid "Association"
+msgstr ""
+
+#: templates/snp_add.html:54
+msgid "Confirm & Submit"
+msgstr "确认与提交"

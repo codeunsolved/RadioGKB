@@ -216,12 +216,16 @@ def submit_add(request):
                 mean_age=float(step02['mean_age']) if step02['mean_age'] else None,
                 age_range=age_range,
                 treatment_desc=step02['treatment_desc'] or None,
-                treatment_type=step02['treatment_type'] or None)
+                treatment_type=step02['treatment_type'] or None,
+                journal=step02['journal'] or None,
+                abstract=step02['abstract'] or None,)
+
 
             # import Tumor
             step03 = content['STEP03']
             for row in step03['tumor']:
                 T_Snp.objects.get_or_create(name=row['tumor'])
+
 
             # import Gene & Variant
             step04 = content['STEP04']
@@ -335,7 +339,9 @@ def submit_add(request):
                 exp_detection_method=step02['exp_detection_method'] or None,
                 cut_off_value=step02['cut_off_value'] or None,
                 treatment_desc=step02['treatment_desc'] or None,
-                treatment_type=step02['treatment_type'] or None)
+                treatment_type=step02['treatment_type'] or None,
+                journal=step02['journal'] or None,
+                abstract=step02['abstract'] or None,)
 
             # import Tumor
             step03 = content['STEP03']

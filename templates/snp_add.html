@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 
 {% load static %}
+{% load i18n %}
 
     {% block head_title %}Submit add - SNP{% endblock head_title %}
 
@@ -27,11 +28,15 @@
         <div class="col-md-1 col-sm-1 col-xs-1">
         </div>
         <div class="col-md-10 col-sm-10 col-xs-10">
+          {% get_current_language as LANGUAGE_CODE %}
+          <!-- Current language: {{ LANGUAGE_CODE }} -->
+
           <div id="review_alert" class="alert alert-warning alert-dismissible fade in" role="alert" style="display:none;text-align:center;">
             <button type="button" class="close" data-dismiss="alert" aria-label="Close">
               <span aria-hidden="true">×</span>
             </button>
-            <strong>- You are in review mode -</strong>
+            
+            <strong>{% trans " - You are in review mode - " %}</strong>
           </div>
         </div>
         <div class="col-md-1 col-sm-1 col-xs-1">
@@ -40,13 +45,13 @@
       <div class="row" style="margin-top:10px;">
         <div class="col-md-2 col-sm-2 col-xs-2">
           <ul class="nav nav-pills nav-stacked">
-            <li role="presentation" class="active"><a id="STEP01_nav" href="#STEP01" data-toggle="tab">Check duplication</a></li>
-            <li role="presentation" class="disabled"><a id="STEP02_nav" href="#STEP02">Research</a></li>
-            <li role="presentation" class="disabled"><a id="STEP03_nav" href="#STEP03">Tumor</a></li>
-            <li role="presentation" class="disabled"><a id="STEP04_nav" href="#STEP04">Gene & Variant</a></li>
-            <li role="presentation" class="disabled"><a id="STEP05_nav" href="#STEP05">Prognosis</a></li>
-            <li role="presentation" class="disabled"><a id="STEP06_nav" href="#STEP06">Association</a></li>
-            <li role="presentation" class="disabled"><a id="STEP07_nav" href="#STEP07">Confirm & Submit</a></li>
+            <li role="presentation" class="active"><a id="STEP01_nav" href="#STEP01" data-toggle="tab">{% trans "Check duplication" %}</a></li>
+            <li role="presentation" class="disabled"><a id="STEP02_nav" href="#STEP02">{% trans "Research" %}</a></li>
+            <li role="presentation" class="disabled"><a id="STEP03_nav" href="#STEP03">{% trans "Tumor" %}</a></li>
+            <li role="presentation" class="disabled"><a id="STEP04_nav" href="#STEP04">{% trans "Gene & Variant" %}</a></li>
+            <li role="presentation" class="disabled"><a id="STEP05_nav" href="#STEP05">{% trans "Prognosis" %}</a></li>
+            <li role="presentation" class="disabled"><a id="STEP06_nav" href="#STEP06">{% trans "Association" %}</a></li>
+            <li role="presentation" class="disabled"><a id="STEP07_nav" href="#STEP07">{% trans "Confirm & Submit" %}</a></li>
           </ul>
         </div>
         <div class="col-md-10 col-sm-10 col-xs-10">
@@ -177,6 +182,16 @@
                     <div class="input-group">
                       <span class="input-group-addon" style="width:134px;">Treatment Type</span>
                       <input name="treatment_type" class="form-control" type="text">
+                    </div>
+                    <br>
+                    <div class="input-group">
+                      <span class="input-group-addon" style="width:134px;">Journal</span>
+                      <input name="journal" class="form-control" type="text">
+                    </div>
+                    <br>
+                    <div class="input-group">
+                      <span class="input-group-addon" style="width:134px;">Abstract</span>
+                      <textarea name="abstract" class="form-control"></textarea>
                     </div>
                     <br>
 
