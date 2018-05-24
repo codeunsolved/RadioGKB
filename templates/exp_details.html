@@ -249,4 +249,45 @@
           $this.text(linkText);
       });
     </script>
+    <script type="text/javascript">
+      $(document).ready(function(){
+        $("div[id^='p_'] table").each(function() {
+          $("tbody tr", this).each(function() {
+            function test_ci(val) {
+              var patt_valid = /\[|\]/;
+              if (patt_valid.test(val)) {
+                var patt = /\[([\d\.]+), ([\d\.]+)\]/
+                var match = patt.exec(val);
+                if (parseFloat(match[1]) > 1 || parseFloat(match[2]) < 1) {
+                  return true;
+                } else {
+                  return false;
+                }
+              } else {
+                return false;
+              }
+            }
+
+            var strong_trigger = false;
+
+            var val_u = $("td:eq(4)", this).text();
+            var val_m = $("td:eq(6)", this).text();
+
+            if (test_ci(val_u)) {
+              strong_trigger = true;
+            }
+            if (test_ci(val_m)) {
+              strong_trigger = true;
+            }
+
+            if (strong_trigger) {
+              $("td", this).each(function() {
+                var text = $(this).text();
+                $(this).html('<strong>' + text + '</strong>');
+              });
+            }
+          });
+        });
+      });
+    </script>
     {% endblock script %}

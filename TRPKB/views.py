@@ -220,12 +220,11 @@ def submit_add(request):
                 journal=step02['journal'] or None,
                 abstract=step02['abstract'] or None,)
 
-
             # import Tumor
             step03 = content['STEP03']
             for row in step03['tumor']:
-                T_Snp.objects.get_or_create(name=row['tumor'])
-
+                T_Snp.objects.get_or_create(name=row['tumor_name'],
+                                            tumor_type=row['tumor_type'])
 
             # import Gene & Variant
             step04 = content['STEP04']
@@ -243,7 +242,13 @@ def submit_add(request):
                     else:
                         gene = None
 
-                    V_Snp.objects.get_or_create(gene=gene, dbsnp=row2['dbsnp'])
+                    V_Snp.objects.get_or_create(gene=gene, dbsnp=row2['dbsnp'],
+                                                allele=row2['allele'] or None,
+                                                afr=row2['afr'] or None,
+                                                amr=row2['amr'] or None,
+                                                eas=row2['eas'] or None,
+                                                eur=row2['eur'] or None,
+                                                sas=row2['sas'] or None)
 
             # import Prognosis
             step05 = content['STEP05']
@@ -346,7 +351,8 @@ def submit_add(request):
             # import Tumor
             step03 = content['STEP03']
             for row in step03['tumor']:
-                T_Exp.objects.get_or_create(name=row['tumor'])
+                T_Exp.objects.get_or_create(name=row['tumor_name'],
+                                            tumor_type=row['tumor_type'])
 
             # import Gene & Variant
             step04 = content['STEP04']
@@ -816,7 +822,6 @@ def exp_search(request):
         raise e
 
     return render(request, 'search_results_exp.html', context)
-
 
 
 def handle_range(string):

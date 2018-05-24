@@ -30,10 +30,10 @@ class Variant(models.Model):
     hgvs_g = models.CharField(max_length=50, null=True, blank=True)
     hgvs_p = models.CharField(max_length=50, null=True, blank=True)
     allele = models.CharField(max_length=50, null=True, blank=True)
-    afr  = models.CharField(max_length=50, null=True, blank=True)
-    amr  = models.CharField(max_length=50, null=True, blank=True)
-    eas  = models.CharField(max_length=50, null=True, blank=True)
-    eur  = models.CharField(max_length=50, null=True, blank=True)
+    afr = models.CharField(max_length=50, null=True, blank=True)
+    amr = models.CharField(max_length=50, null=True, blank=True)
+    eas = models.CharField(max_length=50, null=True, blank=True)
+    eur = models.CharField(max_length=50, null=True, blank=True)
     sas = models.CharField(max_length=50, null=True, blank=True)
 
     def __str__(self):
