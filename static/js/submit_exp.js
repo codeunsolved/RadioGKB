@@ -352,7 +352,7 @@ function addNew() {
 
             for (var i = 0; i < tumors.length; i++) {
                 var $tumor_gene_html = $(tumor_gene_html);
-                $tumor_gene_html.find('#STEP04_tumor_name').text("Tumor: "+tumors[i].tumor);
+                $tumor_gene_html.find('#STEP04_tumor_name').text("Tumor: "+tumors[i].tumor_name);
                 tumor_gene_htmls += $tumor_gene_html.prop('outerHTML');
             }
             $('#STEP04_container').html(tumor_gene_htmls);

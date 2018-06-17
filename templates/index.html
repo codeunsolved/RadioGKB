@@ -21,17 +21,17 @@
                     {% csrf_token %}
                     <div class="input-group">
                       <span class="input-group-addon" style="width:70px;">Gene</span>
-                      <input name="gene" class="form-control" list="genes_snp" type="text">
+                      <input name="gene" class="form-control" list="snp_genes" type="text" placeholder="Official Gene Symbol, e.g. XRCC1">
                     </div>
                     <br>
                     <div class="input-group">
                       <span class="input-group-addon" style="width:70px;">Variant</span>
-                      <input name="variant" class="form-control" type="text">
+                      <input name="variant" class="form-control" list="snp_variants" type="text" placeholder="NCBI dbSNP RS ID, e.g. rs25487">
                     </div>
                     <br>
                     <div class="input-group">
                       <span class="input-group-addon" style="width:70px;">Tumor</span>
-                      <input name="tumor" class="form-control" type="text">
+                      <input name="tumor" class="form-control" list="snp_tumors" type="text" placeholder="e.g. Breast cancer/Lung cancer/Rectal cancer">
                     </div>
                     <br>
                     <button class="btn btn-info btn-block" type="submit">Search :: <span class="glyphicon glyphicon-search" aria-hidden="true"></span></button>
@@ -47,12 +47,12 @@
                     {% csrf_token %}
                     <div class="input-group">
                       <span class="input-group-addon" style="width:70px;">Gene</span>
-                      <input name="gene" class="form-control" list="genes_exp" type="text">
+                      <input name="gene" class="form-control" list="exp_genes" type="text" placeholder="Official Gene Symbol, e.g. XRCC1">
                     </div>
                     <br>
                     <div class="input-group">
                       <span class="input-group-addon" style="width:70px;">Tumor</span>
-                      <input name="tumor" class="form-control" type="text">
+                      <input name="tumor" class="form-control" list="exp_tumors" type="text" placeholder="e.g. Breast cancer/Lung cancer/Rectal cancer">
                     </div>
                     <br>
                     <button class="btn btn-info btn-block" type="submit">Search :: <span class="glyphicon glyphicon-search" aria-hidden="true"></span></button>
@@ -61,14 +61,31 @@
               </div>
             </div>
           </div>
-          <datalist id="genes_snp">
-            {% for gene in genes_snp %}
+          <!-- Datalist - SNP -->
+          <datalist id="snp_genes">
+            {% for gene in snp_genes %}
             <option value="{{ gene }}">
             {% endfor %}
           </datalist>
-          <datalist id="genes_exp">
-            {% for gene in genes_exp %}
+          <datalist id="snp_variants">
+            {% for variant in snp_variants %}
+            <option value="{{ variant.dbsnp }}">
+            {% endfor %}
+          </datalist>
+          <datalist id="snp_tumors">
+            {% for tumor in snp_tumors %}
+            <option value="{{ tumor }}">
+            {% endfor %}
+          </datalist>
+          <!-- Datalist - Expression -->
+          <datalist id="exp_genes">
+            {% for gene in exp_genes %}
             <option value="{{ gene }}">
+            {% endfor %}
+          </datalist>
+          <datalist id="exp_tumors">
+            {% for tumor in exp_tumors %}
+            <option value="{{ tumor }}">
             {% endfor %}
           </datalist>
         </div>
@@ -76,3 +93,16 @@
         </div>
       </div>
       {% endblock container %}
+
+      {% block bottom %}
+      <div class="row">
+        <div class="col-md-12 col-sm-12 col-xs-12">
+          <div class="panel panel-default">
+            <div class="panel-body">
+              <p>SNP: <span style="color: green;">{{ stats.r_snp_num }}</span> studies, <span style="color: green;">{{ stats.g_snp_num }}</span> genes, <span style="color: green;">{{ stats.v_snp_num }}</span> variants, <span style="color: green;">{{ stats.tumor_t_snp_num }}</span> tumor types, <span style="color: green;">{{ stats.patient_snp_num }}</span> patients, <span style="color: green;">{{ stats.treatment_t_snp_num }}</span> treatment types.</p>
+              <p>Expression: <span style="color: green;">{{ stats.r_exp_num }}</span> studies, <span style="color: green;">{{ stats.g_exp_num }}</span> genes, <span style="color: green;">{{ stats.tumor_t_exp_num }}</span> tumor types, <span style="color: green;">{{ stats.patient_exp_num }}</span> patients, <span style="color: green;">{{ stats.treatment_t_exp_num }}</span> treatment types.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endblock bottom %}

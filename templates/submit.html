@@ -2,17 +2,18 @@
 
 {% load static %}
 
-    {% block head_title %}Access{% endblock head_title %}
+    {% block head_title %}Submit{% endblock head_title %}
 
       {% block nav %}
       <li role="presentation"><a href="{% url 'about' %}">About</a></li>
-      <li role="presentation"><a href="{% url 'access' %}">Access</a></li>
-      <li role="presentation" class="active"><a href="{% url 'submit' %}">Submit</a></li>
+      <li role="presentation"><a href="{% url 'help' %}">Help</a></li>
+      <li role="presentation"><a href="{% url 'download' %}">Download</a></li>
+      <!--<li role="presentation" class="active"><a href="{% url 'submit' %}">Submit</a></li>-->
       <li role="presentation"><a href="{% url 'news' %}">News</a></li>
       {% endblock nav %}
 
     {% block container %}
-    <div class="row" style="margin-top: 10px; margin-bottom: 100px;">
+    <div class="row" style="margin-top: 10px; margin-bottom: 10px;">
       <div class="col-md-12 col-sm-12 col-xs-12">
         <div class="panel panel-default">
           <div class="panel-body">

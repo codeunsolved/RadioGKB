@@ -30,17 +30,17 @@
                   <tr>
                     <td><strong>Journal</strong></td>
                     <td>&nbsp;:&nbsp;</td>
-                    <td>{{ research.journal }}</td>
+                    <td>{{ research.journal|default:'<span style="color:grey;">Not Provided</span>' }}</td>
                   </tr>
                   <tr>
                     <td><strong>Pubmed id</strong></td>
                     <td>&nbsp;:&nbsp;</td>
-                    <td>{{ research.pubmed_id }}</td>
+                    <td>{{ research.pubmed_id|default:'<span style="color:grey;">Not Provided</span>' }}</td>
                   </tr>
                   <tr>
                     <td valign="top"><strong>Abstract</strong></td>
                     <td valign="top">&nbsp;:&nbsp;</td>
-                    <td ><div class="ellipsisContent">{{ research.abstract }}</div><a class="show-more">more</a></td>
+                    <td ><div class="ellipsisContent">{{ research.abstract|default:'<span style="color:grey;">Not Provided</span>' }}</div><a class="show-more">more</a></td>
                   </tr>
                 </tbody>
               </table>
@@ -52,7 +52,7 @@
                   <tr>
                     <td><strong>Treatment type</strong></td>
                     <td>&nbsp;:&nbsp;</td>
-                    <td>{{ research.treatment_type }} 
+                    <td>{{ research.treatment_type|default:'<span style="color:grey;">Not Provided</span>' }} 
                       <!--<a data-toggle="collapse" data-target="#treatment_desc">Details</a>-->
                     </td>
                   </tr>
@@ -66,12 +66,12 @@
                   <tr>
                     <td><strong>Patient number</strong></td>
                     <td>&nbsp;:&nbsp;</td>
-                    <td>{{ research.patient_number }}</td>
+                    <td>{{ research.patient_number|default:'<span style="color:grey;">Not Provided</span>' }}</td>
                   </tr>
                   <tr>
                     <td><strong>Ethnicity</strong></td>
                     <td>&nbsp;:&nbsp;</td>
-                    <td>{{ research.ethnicity }}</td>
+                    <td>{{ research.ethnicity|default:'<span style="color:grey;">Not Provided</span>' }}</td>
                   </tr>
                   <!--
                   <tr>
@@ -83,22 +83,27 @@
                   <tr>
                     <td><strong>Male/female</strong></td>
                     <td>&nbsp;:&nbsp;</td>
-                    <td>{{ research.sex_ratio }}</td>
+                    <td>{{ research.sex_ratio|default:'<span style="color:grey;">Not Provided</span>' }}</td>
                   </tr>
                   <tr>
                     <td><strong>Age median</strong></td>
                     <td>&nbsp;:&nbsp;</td>
-                    <td>{{ research.age_median }}</td>
+                    <td>{{ research.age_median|default:'<span style="color:grey;">Not Provided</span>' }}</td>
                   </tr>
                   <tr>
                     <td><strong>Age mean</strong></td>
                     <td>&nbsp;:&nbsp;</td>
-                    <td>{{ research.age_mean }}</td>
+                    <td>{{ research.age_mean|default:'<span style="color:grey;">Not Provided</span>' }}</td>
                   </tr>
                   <tr>
                     <td><strong>Age range</strong></td>
                     <td>&nbsp;:&nbsp;</td>
-                    <td>{{ research.age_range }}</td>
+                    <td>{{ research.age_range|default:'<span style="color:grey;">Not Provided</span>' }}</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Tumor stage</strong></td>
+                    <td>&nbsp;:&nbsp;</td>
+                    <td>{{ research.tumor_stage|default:'<span style="color:grey;">Not Provided</span>' }}</td>
                   </tr>
                 </tbody>
               </table>
@@ -115,7 +120,7 @@
                   <tr>
                     <td><strong>Tumor type</strong></td>
                     <td>&nbsp;:&nbsp;</td>
-                    <td>{{ tumor.type }}</td>
+                    <td>{{ tumor.type|default:'<span style="color:grey;">Not Provided</span>' }}</td>
                   </tr>
                 </tbody>
               </table>
@@ -132,27 +137,27 @@
                   <tr>
                     <td><strong>Entrez gene ID</strong></td>
                     <td>&nbsp;:&nbsp;</td>
-                    <td>{{ gene.id }}</td>
+                    <td>{{ gene.id|default:'<span style="color:grey;">Not Provided</span>' }}</td>
                   </tr>
                   <tr>
                     <td><strong>Gene full name</strong></td>
                     <td>&nbsp;:&nbsp;</td>
-                    <td>{{ gene.full_name }}</td>
+                    <td>{{ gene.full_name|default:'<span style="color:grey;">Not Provided</span>' }}</td>
                   </tr>
                   <tr>
                     <td><strong>Alias</strong></td>
                     <td>&nbsp;:&nbsp;</td>
-                    <td>{{ gene.alias }}</td>
+                    <td>{{ gene.alias|default:'<span style="color:grey;">Not Provided</span>' }}</td>
                   </tr>
                   <tr>
                     <td><strong>Type</strong></td>
                     <td>&nbsp;:&nbsp;</td>
-                    <td>{{ gene.type }}</td>
+                    <td>{{ gene.type|default:'<span style="color:grey;">Not Provided</span>' }}</td>
                   </tr>
                   <tr style="vertical-align:text-top;">
                     <td><strong>Summary</strong></td>
                     <td>&nbsp;:&nbsp;</td>
-                    <td>{{ gene.summary }}</td>
+                    <td>{{ gene.summary|default:'<span style="color:grey;">Not Provided</span>' }}</td>
                   </tr>
                 </tbody>
               </table>
@@ -232,9 +237,9 @@
                           <tbody>
                             {% for row in subgroup.tbody %}
                             <tr>
-                              {% for td in row %}
-                                <td>{{ td }}</td>
-                              {% endfor %}
+                            {% for td in row %}
+                              <td>{{ td }}</td>
+                            {% endfor %}
                             </tr>
                             {% endfor %}
                           </tbody>

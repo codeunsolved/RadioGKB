@@ -1,0 +1,199 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+    {% block head_title %}Help{% endblock head_title %}
+
+      {% block nav %}
+      <li role="presentation"><a href="{% url 'about' %}">About</a></li>
+      <li role="presentation" class="active"><a href="{% url 'help' %}">Help</a></li>
+      <li role="presentation"><a href="{% url 'download' %}">Download</a></li>
+      <!--<li role="presentation"><a href="{% url 'submit' %}">Submit</a></li>-->
+      <li role="presentation"><a href="{% url 'news' %}">News</a></li>
+      {% endblock nav %}
+
+    {% block container %}
+    <div class="row" style="margin-top: 10px; margin-bottom: 10px;">
+      <div class="col-md-12 col-sm-12 col-xs-12">
+        <div class="row">
+          <div class="col-md-12 col-sm-12 col-xs-12">
+            <div class="panel panel-default">
+              <div class="panel-heading"><h4>Gene, Variant and Tumor in SNP data:</h4></div>
+              <div class="panel-body">
+                <div class="row">
+                  <div class="col-md-4 col-sm-4 col-xs-4" style="height:500px;overflow-y:scroll;">
+                    <table class="table table-bordered table-striped">
+                      <thead>
+                        <tr>
+                          <th>Gene</th>
+                          <th>RS ID</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                      {% for variant in snp_variants %}
+                        <tr>
+                        {% for td in variant %}
+                          <td>{{ td }}</td>
+                        {% endfor %}
+                        </tr>
+                      {% endfor %}
+                      </tbody>
+                    </table>
+                  </div>
+                  <div class="col-md-8 col-sm-8 col-xs-8" style="height:500px;overflow-y:scroll;">
+                    <table class="table table-bordered table-striped">
+                      <thead>
+                        <tr>
+                          <th>Tumor name</th>
+                          <th>Tumor type</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                      {% for tumor in snp_tumors %}
+                        <tr>
+                        {% for td in tumor %}
+                          <td>{{ td }}</td>
+                        {% endfor %}
+                        </tr>
+                      {% endfor %}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-md-12 col-sm-12 col-xs-12">
+            <div class="panel panel-default">
+              <div class="panel-heading"><h4>Gene and Tumor in Expression data:</h4></div>
+              <div class="panel-body">
+                <div class="row">
+                  <div class="col-md-4 col-sm-4 col-xs-4" style="height:500px;overflow-y:scroll;">
+                    <table class="table table-bordered table-striped">
+                      <thead>
+                        <tr>
+                          <th>Gene</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                      {% for gene in exp_genes %}
+                        <tr>
+                        {% for td in gene %}
+                          <td>{{ td }}</td>
+                        {% endfor %}
+                        </tr>
+                      {% endfor %}
+                      </tbody>
+                    </table>
+                  </div>
+                  <div class="col-md-8 col-sm-8 col-xs-8" style="height:500px;overflow-y:scroll;">
+                    <table class="table table-bordered table-striped">
+                      <thead>
+                        <tr>
+                          <th>Tumor name</th>
+                          <th>Tumor type</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                      {% for tumor in exp_tumors %}
+                        <tr>
+                        {% for td in tumor %}
+                          <td>{{ td }}</td>
+                        {% endfor %}
+                        </tr>
+                      {% endfor %}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-md-12 col-sm-12 col-xs-12">
+            <div class="panel panel-default">
+              <div class="panel-heading"><h4>RTPDB Tutorial</h4></div>
+              <div class="panel-body">
+                <p>In RTPDB (Radiotherapy Prognosis Database) homepage, we offer two kind of search: SNP (Single Nucleotide Polymorphism) and Expression. You can find the association between SNP or gene expression and cancer prognosis in patients receiving radiotherapy-based treatment.</p>
+                <h4>SNP</h4>
+                <p>You can choose one of the way listed below for search:</p>
+                <ol>
+                  <li>Gene</li>
+                  <li>Variant</li>
+                  <li>Tumor</li>
+                  <li>Gene and Tumor</li>
+                  <li>Variant and Tumor</li>
+                </ol>
+                <p>Most variant is located in specific gene, so when you choose Gene and Variant and Tumor, it is equal to option (5) Variant and Tumor. When you choose Gene and Variant, it is equal to option (2) Variant. However, there are some SNPs which not locate in gene. If you want to find the association, you need to know the SNP in advanced. </p>
+                <h4>Expression</h4>
+                <p>You can choose one of the way listed below for search:</p>
+                <ol>
+                  <li>Gene</li>
+                  <li>Tumor</li>
+                  <li>Gene and Tumor</li>
+                </ol>
+                <h4>Notes in Input</h4>
+                <p>When you input Gene for search, please use official symbol. For example, the alias of XRCC1 (X-ray repair cross complementing 1, Entrez GeneID: 7515) is RCC. If you enter RCC instead of XRCC1, you will not get any result. Before entering gene, you can query for whether the gene you input is official symbol or not at NCBI Gene (<a href="https://www.ncbi.nlm.nih.gov/gene">https://www.ncbi.nlm.nih.gov/gene</a>). We will solve this problem in subsequent update.</p>
+                <p>When you input Variant for search, please use the name which is prefixed with “rs” (such as rs25487). If SNP is named after other type. You can use Google to find the name we need.</p>
+                <p>When you input Tumor for search, please use classified tumor type according to the location of primary lesion instead of specific tumor. The database provides 16 tumor types for SNP search and 26 tumor types for Expression search.</p>
+                <p>The 16 tumor types in SNP search: (rank by number of studies)</p>
+                <ol>
+                  <li>Lung cancer (59 studies, 21.85%)</li>
+                  <li>Breast cancer (38 studies, 14.07%)</li>
+                  <li>Esophageal cancer (35 studies, 12.96%)</li>
+                  <li>Nasopharyngeal cancer (28 studies, 10.37%)</li>
+                  <li>Rectal cancer (27 studies, 10.00%)</li>
+                  <li>Prostate cancer (18 studies, 6.67%)</li>
+                  <li>Head and neck cancer (17 studies, 6.30%)</li>
+                  <li>Cervical cancer (13 studies, 4.81%)</li>
+                  <li>Pancreatic cancer (10 studies, 3.70%)</li>
+                  <li>Glioma (6 studies, 2.22%)</li>
+                  <li>Oropharyngeal cancer (5 studies, 1.85%)</li>
+                  <li>Oral cancer (5 studies, 1.85%)</li>
+                  <li>Bladder cancer (5 studies, 1.85%)</li>
+                  <li>Gastric cancer (2 studies, 0.74%)</li>
+                  <li>Medulloblastoma (1 study, 0.37%)</li>
+                  <li>Gallbladder cancer (1 study, 0.37%)</li>
+                </ol>
+                <p>The 26 tumor types in Expression search: (rank by number of studies)</p>
+                <ol>
+                  <li>Rectal cancer (120 studies, 24.29%)</li>
+                  <li>Esophageal cancer (82 studies, 16.60%)</li>
+                  <li>Head and neck cancer (61 studies, 12.35%)</li>
+                  <li>Nasopharyngeal cancer (53 studies, 10.73%)</li>
+                  <li>Cervical cancer (33 studies, 6.68%)</li>
+                  <li>Oropharyngeal cacner (30 studies, 6.07%)</li>
+                  <li>Breast cancer (21 studies, 4.25%)</li>
+                  <li>Prostate cancer (19 studies, 3.85%)</li>
+                  <li>Laryngeal cancer (18 studies， 3.64%)</li>
+                  <li>Lung cancer (12 studies, 2.43%)</li>
+                  <li>Bladder cancer (12 studies, 2.43%)</li>
+                  <li>Glioma (9 studies, 1.82%)</li>
+                  <li>Oral cancer (7 studies, 1.42%)</li>
+                  <li>Pharyngeal cancer (2 studies, 0.40%)</li>
+                  <li>Cheek mucosa cancer (2 studies, 0.40%)</li>
+                  <li>Laryngopharyngeal cancer (2 studies, 0.40%)</li>
+                  <li>Lymphoma (2 studies, 0.40%)</li>
+                  <li>Tongue cancer (1 studies, 0.20%)</li>
+                  <li>Larcimal gland cancer (1 studies, 0.20%)</li>
+                  <li>Gastric cancer (1 studies, 0.20%)</li>
+                  <li>Anal cancer (1 studies, 0.20%)</li>
+                  <li>Soft tissue sarcoma (1 studies, 0.20%)</li>
+                  <li>Pancreatic cancer (1 studies, 0.20%)</li>
+                  <li>Tonsil cancer (1 studies, 0.20%)</li>
+                  <li>Maxillary sinus cancer (1 studies, 0.20%)</li>
+                  <li>Medulloblastoma (1 studies, 0.20%)</li>
+                </ol>
+                <br>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endblock container %}

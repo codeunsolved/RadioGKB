@@ -3,13 +3,13 @@ from django.contrib.postgres.fields import ArrayField, IntegerRangeField, FloatR
 
 
 class Tumor(models.Model):
-    name = models.CharField(max_length=100, unique=True)
+    tumor_name = models.CharField(max_length=100, unique=True)
     mesh_term = models.CharField(max_length=50, unique=True, null=True, blank=True)
     mesh_id = models.IntegerField(unique=True, null=True, blank=True)
     tumor_type = models.CharField(max_length=50, null=True, blank=True)
 
     def __str__(self):
-        return "{}".format(self.name)
+        return "{}".format(self.tumor_name)
 
 
 class Gene(models.Model):
@@ -52,6 +52,7 @@ class Research(models.Model):
     treatment_type = models.CharField(max_length=500, null=True, blank=True)
     journal = models.CharField(max_length=100, null=True, blank=True)
     abstract = models.TextField(null=True, blank=True)
+    tumor_stage = tumor_stage = models.TextField(null=True, blank=True)
 
     def __str__(self):
         return "{}".format(self.title)

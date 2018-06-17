@@ -2,14 +2,14 @@
 
 {% load static %}
 
-    {% block head_title %}News{% endblock head_title %}
+    {% block head_title %}Download{% endblock head_title %}
 
       {% block nav %}
       <li role="presentation"><a href="{% url 'about' %}">About</a></li>
       <li role="presentation"><a href="{% url 'help' %}">Help</a></li>
-      <li role="presentation"><a href="{% url 'download' %}">Download</a></li>
+      <li role="presentation" class="active"><a href="{% url 'download' %}">Download</a></li>
       <!--<li role="presentation"><a href="{% url 'submit' %}">Submit</a></li>-->
-      <li role="presentation" class="active"><a href="{% url 'news' %}">News</a></li>
+      <li role="presentation"><a href="{% url 'news' %}">News</a></li>
       {% endblock nav %}
 
     {% block container %}
@@ -17,11 +17,9 @@
       <div class="col-md-12 col-sm-12 col-xs-12">
         <div class="panel panel-default">
           <div class="panel-body">
-            <p>April 2018, the RTPDB was updated with abstract and journal of studies.</p>
-            <br>
-            <p>March 2018, the RTPDB was updated with allele frequency of SNPs.</p>
-            <br>
-            <p>February 2018, the RTPDB was was released with 764 papers.</p>
+            <p><strong>20180614</strong></p>
+            <p>SNP: <a href="/static/data/SNP_data_180614.xlsx">SNP_data_180614.xlsx</a></p>
+            <p>Expression: <a href="/static/data/Expression_data_180614.xlsx">Expression_data_180614.xlsx</a></p>
           </div>
         </div>
       </div>

@@ -79,9 +79,8 @@
       <div class="col-md-12 col-sm-12 col-xs-12">
         <div class="jumbotron" style="margin-bottom:0px;">
           <div class="container">
-            <p>Radiotherapy Prognosis Database</p>
-            <p>SNP: <span style="color: green;">{{ stats.r_snp_num }}</span> studies, <span style="color: green;">{{ stats.g_snp_num }}</span> genes, <span style="color: green;">{{ stats.v_snp_num }}</span> variants, <span style="color: green;">{{ stats.tumor_t_snp_num }}</span> tumor types, <span style="color: green;">{{ stats.patient_snp_num }}</span> patients, <span style="color: green;">{{ stats.treatment_t_snp_num }}</span> treatment types.</p>
-            <p>Expression: <span style="color: green;">{{ stats.r_exp_num }}</span> studies, <span style="color: green;">{{ stats.g_exp_num }}</span> genes, <span style="color: green;">{{ stats.tumor_t_exp_num }}</span> tumor types, <span style="color: green;">{{ stats.patient_exp_num }}</span> patients, <span style="color: green;">{{ stats.treatment_t_exp_num }}</span> treatment types.</p>
+            <p><strong>Radiotherapy Prognosis Database</strong></p>
+            <p>A database providing associations between genetic variation or expression and cancer prognosis with radiotherapy-based treatment</p>
           </div>
         </div>
       </div>
@@ -95,7 +94,8 @@
         <ul class="nav nav-justified nav_trpkb">
           {% block nav %}
           <li role="presentation"><a href="{% url 'about' %}">About</a></li>
-          <li role="presentation"><a href="{% url 'access' %}">Access</a></li>
+          <li role="presentation"><a href="{% url 'help' %}">Help</a></li>
+          <li role="presentation"><a href="{% url 'download' %}">Download</a></li>
           <!--<li role="presentation"><a href="{% url 'submit' %}">Submit</a></li>-->
           <li role="presentation"><a href="{% url 'news' %}">News</a></li>
           {% endblock nav %}
@@ -108,6 +108,9 @@
     <div class="container">
       {% block container %}
       {% endblock container %}
+
+      {% block bottom %}
+      {% endblock bottom %}
 
       <hr>
 

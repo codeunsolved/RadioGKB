@@ -57,7 +57,11 @@ def get_stats():
 
 def index(request):
     context = {'stats': get_stats(),
-               'genes_snp': G_Snp.objects.all(), 'genes_exp': G_Exp.objects.all()}
+               'snp_genes': G_Snp.objects.all(),
+               'snp_variants': V_Snp.objects.all(),
+               'snp_tumors': T_Snp.objects.all(),
+               'exp_genes': G_Exp.objects.all(),
+               'exp_tumors': T_Exp.objects.all()}
     return render(request, 'index.html', context)
 
 
@@ -66,9 +70,37 @@ def about(request):
     return render(request, 'about.html', context)
 
 
-def access(request):
+def help(request):
+    context = {'stats': get_stats(),
+               'snp_variants': None, 'snp_tumors': None,
+               'exp_genes': None, 'exp_tumors': None}
+
+    snp_variants = []
+    for variant in V_Snp.objects.all():
+        if variant.gene:
+            snp_variants.append((variant.gene.gene_official_symbol, variant.dbsnp))
+    context['snp_variants'] = snp_variants
+
+    snp_tumors = []
+    for tumor in T_Snp.objects.all():
+        snp_tumors.append((tumor.tumor_name, tumor.tumor_type))
+    context['snp_tumors'] = snp_tumors
+
+    exp_genes = []
+    for gene in G_Exp.objects.all():
+        exp_genes.append((gene.gene_official_symbol,))
+    context['exp_genes'] = exp_genes
+
+    exp_tumors = []
+    for tumor in T_Exp.objects.all():
+        exp_tumors.append((tumor.tumor_name, tumor.tumor_type))
+    context['exp_tumors'] = exp_tumors
+    return render(request, 'help.html', context)
+
+
+def download(request):
     context = {'stats': get_stats()}
-    return render(request, 'access.html', context)
+    return render(request, 'download.html', context)
 
 
 def submit(request):
@@ -223,7 +255,7 @@ def submit_add(request):
             # import Tumor
             step03 = content['STEP03']
             for row in step03['tumor']:
-                T_Snp.objects.get_or_create(name=row['tumor_name'],
+                T_Snp.objects.get_or_create(tumor_name=row['tumor_name'],
                                             tumor_type=row['tumor_type'])
 
             # import Gene & Variant
@@ -277,8 +309,7 @@ def submit_add(request):
             step06 = content['STEP06']
             for row1 in step06['association']:
                 for row in row1:
-                    tumor = T_Snp.objects.get(name=row['tumor'])
-                    print(row['variant'])
+                    tumor = T_Snp.objects.get(tumor_name=row['tumor'])
                     variant = V_Snp.objects.get(dbsnp=row['variant'])
                     prognosis = P_Snp.objects.get(pk=pk_d['prog'][row['prognosis']])
                     if row['subgroup'] != '- N/A -':
@@ -351,7 +382,7 @@ def submit_add(request):
             # import Tumor
             step03 = content['STEP03']
             for row in step03['tumor']:
-                T_Exp.objects.get_or_create(name=row['tumor_name'],
+                T_Exp.objects.get_or_create(tumor_name=row['tumor_name'],
                                             tumor_type=row['tumor_type'])
 
             # import Gene & Variant
@@ -397,7 +428,7 @@ def submit_add(request):
             step06 = content['STEP06']
             for row1 in step06['association']:
                 for row in row1:
-                    tumor = T_Exp.objects.get(name=row['tumor'])
+                    tumor = T_Exp.objects.get(tumor_name=row['tumor'])
                     gene = G_Exp.objects.get(gene_official_symbol=row['gene'])
                     prognosis = P_Exp.objects.get(pk=pk_d['prog'][row['prognosis']])
                     if row['subgroup'] != '- N/A -':
@@ -726,12 +757,12 @@ def snp_search(request):
 
         if term_gene:
             results = A_Snp.objects.filter(
-                tumor__name__icontains=term_tumor).filter(
+                tumor__tumor_name__icontains=term_tumor).filter(
                 variant__dbsnp__icontains=term_variant).filter(
                 variant__gene__gene_official_symbol__icontains=term_gene)
         else:
             results = A_Snp.objects.filter(
-                tumor__name__icontains=term_tumor).filter(
+                tumor__tumor_name__icontains=term_tumor).filter(
                 variant__dbsnp__icontains=term_variant)
 
         if len(results) == 0:
@@ -740,7 +771,7 @@ def snp_search(request):
         else:
             row_data = {}
             for i, r in enumerate(results):
-                tumor = r.tumor.name
+                tumor = r.tumor.tumor_name
                 gene = r.variant.gene.gene_official_symbol if r.variant.gene else ''
                 variant = r.variant.dbsnp
                 tumor_id = r.tumor.pk
@@ -782,7 +813,7 @@ def exp_search(request):
         term_tumor = request.POST['tumor']
 
         results = A_Exp.objects.filter(
-            tumor__name__icontains=term_tumor).filter(
+            tumor__tumor_name__icontains=term_tumor).filter(
             gene__gene_official_symbol__icontains=term_gene)
 
         if len(results) == 0:
@@ -791,7 +822,7 @@ def exp_search(request):
         else:
             row_data = {}
             for i, r in enumerate(results):
-                tumor = r.tumor.name
+                tumor = r.tumor.tumor_name
                 gene = r.gene.gene_official_symbol if r.gene else ''
                 tumor_id = r.tumor.pk
                 gene_id = r.gene.pk
@@ -866,6 +897,7 @@ def snp_details(request, research_id, tumor_id, variant_id):
                            'age_median': research.median_age or '',
                            'age_mean': research.mean_age or '',
                            'age_range': handle_range(research.age_range.__str__()) or '',
+                           'tumor_stage': research.tumor_stage or '',
                            }
 
     if re.search('[\u4e00-\u9fa5]', context['research']['treatment_desc']):
@@ -873,7 +905,7 @@ def snp_details(request, research_id, tumor_id, variant_id):
 
     # Tumor
     tumor = T_Snp.objects.get(pk=tumor_id)
-    context['tumor']['name'] = tumor.name
+    context['tumor']['name'] = tumor.tumor_name
     context['tumor']['type'] = tumor.tumor_type
 
     # Variant
@@ -1017,7 +1049,8 @@ def exp_details(request, research_id, tumor_id, gene_id):
                            'age_mean': research.mean_age or '',
                            'age_range': handle_range(research.age_range.__str__()) or '',
                            'exp_detection_method': research.exp_detection_method or '',
-                           'cut_off_value': research.cut_off_value or ''
+                           'cut_off_value': research.cut_off_value or '',
+                           'tumor_stage': research.tumor_stage or '',
                            }
 
     if re.search('[\u4e00-\u9fa5]', context['research']['treatment_desc']):
@@ -1028,7 +1061,7 @@ def exp_details(request, research_id, tumor_id, gene_id):
 
     # Tumor
     tumor = T_Exp.objects.get(pk=tumor_id)
-    context['tumor']['name'] = tumor.name
+    context['tumor']['name'] = tumor.tumor_name
     context['tumor']['type'] = tumor.tumor_type
 
     # Gene
@@ -1162,17 +1195,18 @@ def import_snp(request):
                     treatment_type = row[16] or None
                     journal = row[17] or None
                     abstract = row[18] or None
+                    tumor_stage = row[19] or None
                     R_Snp.objects.get_or_create(title=row[1], language=row[2], pub_year=int(row[3]),
                                                 pubmed_id=pubmed_id, url=row[5], pub_type=row[6], ebml=ebml,
                                                 ethnicity=ethnicity, patient_number=int(row[9]),
                                                 male=male, female=female,
                                                 median_age=median_age, mean_age=mean_age, age_range=age_range,
                                                 treatment_desc=treatment_desc, treatment_type=treatment_type,
-                                                journal=journal, abstract=abstract)
+                                                journal=journal, abstract=abstract, tumor_stage=tumor_stage)
 
             if re.search('tumor', table) or re.search('all', table):
                 for row in data['tumor']:
-                    T_Snp.objects.get_or_create(name=row[1], tumor_type=row[2])
+                    T_Snp.objects.get_or_create(tumor_name=row[1], tumor_type=row[2])
 
             if re.search('gene', table) or re.search('all', table):
                 for row in data['gene']:
@@ -1219,7 +1253,7 @@ def import_snp(request):
             if re.search('association', table) or re.search('all', table):
                 for row in data['association']:
                     research = R_Snp.objects.get(title=get_via_pk(row[1], data['research']))
-                    tumor = T_Snp.objects.get(name=get_via_pk(row[2], data['tumor']))
+                    tumor = T_Snp.objects.get(tumor_name=get_via_pk(row[2], data['tumor']))
                     variant = V_Snp.objects.get(dbsnp=get_via_pk(row[4], data['variant'], 2))
                     prognosis = P_Snp.objects.get(pk=int(row[5]))
                     subgroup = S_Snp.objects.get(pk=int(row[6])) if row[6] else None
@@ -1297,6 +1331,7 @@ def import_exp(request):
                     treatment_type = row[18] or None
                     journal = row[19] or None
                     abstract = row[20] or None
+                    tumor_stage = row[21] or None
                     R_Exp.objects.get_or_create(title=row[1], language=row[2], pub_year=int(row[3]),
                                                 pubmed_id=pubmed_id, url=row[5], pub_type=row[6], ebml=ebml,
                                                 ethnicity=ethnicity, patient_number=int(row[9]),
@@ -1305,11 +1340,11 @@ def import_exp(request):
                                                 exp_detection_method=exp_detection_method,
                                                 cut_off_value=cut_off_value,
                                                 treatment_desc=treatment_desc, treatment_type=treatment_type,
-                                                journal=journal, abstract=abstract)
+                                                journal=journal, abstract=abstract, tumor_stage=tumor_stage)
 
             if re.search('tumor', table) or re.search('all', table):
                 for row in data['tumor']:
-                    T_Exp.objects.get_or_create(name=row[1], tumor_type=row[2])
+                    T_Exp.objects.get_or_create(tumor_name=row[1], tumor_type=row[2])
 
             if re.search('gene', table) or re.search('all', table):
                 for row in data['gene']:
@@ -1341,7 +1376,7 @@ def import_exp(request):
             if re.search('association', table) or re.search('all', table):
                 for row in data['association']:
                     research = R_Exp.objects.get(title=get_via_pk(row[1], data['research']))
-                    tumor = T_Exp.objects.get(name=get_via_pk(row[2], data['tumor']))
+                    tumor = T_Exp.objects.get(tumor_name=get_via_pk(row[2], data['tumor']))
                     gene = G_Exp.objects.get(gene_official_symbol=get_via_pk(row[3], data['gene']))
                     prognosis = P_Exp.objects.get(pk=int(row[4]))
                     subgroup = S_Exp.objects.get(pk=int(row[5])) if row[5] else None

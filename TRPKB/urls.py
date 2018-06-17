@@ -22,7 +22,8 @@ from . import views
 urlpatterns = [
     url(r'^$', views.index, name='index'),
     url(r'^about$', views.about, name='about'),
-    url(r'^access$', views.access, name='access'),
+    url(r'^help$', views.help, name='help'),
+    url(r'^download$', views.download, name='download'),
     url(r'^submit$', views.submit, name='submit'),
     url(r'^submit/query', views.submit_query, name='submit_query'),
     url(r'^submit/add', views.submit_add, name='submit_add'),
