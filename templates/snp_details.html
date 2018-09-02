@@ -164,6 +164,14 @@
 
               <hr>
 
+              <strong>Gene pathway</strong>
+              <div class="panel panel-default" style="margin-top: 20px;">
+                <div id="gene_pathway" class="panel-body" style="max-height: 400px;overflow-y: scroll;">
+                </div>
+              </div>
+
+              <hr>
+
               <table>
                 <tbody>
                   <tr>
@@ -277,6 +285,22 @@
               $content.addClass("ellipsisContent");
           };
           $this.text(linkText);
+      });
+    </script>
+    <script type="text/javascript">
+      var gene_id = {{ gene.id }};
+      $.get( "http://mygene.info/v3/gene/"+gene_id+"?fields=pathway", function( data ) {
+        //console.log(data);
+        for (var db_name in data.pathway) {
+          //console.log(db_name);
+          $("#gene_pathway").append("<h3>&nbsp;&nbsp;"+db_name+"</h3>");
+          var table_html = "<table class=\"table table-bordered table-striped\"><thead><tr><th>ID</th><th>Name</th></tr></thead><tbody>"
+          for (var i = 0; i < data.pathway[db_name].length; i++) {
+            table_html += "<tr><td>"+data.pathway[db_name][i].id+"</td><td>"+data.pathway[db_name][i].name+"</td></tr>";
+          }
+          table_html += "</tbody></table>"
+          $("#gene_pathway").append(table_html);
+        }
       });
     </script>
     <script type="text/javascript">

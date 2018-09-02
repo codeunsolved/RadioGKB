@@ -957,10 +957,10 @@ def snp_details(request, research_id, tumor_id, variant_id):
         ('case_number', 'case_meaning'),
         ('control_number', 'control_meaning'),
         ('total_number', 'total_meaning'),
-        ('or_u', 'OR (U)'), ('hr_u', 'HR (U)'), ('rr_u', 'RR (U)'),
-        ('ci_u_95', '95% CI (U)'), ('p_u', 'P (U)'),
-        ('or_m', 'OR (M)'), ('hr_m', 'HR (M)'), ('rr_m', 'RR (M)'),
-        ('ci_m_95', '95% CI (M)'), ('p_m', 'P (M)')
+        ('or_u', 'OR (Univariate)'), ('hr_u', 'HR (Univariate)'), ('rr_u', 'RR (Univariate)'),
+        ('ci_u_95', '95% CI (Univariate)'), ('p_u', 'P (Univariate)'),
+        ('or_m', 'OR (Multivariate)'), ('hr_m', 'HR (Multivariate)'), ('rr_m', 'RR (Multivariate)'),
+        ('ci_m_95', '95% CI (Multivariate)'), ('p_m', 'P (Multivariate)')
     ]
 
     for p_id in prognosis:
@@ -1096,10 +1096,10 @@ def exp_details(request, research_id, tumor_id, gene_id):
         ('case_number', 'case_meaning'),
         ('control_number', 'control_meaning'),
         ('total_number', 'total_meaning'),
-        ('or_u', 'OR (U)'), ('hr_u', 'HR (U)'), ('rr_u', 'RR (U)'),
-        ('ci_u_95', '95% CI (U)'), ('p_u', 'P (U)'),
-        ('or_m', 'OR (M)'), ('hr_m', 'HR (M)'), ('rr_m', 'RR (M)'),
-        ('ci_m_95', '95% CI (M)'), ('p_m', 'P (M)')
+        ('or_u', 'OR (Univariate)'), ('hr_u', 'HR (Univariate)'), ('rr_u', 'RR (Univariate)'),
+        ('ci_u_95', '95% CI (Univariate)'), ('p_u', 'P (Univariate)'),
+        ('or_m', 'OR (Multivariate)'), ('hr_m', 'HR (Multivariate)'), ('rr_m', 'RR (Multivariate)'),
+        ('ci_m_95', '95% CI (Multivariate)'), ('p_m', 'P (Multivariate)')
     ]
 
     for p_id in prognosis:
